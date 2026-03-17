@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<datasources xmlns="http://www.jboss.org/ironjacamar/schema"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://www.jboss.org/ironjacamar/schema http://docs.jboss.org/ironjacamar/schema/datasources_1_0.xsd">
+
+    <datasource jndi-name="java:jboss/datasources/team-18" pool-name="team-18" enabled="true" use-java-context="true">
+        <connection-url>jdbc:postgresql://localhost:5432/team18</connection-url>
+        <driver>postgresql</driver>
+        <security>
+            <user-name>postgres</user-name>
+            <password>dummy</password>
+        </security>
+    </datasource>
+
+</datasources>
