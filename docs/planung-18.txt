@@ -1,0 +1,3 @@
+Der Plan für die erste Iteration ist vorranging das erstellen einer groben UI zusammen mit Seitenansichten für Bestellungen, Produkte und Kunden.
+Zudem wollen wir hinzufügen, dass wir in jeder seiten ansicht demnentsprechend jeweils neue Bestellungen, Produkte oder Kunden anlegen können und diese in die Datenbank übertragen werden.
+Zuletzt wollen wir noch das Feature hinzufügen, dass dann ein Popup erscheint in dem die Liste der Zugehörigen Produkte mit Quantitäten angezeigt wird wenn man die BestellungsID einer Bestellung anklickt.
