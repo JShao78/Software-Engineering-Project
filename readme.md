@@ -15,6 +15,8 @@ Relevante Konfigurationsdateien:
 - `pom.xml`
 - `src/main/resources/META-INF/persistence.xml`
 - `first-iteration-ds.xml`
+- `db/schema/001_initial_schema.sql`
+- `db/seeds/001_sample_data.sql`
 
 ## Einstieg
 
@@ -37,6 +39,15 @@ Beispiel je Bereich:
 ## Aktuelle Ordnerstruktur
 
 ```text
+db/
+  README.md
+  migrations/
+    README.md
+  schema/
+    001_initial_schema.sql
+  seeds/
+    001_sample_data.sql
+
 docs/
   planung-18.txt
   reflexion-18.txt
@@ -66,6 +77,22 @@ src/main/webapp/
     web.xml
     beans.xml
     faces-config.xml
+```
+
+## Datenbank-Setup (PostgreSQL)
+
+SQL-Skripte fuer eine lokale Testdatenbank liegen unter `db/`.
+
+Schema einspielen:
+
+```bash
+psql -U postgres -d team18 -f db/schema/001_initial_schema.sql
+```
+
+Beispieldaten einspielen:
+
+```bash
+psql -U postgres -d team18 -f db/seeds/001_sample_data.sql
 ```
 
 ## Was bereits umgesetzt ist

@@ -6,7 +6,7 @@
     <persistence-unit name="team-18" transaction-type="JTA">
         <jta-data-source>java:jboss/datasources/team-18</jta-data-source>
         <properties>
-            <property name="jakarta.persistence.schema-generation.database.action" value="drop-and-create"/>
+            <property name="jakarta.persistence.schema-generation.database.action" value="validate"/>
             <property name="hibernate.show_sql" value="true"/>
             <property name="hibernate.format_sql" value="true"/>
         </properties>
