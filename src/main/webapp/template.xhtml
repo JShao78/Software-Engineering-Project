@@ -1,0 +1,27 @@
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:ui="jakarta.faces.facelets"
+      xmlns:f="jakarta.faces.core">
+<h:head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title><ui:insert name="title">Vertriebsunterstützung</ui:insert></title>
+    <h:outputStylesheet library="css" name="style.css" target="head"/>
+</h:head>
+<h:body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <h:link outcome="index" styleClass="#{facesContext.viewRoot.viewId == '/index.xhtml' ? 'nav-link active' : 'nav-link'}">Home</h:link>
+            <h:link outcome="kunden" styleClass="#{facesContext.viewRoot.viewId == '/kunden.xhtml' ? 'nav-link active' : 'nav-link'}">Kunden</h:link>
+            <h:link outcome="bestellungen" styleClass="#{facesContext.viewRoot.viewId == '/bestellungen.xhtml' ? 'nav-link active' : 'nav-link'}">Bestellungen</h:link>
+            <h:link outcome="produkte" styleClass="#{facesContext.viewRoot.viewId == '/produkte.xhtml' ? 'nav-link active' : 'nav-link'}">Produkte</h:link>
+        </div>
+    </nav>
+    <div class="divider"/>
+    <main class="main-content">
+        <ui:insert name="content"/>
+    </main>
+</h:body>
+</html>

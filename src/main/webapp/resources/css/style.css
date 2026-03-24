@@ -1,0 +1,228 @@
+
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    font-size: 14px;
+    color: #212529;
+    background-color: #ffffff;
+}
+
+/* Navigation */
+.navbar {
+    display: flex;
+    align-items: center;
+    padding: 0 24px;
+    height: 48px;
+    background: #ffffff;
+}
+
+.nav-container {
+    display: flex;
+    gap: 4px;
+}
+
+.nav-link {
+    display: inline-block;
+    padding: 12px 16px;
+    text-decoration: none;
+    color: #495057;
+    font-size: 14px;
+    border-bottom: 2px solid transparent;
+    transition: color 0.15s, border-color 0.15s;
+}
+
+.nav-link:hover {
+    color: #212529;
+}
+
+.nav-link.active {
+    color: #1a73e8;
+    border-bottom: 2px solid #1a73e8;
+    font-weight: 500;
+}
+
+.divider {
+    height: 1px;
+    background: #e0e0e0;
+    margin: 0;
+}
+
+/*  Main Content */
+.main-content {
+    padding: 32px 24px;
+    max-width: 1400px;
+}
+
+.page-title {
+    font-size: 22px;
+    font-weight: 700;
+    color: #212529;
+    margin-bottom: 6px;
+}
+
+.page-subtitle {
+    font-size: 13px;
+    color: #1a73e8;
+    margin-bottom: 0;
+}
+
+/* Form Card  */
+.form-card {
+    background: #eef2fb;
+    border-radius: 6px;
+    padding: 16px 20px;
+    margin-bottom: 20px;
+}
+
+.form-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    align-items: flex-end;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex: 1 1 200px;
+    min-width: 150px;
+}
+
+.form-group-btn {
+    flex: 0 0 auto;
+    justify-content: flex-end;
+}
+
+.form-group label {
+    font-size: 12px;
+    color: #6c757d;
+    font-weight: 500;
+}
+
+.form-input {
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    padding: 7px 10px;
+    font-size: 14px;
+    color: #495057;
+    background: #ffffff;
+    width: 100%;
+    outline: none;
+    transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.form-input:focus {
+    border-color: #1a73e8;
+    box-shadow: 0 0 0 2px rgba(26, 115, 232, 0.15);
+}
+
+.form-select {
+    cursor: pointer;
+}
+
+/* Buttons */
+.btn-primary {
+    background-color: #212529;
+    color: #ffffff;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 18px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background-color 0.15s;
+}
+
+.btn-primary:hover {
+    background-color: #343a40;
+}
+
+/* Table */
+.table-container {
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+/* Header row */
+.data-table thead tr,
+.data-table .table-header {
+    background-color: #343a40;
+}
+
+.data-table thead th {
+    background-color: #343a40;
+    color: #ffffff;
+    font-weight: 600;
+    font-size: 13px;
+    padding: 11px 16px;
+    text-align: left;
+    border: none;
+}
+
+.col-header {
+    font-weight: 600;
+    color: #ffffff;
+}
+
+/* Body rows */
+.data-table tbody tr {
+    border-bottom: 1px solid #e9ecef;
+    transition: background-color 0.1s;
+}
+
+.data-table tbody tr:last-child {
+    border-bottom: none;
+}
+
+.data-table tbody tr:hover {
+    background-color: #f8f9fa;
+}
+
+.data-table td {
+    padding: 12px 16px;
+    font-size: 14px;
+    color: #495057;
+    vertical-align: middle;
+}
+
+/* Accent text (orange-ish like in screenshot) */
+.text-accent {
+    color: #c96a00;
+}
+
+/*  Order items inline  */
+.order-item-line {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    margin-bottom: 2px;
+    font-size: 13px;
+}
+
+.item-qty {
+    color: #6c757d;
+    font-size: 12px;
+}
+
+/*  Messages */
+.messages {
+    margin-top: 8px;
+    font-size: 13px;
+}
+
+.message-error {
+    color: #dc3545;
+}

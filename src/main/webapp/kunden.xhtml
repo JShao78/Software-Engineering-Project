@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:ui="jakarta.faces.facelets"
+      xmlns:f="jakarta.faces.core">
+<ui:composition template="/template.xhtml">
+
+    <ui:define name="title">Kunden – Vertriebsunterstützung</ui:define>
+
+    <ui:define name="content">
+        <h1 class="page-title">Kunden</h1>
+        <h:form id="kundenForm">
+            <div class="form-card">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="vorname">Vorname</label>
+                        <h:inputText id="vorname"
+                                     value="#{customerBoundary.newFirstName}"
+                                     styleClass="form-input"
+                                     placeholder="Vorname"/>
+                    </div>
+                    <div class="form-group">
+                        <label for="nachname">Nachname</label>
+                        <h:inputText id="nachname"
+                                     value="#{customerBoundary.newLastName}"
+                                     styleClass="form-input"
+                                     placeholder="Nachname"/>
+                    </div>
+                    <div class="form-group form-group-btn">
+                        <h:commandButton value="Hinzufügen"
+                                         styleClass="btn-primary"
+                                         action="#{customerBoundary.submit()}"/>
+                    </div>
+                </div>
+            </div>
+        </h:form>
+
+        <div class="table-container">
+            <h:dataTable value="#{customerBoundary.allCustomers}"
+                         var="kunde"
+                         styleClass="data-table">
+                <h:column>
+                    <f:facet name="header">
+                        <span class="col-header">Vorname</span>
+                    </f:facet>
+                    <h:outputText value="#{kunde.firstName}"/>
+                </h:column>
+                <h:column>
+                    <f:facet name="header">
+                        <span class="col-header">Nachname</span>
+                    </f:facet>
+                    <h:outputText value="#{kunde.lastName}" styleClass="text-accent"/>
+                </h:column>
+            </h:dataTable>
+        </div>
+    </ui:define>
+
+</ui:composition>
+</html>

@@ -13,13 +13,26 @@ import java.util.UUID;
 @Named
 @RequestScoped
 public class CustomerBoundary {
+    private String newFirstName;
+    private String newLastName;
 
+    public String getNewFirstName() { return newFirstName; }
+    public void setNewFirstName(String v) { this.newFirstName = v; }
+
+    public String getNewLastName() { return newLastName; }
+    public void setNewLastName(String v) { this.newLastName = v; }
     //TODO remove after implementation
     private ArrayList<Customer> dummyData = new ArrayList<>(List.of(
             new Customer("John", "Doe"),
             new Customer("Max", "Mustermann")
     ));
 
+
+    public void submit() {
+        addCustomer(newFirstName, newLastName);
+        newFirstName = null;
+        newLastName = null;
+    }
     @Inject
     CustomerControl controller;
 
