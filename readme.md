@@ -51,6 +51,7 @@ db/
 docs/
   planung-18.txt
   reflexion-18.txt
+  repository-api.md
 
 src/main/java/de/pdbm/team18/
   business/
@@ -94,6 +95,12 @@ Beispieldaten einspielen:
 ```bash
 psql -U postgres -d team18 -f db/seeds/001_sample_data.sql
 ```
+
+## Data Access API
+
+Eine kurze Uebersicht der aktuell verfuegbaren Repository-Funktionen (Interface + JPA-Implementierung) liegt hier:
+
+- `docs/repository-api.md`
 
 ## Was bereits umgesetzt ist
 
