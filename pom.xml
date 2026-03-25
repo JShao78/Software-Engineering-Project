@@ -1,9 +1,9 @@
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>de.ostfalia.sep</groupId>
-    <artifactId>first-iteration</artifactId>
-    <version>0.9</version>
-    <name>SE-Projekt erste Iteration</name>
+    <artifactId>team-18</artifactId>
+    <version>1.0</version>
+    <name>team-18</name>
     <packaging>war</packaging>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -38,7 +38,7 @@
         </dependency>
     </dependencies>
     <build>
-        <finalName>first-iteration</finalName>
+        <finalName>team-18</finalName>
         <plugins>
             <plugin>
                 <groupId>org.wildfly.plugins</groupId>
