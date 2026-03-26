@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:ui="jakarta.faces.facelets"
+      xmlns:f="jakarta.faces.core">
+<ui:composition template="/template.xhtml">
+
+    <ui:define name="title">Bestellungen – Vertriebsunterstützung</ui:define>
+
+    <ui:define name="content">
+        <h1 class="page-title">Bestellungen</h1>
+        <h:form id="orderForm">
+            <div class="form-card">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="customerID">Kunden-ID</label>
+                        <h:inputText id="customerID"
+				     type="number"
+				     value="#{customerID}"
+                                     styleClass="form-input"
+                                     placeholder="Kunden-ID" />
+                    </div>
+                    <div class="form-group">
+                        <label for="productID">Produkt (Name oder ID)</label>
+                        <h:inputText id="productID"
+				     type="number"
+                                     value="#{productID}"
+                                     styleClass="form-input"
+                                     placeholder="Produkt" />
+                    </div>
+		    <div class="form-group">
+			<label for="count">Anzahl</label>
+			<h:inputText id="count"
+				     type="number"
+				     value="#{count}"
+				     styleClass="form-input"
+				     placeholder="Anzahl" />
+		    </div>
+                    <div class="form-group form-group-btn">
+                        <h:commandButton value="Hinzufügen"
+                                         styleClass="btn-primary"
+                                         action="#{orderBoundary.addOrder(customerID)}" />
+                    </div>
+                </div>
+            </div>
+        </h:form>
+
+        <div class="table-container">
+            <h:dataTable value="#{orderBoundary.allOrders}"
+                         var="order"
+                         styleClass="data-table">
+                <h:column>
+                    <f:facet name="header">
+                        <span class="col-header">ID</span>
+                    </f:facet>
+                    <h:outputText value="#{order.id}" styleClass="text-accent" />
+                </h:column>
+		<h:column>
+		    <f:facet name="header">
+			<span class="col-header">Kunde</span>
+		    </f:facet>
+		    <h:outputText styleClass="text-accent" />
+		</h:column>
+		<h:column>
+		    <f:facet name="header">
+			<span class="col-header">Produkte</span>
+		    </f:facet>
+		    <h:outputText styleClass="text-accent" />
+		</h:column>
+		<h:column>
+		    <f:facet name="header">
+			<span class="col-header">Gesamtpreis</span>
+		    </f:facet>
+		    <h:outputText styleClass="text-accent" />
+		</h:column>
+            </h:dataTable>
+        </div>
+    </ui:define>
+
+</ui:composition>
+</html>
