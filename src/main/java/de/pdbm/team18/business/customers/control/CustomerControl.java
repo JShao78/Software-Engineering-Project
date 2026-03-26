@@ -1,27 +1,31 @@
 package de.pdbm.team18.business.customers.control;
 
+import de.pdbm.team18.business.customers.repository.CustomerRepository;
 import jakarta.ejb.Stateless;
 import de.pdbm.team18.business.customers.entity.Customer;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
+import jakarta.inject.Inject;
 import java.util.List;
 import java.util.UUID;
 
 @Stateless
 public class CustomerControl {
-    @PersistenceContext
-    private EntityManager em;
+    @Inject
+    private CustomerRepository customerRepository;
 
-    public List<Customer> getAllCustomers() {
-        return em.createQuery("SELECT c FROM Customer c", Customer.class).getResultList();
+    public List<Customer> findPage(String searchTerm, int offset, int limit) {
+        return customerRepository.findPage(searchTerm, offset, limit);
+    }
+
+    public long countCustomers(String searchTerm) {
+        return customerRepository.count(searchTerm);
     }
 
     public Customer findCustomerById(UUID id) {
-        return em.find(Customer.class, id);
+        return customerRepository.findById(id).orElse(null);
     }
 
-    public void addCustomer(Customer customer) {
-        em.persist(customer);
+    public Customer saveCustomer(Customer customer) {
+        return customerRepository.save(customer);
     }
 
 }
