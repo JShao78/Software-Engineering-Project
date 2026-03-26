@@ -20,9 +20,14 @@ public class ProductBoundary {
             new Product("TestProdukt1", "1234", new BigDecimal("0.12")),
             new Product("Test Produkt 2", "123456789", new BigDecimal("123.40"))
     }));
+    private int number_of_products = dummyData.size();
 
     @Inject
     ProductControl control;
+
+    public int getCount() {
+	return number_of_products;
+    }
 
     //TODO Replace with proper implementation
     public Product getProduct(UUID id) {
