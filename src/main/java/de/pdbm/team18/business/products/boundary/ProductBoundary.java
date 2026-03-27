@@ -7,7 +7,6 @@ import jakarta.inject.Inject;
 import jakarta.inject.Named;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -15,34 +14,59 @@ import java.util.UUID;
 @RequestScoped
 public class ProductBoundary {
 
-    //TODO Delete after implementation of data sources
-    private final ArrayList<Product> dummyData = new ArrayList<>(List.of(new Product[]{
-            new Product("TestProdukt1", "1234", new BigDecimal("0.12")),
-            new Product("Test Produkt 2", "123456789", new BigDecimal("123.40"))
-    }));
-    private int number_of_products = dummyData.size();
+    //Properties
+    private String productName;
+    private BigDecimal price;
+
+    public void setProductName(String productName) { this.productName = productName; }
+    public String getProductName() { return this.productName; }
+
+    public void setPrice(BigDecimal price) { this.price = price; }
+    public BigDecimal getPrice() { return this.price; }
 
     @Inject
-    ProductControl control;
+    private ProductControl controller;
 
-    public int getCount() {
-	return number_of_products;
+    public long getCount() {
+	    return controller.count(null);
     }
 
-    //TODO Replace with proper implementation
+    /**
+     * Returns the Product with the provided UUID.
+     * @param id the Product's UUID.
+     * @return the Product or null if none exists.
+     */
     public Product getProduct(UUID id) {
-        for (Product p : this.dummyData) if (p.getId().equals(id)) return p;
-        return null;
+        return controller.findById(id);
     }
 
-    //TODO Replace with proper implementation
+    /**
+     * Returns a page of Products matching the search term. For more info see repository.
+     * @param searchTerm the search term.
+     * @param offset the page number.
+     * @param limit the page size.
+     * @return a list representing the page.
+     */
+    public List<Product> getAllProducts(String searchTerm, int offset, int limit) {
+        return controller.findPage(searchTerm, offset, limit);
+    }
+
+    /**
+     * Calls the parameterized getAllProducts()-method with default parameters.
+     * @deprecated use parameterized method instead. TODO remove once unused.
+     * @return the first page of up to 100 Products.
+     */
     public List<Product> getAllProducts() {
-        return dummyData;
+        return getAllProducts(null, 0, 100);
     }
 
-    //TODO Replace with proper implementation
-    public void addProduct(String productName, String productNumber, BigDecimal price) {
-        this.dummyData.add(new Product(productName, productNumber, price));
+    /**
+     * Sends a product to the controller to be stored persistently.
+     */
+    public void addProduct() {
+        controller.saveProduct(new Product(productName, Long.toString(controller.count(null)), price));
+        this.productName = null;
+        this.price = null;
     }
 
 }

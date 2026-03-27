@@ -15,21 +15,21 @@
                     <div class="form-group">
                         <label for="vorname">Vorname</label>
                         <h:inputText id="vorname"
-                                     value="#{customerBoundary.newFirstName}"
+                                     value="#{customerBoundary.firstName}"
                                      styleClass="form-input"
                                      placeholder="Vorname"/>
                     </div>
                     <div class="form-group">
                         <label for="nachname">Nachname</label>
                         <h:inputText id="nachname"
-                                     value="#{customerBoundary.newLastName}"
+                                     value="#{customerBoundary.lastName}"
                                      styleClass="form-input"
                                      placeholder="Nachname"/>
                     </div>
                     <div class="form-group form-group-btn">
                         <h:commandButton value="Hinzufügen"
                                          styleClass="btn-primary"
-                                         action="#{customerBoundary.submit()}"/>
+                                         action="#{customerBoundary.addCustomer()}"/>
                     </div>
                 </div>
             </div>

@@ -1,20 +1,36 @@
 package de.pdbm.team18.business.orders.control;
 
+import de.pdbm.team18.business.customers.control.CustomerControl;
+import de.pdbm.team18.business.customers.entity.Customer;
+import de.pdbm.team18.business.orders.entity.SalesOrder;
 import de.pdbm.team18.business.orders.repository.OrderRepository;
+import de.pdbm.team18.business.products.control.ProductControl;
+import de.pdbm.team18.business.products.entity.Product;
 import jakarta.ejb.Stateless;
 import jakarta.inject.Inject;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
+
 import java.util.List;
 import java.util.UUID;
 
-import de.pdbm.team18.business.orders.entity.*;
-import jakarta.persistence.criteria.Order;
-
 @Stateless
 public class OrderControl {
+
+    //References needed for SalesOrder and OrderPosition handling
+    @Inject
+    private CustomerControl customerControl;
+    @Inject
+    private ProductControl productControl;
+
     @Inject
     private OrderRepository orderRepository;
+
+    public Product getProduct(UUID id) {
+        return productControl.findById(id);
+    }
+
+    public Customer getCustomer(UUID id) {
+        return customerControl.findCustomerById(id);
+    }
 
     public List<SalesOrder> findPage(UUID customerId, String orderStatus, int offset, int limit) {
         return orderRepository.findPage(customerId, orderStatus, offset, limit);

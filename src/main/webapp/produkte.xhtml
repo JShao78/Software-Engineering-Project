@@ -15,7 +15,7 @@
                     <div class="form-group">
                         <label for="product">Produktname</label>
                         <h:inputText id="product"
-                                     value="#{productName}"
+                                     value="#{productBoundary.productName}"
                                      styleClass="form-input"
                                      placeholder="Produktname" />
                     </div>
@@ -23,21 +23,21 @@
                         <label for="price">Stückpreis</label>
                         <h:inputText id="price"
 				     inputmode="decimal"
-                                     value="#{price}"
+                                     value="#{productBoundary.price}"
                                      styleClass="form-input"
                                      placeholder="Stückpreis" />
                     </div>
                     <div class="form-group form-group-btn">
                         <h:commandButton value="Hinzufügen"
                                          styleClass="btn-primary"
-                                         action="#{productBoundary.addProduct(productName, productBoundary.getCount(), price)}" />
+                                         action="#{productBoundary.addProduct()}" />
                     </div>
                 </div>
             </div>
         </h:form>
 
         <div class="table-container">
-            <h:dataTable value="#{productBoundary.allProducts}"
+            <h:dataTable value="#{productBoundary.getAllProducts}"
                          var="product"
                          styleClass="data-table">
                 <h:column>
