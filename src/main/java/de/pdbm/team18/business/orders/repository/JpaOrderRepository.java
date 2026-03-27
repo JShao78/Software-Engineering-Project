@@ -29,8 +29,8 @@ public class JpaOrderRepository implements OrderRepository {
 
         TypedQuery<SalesOrder> query = entityManager.createQuery(
             "SELECT o FROM SalesOrder o " +
-                "JOIN FETCH o.customer c " +
-                "WHERE (:customerId IS NULL OR c.id = :customerId) " +
+                "JOIN FETCH o.customer " +
+                "WHERE (:customerId IS NULL OR o.customer.id = :customerId) " +
                 "  AND (:hasStatus = false OR o.orderStatus = :orderStatus) " +
                 "ORDER BY o.orderDate DESC, o.id DESC",
             SalesOrder.class
