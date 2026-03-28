@@ -39,6 +39,12 @@
             <h:dataTable value="#{customerBoundary.allCustomers}"
                          var="kunde"
                          styleClass="data-table">
+		<h:column>
+                    <f:facet name="header">
+                        <span class="col-header">UUID</span>
+                    </f:facet>
+                    <h:outputText value="#{kunde.id}"/>
+                </h:column>
                 <h:column>
                     <f:facet name="header">
                         <span class="col-header">Vorname</span>

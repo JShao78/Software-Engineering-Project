@@ -37,14 +37,14 @@
         </h:form>
 
         <div class="table-container">
-            <h:dataTable value="#{productBoundary.getAllProducts}"
+            <h:dataTable value="#{productBoundary.getAllProducts()}"
                          var="product"
                          styleClass="data-table">
                 <h:column>
                     <f:facet name="header">
-                        <span class="col-header">ID</span>
+                        <span class="col-header">UUID</span>
                     </f:facet>
-                    <h:outputText value="#{product.productNumber}" styleClass="text-accent" />
+                    <h:outputText value="#{product.id}" styleClass="text-accent" />
                 </h:column>
 		<h:column>
 		    <f:facet name="header">
