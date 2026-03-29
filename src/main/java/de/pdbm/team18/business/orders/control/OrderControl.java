@@ -6,6 +6,8 @@ import de.pdbm.team18.business.orders.entity.SalesOrder;
 import de.pdbm.team18.business.orders.repository.OrderRepository;
 import de.pdbm.team18.business.products.control.ProductControl;
 import de.pdbm.team18.business.products.entity.Product;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import jakarta.ejb.Stateless;
 import jakarta.inject.Inject;
 
@@ -14,7 +16,8 @@ import java.util.UUID;
 
 @Stateless
 public class OrderControl {
-
+    @PersistenceContext
+    private EntityManager em;
     //References needed for SalesOrder and OrderPosition handling
     @Inject
     private CustomerControl customerControl;
@@ -33,7 +36,12 @@ public class OrderControl {
     }
 
     public List<SalesOrder> findPage(UUID customerId, String orderStatus, int offset, int limit) {
-        return orderRepository.findPage(customerId, orderStatus, offset, limit);
+        return em.createQuery(
+                        "SELECT DISTINCT o FROM SalesOrder o LEFT JOIN FETCH o.positions",
+                        SalesOrder.class)
+                .setFirstResult(offset)
+                .setMaxResults(limit)
+                .getResultList();
     }
 
     public long count(UUID customerId, String orderStatus) {

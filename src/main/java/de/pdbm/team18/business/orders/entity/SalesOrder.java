@@ -32,7 +32,7 @@ public class SalesOrder {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "customer_id", nullable = false)
     private Customer customer;
 
@@ -156,5 +156,10 @@ public class SalesOrder {
     public void addPosition(OrderPosition position) {
         position.setSalesOrder(this);
         positions.add(position);
+    }
+    public BigDecimal getTotalPrice() {
+        return positions.stream()
+                .map(p -> p.getUnitPrice().multiply(BigDecimal.valueOf(p.getQuantity())))
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 }

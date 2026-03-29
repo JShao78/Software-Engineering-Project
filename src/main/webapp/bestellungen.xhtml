@@ -15,10 +15,27 @@
             + Bestellung hinzufügen
         </button>
 
+        <h:panelGroup rendered="#{orderBoundary.orderStarted}">
+            <script>
+                window.onload = function() {
+                    document.getElementById('orderModal').style.display = 'flex';
+                };
+            </script>
+        </h:panelGroup>
+
+        <!-- Reopen if validation failed -->
+        <h:panelGroup rendered="#{facesContext.maximumSeverity != null}">
+            <script>
+                window.onload = function() {
+                    document.getElementById('orderModal').style.display = 'flex';
+                };
+            </script>
+        </h:panelGroup>
+
         <!--  Modal  -->
         <div id="orderModal" class="modal-overlay"
              onclick="if(event.target===this)this.style.display='none'">
-            <div class="modal">
+            <div class="modal" style="max-width: 540px;">
 
                 <div class="modal-header">
                     <div class="modal-header-left">
@@ -29,56 +46,91 @@
                             onclick="document.getElementById('orderModal').style.display='none'">✕</button>
                 </div>
 
-                <h:form id="orderForm">
+                <!-- Step 1: Choose customer -->
+                <h:form id="stepOneForm" rendered="#{!orderBoundary.orderStarted}">
                     <div class="modal-body">
-
-                        <div class="modal-section-label">Kunde</div>
+                        <div class="modal-section-label">Schritt 1 – Kunde wählen</div>
+                        <h:messages globalOnly="true" styleClass="field-error" errorClass="field-error"/>
                         <div class="form-group floating">
                             <h:inputText id="customerId"
                                          value="#{orderBoundary.selectedCustomerId}"
                                          styleClass="form-input"
                                          placeholder=" "
                                          required="true"/>
-                            <label for="orderForm:customerId" class="floating-label">Kunden-ID *</label>
+                            <label for="stepOneForm:customerId" class="floating-label">Kunden-ID *</label>
                             <span class="field-hint">z. B. 0ea251d8-4c0e-48cf-afdc-df3830099fe6</span>
                             <h:message for="customerId" styleClass="field-error"/>
                         </div>
-
-                        <div class="modal-section-label">Produkt &amp; Menge</div>
-                        <div class="form-group floating">
-                            <h:inputText id="productId"
-                                         value="#{orderBoundary.selectedProductId}"
-                                         styleClass="form-input"
-                                         placeholder=" "
-                                         required="true"/>
-                            <label for="orderForm:productId" class="floating-label">Produkt-ID *</label>
-                            <span class="field-hint">z. B. 4d5808ce-c3bc-4e15-8600-94db29545f49</span>
-                            <h:message for="productId" styleClass="field-error"/>
-                        </div>
-
-                        <div class="form-group floating">
-                            <h:inputText id="quantity"
-                                         value="#{orderBoundary.quantity}"
-                                         styleClass="form-input"
-                                         placeholder=" "
-                                         required="true"/>
-                            <label for="orderForm:quantity" class="floating-label">Menge *</label>
-                            <span class="field-hint">z. B. 2</span>
-                            <h:message for="quantity" styleClass="field-error"/>
-                        </div>
-
                     </div>
-
                     <div class="modal-footer">
                         <button type="button" class="btn-secondary"
                                 onclick="document.getElementById('orderModal').style.display='none'">
                             Abbrechen
                         </button>
-                        <h:commandButton value="Speichern"
-                                         action="#{orderBoundary.createAndSave()}"
+                        <h:commandButton value="Weiter →"
+                                         action="#{orderBoundary.startOrder()}"
                                          styleClass="btn-primary btn-save"/>
                     </div>
                 </h:form>
+
+                <!-- Step 2: Add products -->
+                <h:form id="stepTwoForm" rendered="#{orderBoundary.orderStarted}">
+                    <div class="modal-body">
+
+                        <div class="modal-section-label">
+                            Bestellung für: #{orderBoundary.order.customer.firstName} #{orderBoundary.order.customer.lastName}
+                        </div>
+
+                        <!-- Global error messages (e.g. no positions) -->
+                        <h:messages globalOnly="true" styleClass="field-error" errorClass="field-error"/>
+
+                        <!-- Already added positions -->
+                        <h:panelGroup rendered="#{not empty orderBoundary.order.positions}"
+                                      styleClass="positions-preview" layout="block">
+                            <ui:repeat value="#{orderBoundary.order.positions}" var="pos">
+                                <div class="position-row">
+                                    <span class="position-name">#{pos.product.productName}</span>
+                                    <span class="position-qty">× #{pos.quantity}</span>
+                                    <span class="position-price">
+                                        <h:outputText value="#{pos.unitPrice}">
+                                            <f:convertNumber minFractionDigits="2" maxFractionDigits="2" locale="de"/>
+                                        </h:outputText> €
+                                    </span>
+                                </div>
+                            </ui:repeat>
+                        </h:panelGroup>
+
+                        <div class="modal-section-label">Schritt 2 – Produkt hinzufügen</div>
+                        <div class="form-group floating">
+                            <h:inputText id="productId"
+                                         value="#{orderBoundary.selectedProductId}"
+                                         styleClass="form-input"
+                                         placeholder=" "/>
+                            <label for="stepTwoForm:productId" class="floating-label">Produkt-ID</label>
+                            <span class="field-hint">z. B. 4d5808ce-c3bc-4e15-8600-94db29545f49</span>
+                            <h:message for="productId" styleClass="field-error"/>
+                        </div>
+                        <div class="form-group floating">
+                            <h:inputText id="quantity"
+                                         value="#{orderBoundary.quantity}"
+                                         styleClass="form-input"
+                                         placeholder=" "/>
+                            <label for="stepTwoForm:quantity" class="floating-label">Menge</label>
+                            <span class="field-hint">z. B. 2</span>
+                            <h:message for="quantity" styleClass="field-error"/>
+                        </div>
+
+                    </div>
+                    <div class="modal-footer" style="justify-content: space-between;">
+                        <h:commandButton value="+ Produkt hinzufügen"
+                                         action="#{orderBoundary.addPosition()}"
+                                         styleClass="btn-secondary"/>
+                        <h:commandButton value="✓ Bestellung abschließen"
+                                         action="#{orderBoundary.finishOrder()}"
+                                         styleClass="btn-primary btn-save"/>
+                    </div>
+                </h:form>
+
             </div>
         </div>
 

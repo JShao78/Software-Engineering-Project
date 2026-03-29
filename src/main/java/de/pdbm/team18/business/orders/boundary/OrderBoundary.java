@@ -1,96 +1,114 @@
 package de.pdbm.team18.business.orders.boundary;
 
+import de.pdbm.team18.business.customers.entity.Customer;
 import de.pdbm.team18.business.orders.control.OrderControl;
 import de.pdbm.team18.business.orders.entity.OrderPosition;
 import de.pdbm.team18.business.orders.entity.SalesOrder;
 import de.pdbm.team18.business.products.entity.Product;
-import jakarta.enterprise.context.RequestScoped;
+import jakarta.faces.application.FacesMessage;
+import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.UUID;
 
 @Named
-@RequestScoped
-public class OrderBoundary {
+@ViewScoped
+public class OrderBoundary implements Serializable {
 
-    //Property to temporary store the SalesOrder that is being created.
     private SalesOrder order;
-
-    private UUID selectedCustomerId;
-    private UUID selectedProductId;
-    private int quantity;
-
-    public UUID getSelectedCustomerId() { return selectedCustomerId; }
-    public void setSelectedCustomerId(UUID selectedCustomerId) { this.selectedCustomerId = selectedCustomerId; }
-
-    public UUID getSelectedProductId() { return selectedProductId; }
-    public void setSelectedProductId(UUID selectedProductId) { this.selectedProductId = selectedProductId; }
-
-    public int getQuantity() { return quantity; }
-    public void setQuantity(int quantity) { this.quantity = quantity; }
-
-    public String createAndSave() {
-        addOrder(selectedCustomerId);
-        OrderPosition(selectedProductId, quantity);
-        saveOrder();
-        return "bestellungen?faces-redirect=true";
-    }
-
-    public void setOrder(SalesOrder order) { this.order = order; }
-    public SalesOrder getOrder() { return this.order; }
+    private String selectedCustomerId;
+    private String selectedProductId;
+    private int quantity = 1;
+    private boolean orderStarted = false;
 
     @Inject
     OrderControl controller;
 
-    /**
-     * Returns the order with the provided UUID.
-     * @param id the UUID.
-     * @return the Order with the UUID or null if none exists.
-     */
+    //  Getters & Setters
+
+    public SalesOrder getOrder() { return order; }
+    public void setOrder(SalesOrder order) { this.order = order; }
+
+    public String getSelectedCustomerId() { return selectedCustomerId; }
+    public void setSelectedCustomerId(String v) { this.selectedCustomerId = v; }
+
+    public String getSelectedProductId() { return selectedProductId; }
+    public void setSelectedProductId(String v) { this.selectedProductId = v; }
+
+    public int getQuantity() { return quantity; }
+    public void setQuantity(int quantity) { this.quantity = quantity; }
+
+    public boolean isOrderStarted() { return orderStarted; }
+
+    //Actions
+
+    public void startOrder() {
+        try {
+            Customer customer = controller.getCustomer(UUID.fromString(selectedCustomerId));
+            if (customer == null) {
+                FacesContext.getCurrentInstance()
+                        .addMessage("stepOneForm:customerId",
+                                new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                                        "Kein Kunde mit dieser ID gefunden.", null));
+                return;
+            }
+            this.order = new SalesOrder(customer);
+            orderStarted = true;
+        } catch (IllegalArgumentException e) {
+            FacesContext.getCurrentInstance()
+                    .addMessage("stepOneForm:customerId",
+                            new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                                    "Kein Kunden mit dieser ID gefunden.", null));
+        }
+    }
+
+    public void addPosition() {
+        if (this.order == null) return;
+        try {
+            Product product = controller.getProduct(UUID.fromString(selectedProductId));
+            if (product == null) {
+                FacesContext.getCurrentInstance()
+                        .addMessage("stepTwoForm:productId",
+                                new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                                        "Kein Produkt mit dieser ID gefunden.", null));
+                return;
+            }
+            this.order.addPosition(new OrderPosition(product, quantity, product.getPrice()));
+            selectedProductId = null;
+            quantity = 1;
+        } catch (IllegalArgumentException e) {
+            FacesContext.getCurrentInstance()
+                    .addMessage("stepTwoForm:productId",
+                            new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                                    "Ungültige UUID. Bitte kopieren Sie die ID aus der Produktliste.", null));
+        }
+    }
+
+    public String finishOrder() {
+        if (this.order.getPositions().isEmpty()) {
+            FacesContext.getCurrentInstance()
+                    .addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                            "Bitte mindestens ein Produkt hinzufügen.", null));
+            return null;
+        }
+        this.order.setTotalCost(this.order.getTotalPrice());
+        controller.save(this.order);  // ← back to save()
+        this.order = null;
+        orderStarted = false;
+        return "bestellungen?faces-redirect=true";
+    }
+
+    //  Queries
+
     public SalesOrder getOrderById(UUID id) {
         return controller.findById(id);
     }
 
-    /**
-     * Returns a page of Orders by the provided Customer and matching the provided order status.
-     * @param customerId the UUID of the Customer.
-     * @param orderStatus the status to match Orders.
-     * @param offset the page number.
-     * @param limit the page size.
-     * @return a list representing the page.
-     */
     public List<SalesOrder> getAllOrders(UUID customerId, String orderStatus, int offset, int limit) {
         return controller.findPage(customerId, orderStatus, offset, limit);
     }
-
-    /**
-     * Adds a new OrderPosition to the current SalesOrder. Does nothing if there is no current Order.
-     * @param productId the ID of the Product to be added.
-     * @param quantity the quantity of the Product.
-     */
-    public void OrderPosition(UUID productId, int quantity) {
-        if (this.order == null) return;
-        Product product = controller.getProduct(productId);
-        this.order.addPosition(new OrderPosition(product, quantity, product.getPrice()));
-    }
-
-    /**
-     * Creates a temporary SalesOrder entity to add OrderPositions to. This method does NOT save persistently.
-     * @param customerID the ID of the Customer ordering.
-     */
-    public void addOrder(UUID customerID) {
-        this.order = new SalesOrder(controller.getCustomer(customerID));
-    }
-
-    /**
-     * Saves the current SalesOrder.
-     */
-    public void saveOrder() {
-        controller.save(this.order);
-        this.order = null;
-    }
-
 }

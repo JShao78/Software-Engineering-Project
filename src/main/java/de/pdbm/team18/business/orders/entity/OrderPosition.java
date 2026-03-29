@@ -37,7 +37,7 @@ public class OrderPosition {
     @JoinColumn(name = "order_id", nullable = false)
     private SalesOrder salesOrder;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "product_id", nullable = false)
     private Product product;
 
