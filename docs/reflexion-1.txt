@@ -2,13 +2,25 @@ Reflexion Iteration 1 - Team 18
 ================================
 
 1) Geplante Features
-- 
+- UI Aufsetzten
+    - Homescreen
+    - Produkt, Kunden und Bestellungen als Seitenansichten
+    - Leicht ersichtliches Anlegen neuer Daten
+    - Schnell ersichtliche Navigationselemente
+    - Ansicht aller Positionen einer Bestellung sollen möglich sein
+- Datenbank Anlegen mit Beispieldaten
+    - Schnittstelle um mit der Datenbank zu interagieren
+- Backend logic nach ECB pattern
+    - Entity Klasse als Datenkontainer
+    - Controller Klasse als Businesslogik-Schicht
+    - Boundry als Ui-Schnittstelle
 
 2) Tatsaechlich umgesetzt
-- 
+- Alles
 
 3) Abweichungen von der Planung
-- 
+- In planung-1.txt hatten wir uns noch für ein Popup bei der Positionsansicht entschieden.
+    Tatsächlich haben wir es dann so umgesetzt, dass die Positionen direkt in der Tabelle angezeigt werden.
 
 4) Prozentuale individuelle Anteile
 - Anton Metzner 70487463: 20 %
