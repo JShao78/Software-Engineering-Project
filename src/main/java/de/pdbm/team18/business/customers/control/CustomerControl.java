@@ -4,6 +4,9 @@ import de.pdbm.team18.business.customers.repository.CustomerRepository;
 import jakarta.ejb.Stateless;
 import de.pdbm.team18.business.customers.entity.Customer;
 import jakarta.inject.Inject;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+
 import java.util.List;
 import java.util.UUID;
 
@@ -12,10 +15,18 @@ public class CustomerControl {
     @Inject
     private CustomerRepository customerRepository;
 
-    public List<Customer> findPage(String searchTerm, int offset, int limit) {
-        return customerRepository.findPage(searchTerm, offset, limit);
-    }
+    @PersistenceContext
+    private EntityManager em;
 
+    public List<Customer> findPage(String searchTerm, int offset, int limit) {
+        return em.createQuery("SELECT c FROM Customer c", Customer.class)
+                .setFirstResult(offset)
+                .setMaxResults(limit)
+                .getResultList();
+    }
+    public void saveCustomer(Customer customer) {
+        em.persist(customer);
+    }
     public long countCustomers(String searchTerm) {
         return customerRepository.count(searchTerm);
     }
@@ -24,8 +35,5 @@ public class CustomerControl {
         return customerRepository.findById(id).orElse(null);
     }
 
-    public Customer saveCustomer(Customer customer) {
-        return customerRepository.save(customer);
-    }
 
 }

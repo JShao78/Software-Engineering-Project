@@ -1,15 +1,43 @@
-
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="jakarta.faces.html"
       xmlns:ui="jakarta.faces.facelets">
-<ui:composition template="/template.xhtml">
+<ui:composition template="template.xhtml">
 
     <ui:define name="title">Home – Vertriebsunterstützung</ui:define>
 
     <ui:define name="content">
-        <h1 class="page-title">Willkommen</h1>
-        <p class="page-subtitle">Verwaltungssystem für Kunden, Produkte und Bestellungen</p>
+
+        <!-- Hero -->
+        <div class="hero">
+            <div class="hero-text">
+                <h1 class="hero-title">Willkommen zurück 👋</h1>
+                <p class="hero-subtitle">Verwaltungssystem für Kunden, Produkte und Bestellungen</p>
+            </div>
+        </div>
+
+        <!-- Quick-nav cards -->
+        <div class="home-cards">
+            <a href="kunden.xhtml" class="home-card">
+                <div class="home-card-icon">👥</div>
+                <div class="home-card-label">Kunden</div>
+                <div class="home-card-desc">Kundenliste anzeigen und neue Kunden anlegen</div>
+                <div class="home-card-arrow">→</div>
+            </a>
+            <a href="produkte.xhtml" class="home-card">
+                <div class="home-card-icon">📦</div>
+                <div class="home-card-label">Produkte</div>
+                <div class="home-card-desc">Produktkatalog verwalten und Preise pflegen</div>
+                <div class="home-card-arrow">→</div>
+            </a>
+            <a href="bestellungen.xhtml" class="home-card">
+                <div class="home-card-icon">🧾</div>
+                <div class="home-card-label">Bestellungen</div>
+                <div class="home-card-desc">Bestellungen einsehen und neue erfassen</div>
+                <div class="home-card-arrow">→</div>
+            </a>
+        </div>
+
     </ui:define>
 
 </ui:composition>

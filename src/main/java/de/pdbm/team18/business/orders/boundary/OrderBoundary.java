@@ -4,6 +4,7 @@ import de.pdbm.team18.business.orders.control.OrderControl;
 import de.pdbm.team18.business.orders.entity.OrderPosition;
 import de.pdbm.team18.business.orders.entity.SalesOrder;
 import de.pdbm.team18.business.products.entity.Product;
+import jakarta.enterprise.context.RequestScoped;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
@@ -12,11 +13,31 @@ import java.util.List;
 import java.util.UUID;
 
 @Named
-@ViewScoped
+@RequestScoped
 public class OrderBoundary {
 
     //Property to temporary store the SalesOrder that is being created.
     private SalesOrder order;
+
+    private UUID selectedCustomerId;
+    private UUID selectedProductId;
+    private int quantity;
+
+    public UUID getSelectedCustomerId() { return selectedCustomerId; }
+    public void setSelectedCustomerId(UUID selectedCustomerId) { this.selectedCustomerId = selectedCustomerId; }
+
+    public UUID getSelectedProductId() { return selectedProductId; }
+    public void setSelectedProductId(UUID selectedProductId) { this.selectedProductId = selectedProductId; }
+
+    public int getQuantity() { return quantity; }
+    public void setQuantity(int quantity) { this.quantity = quantity; }
+
+    public String createAndSave() {
+        addOrder(selectedCustomerId);
+        OrderPosition(selectedProductId, quantity);
+        saveOrder();
+        return "bestellungen?faces-redirect=true";
+    }
 
     public void setOrder(SalesOrder order) { this.order = order; }
     public SalesOrder getOrder() { return this.order; }

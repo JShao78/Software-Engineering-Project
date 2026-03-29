@@ -3,78 +3,112 @@
       xmlns:h="jakarta.faces.html"
       xmlns:ui="jakarta.faces.facelets"
       xmlns:f="jakarta.faces.core">
-<ui:composition template="/template.xhtml">
+<ui:composition template="template.xhtml">
 
     <ui:define name="title">Bestellungen – Vertriebsunterstützung</ui:define>
 
     <ui:define name="content">
         <h1 class="page-title">Bestellungen</h1>
-        <h:form id="orderForm">
-            <div class="form-card">
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="customerID">Kunden-ID</label>
-                        <h:inputText id="customerID"
-				     type="number"
-				     value="#{customerID}"
-                                     styleClass="form-input"
-                                     placeholder="Kunden-ID" />
-                    </div>
-                    <div class="form-group">
-                        <label for="productID">Produkt (Name oder ID)</label>
-                        <h:inputText id="productID"
-				     type="number"
-                                     value="#{productID}"
-                                     styleClass="form-input"
-                                     placeholder="Produkt" />
-                    </div>
-		    <div class="form-group">
-			<label for="count">Anzahl</label>
-			<h:inputText id="count"
-				     type="number"
-				     value="#{count}"
-				     styleClass="form-input"
-				     placeholder="Anzahl" />
-		    </div>
-                    <div class="form-group form-group-btn">
-                        <h:commandButton value="Hinzufügen"
-                                         styleClass="btn-primary"
-                                         action="#{orderBoundary.addOrder(customerID)}" />
-                    </div>
-                </div>
-            </div>
-        </h:form>
 
-        <div class="table-container">
-            <h:dataTable value="#{orderBoundary.allOrders}"
+        <button type="button" class="btn-primary"
+                onclick="document.getElementById('orderModal').style.display='flex'">
+            + Bestellung hinzufügen
+        </button>
+
+        <!--  Modal  -->
+        <div id="orderModal" class="modal-overlay"
+             onclick="if(event.target===this)this.style.display='none'">
+            <div class="modal">
+
+                <div class="modal-header">
+                    <div class="modal-header-left">
+                        <span class="modal-icon">🧾</span>
+                        <span class="modal-title">Neue Bestellung anlegen</span>
+                    </div>
+                    <button type="button" class="modal-close"
+                            onclick="document.getElementById('orderModal').style.display='none'">✕</button>
+                </div>
+
+                <h:form id="orderForm">
+                    <div class="modal-body">
+
+                        <div class="modal-section-label">Kunde</div>
+                        <div class="form-group floating">
+                            <h:inputText id="customerId"
+                                         value="#{orderBoundary.selectedCustomerId}"
+                                         styleClass="form-input"
+                                         placeholder=" "
+                                         required="true"/>
+                            <label for="orderForm:customerId" class="floating-label">Kunden-ID *</label>
+                            <span class="field-hint">z. B. 0ea251d8-4c0e-48cf-afdc-df3830099fe6</span>
+                            <h:message for="customerId" styleClass="field-error"/>
+                        </div>
+
+                        <div class="modal-section-label">Produkt &amp; Menge</div>
+                        <div class="form-group floating">
+                            <h:inputText id="productId"
+                                         value="#{orderBoundary.selectedProductId}"
+                                         styleClass="form-input"
+                                         placeholder=" "
+                                         required="true"/>
+                            <label for="orderForm:productId" class="floating-label">Produkt-ID *</label>
+                            <span class="field-hint">z. B. 4d5808ce-c3bc-4e15-8600-94db29545f49</span>
+                            <h:message for="productId" styleClass="field-error"/>
+                        </div>
+
+                        <div class="form-group floating">
+                            <h:inputText id="quantity"
+                                         value="#{orderBoundary.quantity}"
+                                         styleClass="form-input"
+                                         placeholder=" "
+                                         required="true"/>
+                            <label for="orderForm:quantity" class="floating-label">Menge *</label>
+                            <span class="field-hint">z. B. 2</span>
+                            <h:message for="quantity" styleClass="field-error"/>
+                        </div>
+
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn-secondary"
+                                onclick="document.getElementById('orderModal').style.display='none'">
+                            Abbrechen
+                        </button>
+                        <h:commandButton value="Speichern"
+                                         action="#{orderBoundary.createAndSave()}"
+                                         styleClass="btn-primary btn-save"/>
+                    </div>
+                </h:form>
+            </div>
+        </div>
+
+        <!--  Orders Table  -->
+        <div class="table-container" style="margin-top: 20px;">
+            <h:dataTable value="#{orderBoundary.getAllOrders(null, null, 0, 100)}"
                          var="order"
                          styleClass="data-table">
                 <h:column>
-                    <f:facet name="header">
-                        <span class="col-header">ID</span>
-                    </f:facet>
-                    <h:outputText value="#{order.id}" styleClass="text-accent" />
+                    <f:facet name="header"><span class="col-header">Kunde</span></f:facet>
+                    <h:outputText value="#{order.customer.firstName} #{order.customer.lastName}"/>
                 </h:column>
-		<h:column>
-		    <f:facet name="header">
-			<span class="col-header">Kunde</span>
-		    </f:facet>
-		    <h:outputText styleClass="text-accent" />
-		</h:column>
-		<h:column>
-		    <f:facet name="header">
-			<span class="col-header">Produkte</span>
-		    </f:facet>
-		    <h:outputText styleClass="text-accent" />
-		</h:column>
-		<h:column>
-		    <f:facet name="header">
-			<span class="col-header">Gesamtpreis</span>
-		    </f:facet>
-		    <h:outputText styleClass="text-accent" />
-		</h:column>
+                <h:column>
+                    <f:facet name="header"><span class="col-header">Positionen</span></f:facet>
+                    <ui:repeat value="#{order.positions}" var="pos">
+                        <div class="order-item-line">
+                            <h:outputText value="#{pos.product.productName}"/>
+                            <span class="item-qty">× #{pos.quantity}</span>
+                        </div>
+                    </ui:repeat>
+                </h:column>
+                <h:column>
+                    <f:facet name="header"><span class="col-header">Gesamtpreis</span></f:facet>
+                    <h:outputText value="#{order.totalPrice}" styleClass="text-accent">
+                        <f:convertNumber minFractionDigits="2" maxFractionDigits="2" locale="de"/>
+                    </h:outputText>
+                </h:column>
             </h:dataTable>
         </div>
+
     </ui:define>
 
 </ui:composition>
