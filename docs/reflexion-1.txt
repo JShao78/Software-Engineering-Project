@@ -27,3 +27,4 @@ Reflexion Iteration 1 - Team 18
 - Finn Schäfgen 70489487: 20%
 - Dominik Schwarz 70476741: 20%
 - Aminah Mohammaad 70489506: 20%
+- Jiawei Shao 70499593: 20%
