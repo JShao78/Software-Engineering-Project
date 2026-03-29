@@ -3,6 +3,8 @@ package de.pdbm.team18.business.customers.boundary;
 import de.pdbm.team18.business.customers.control.CustomerControl;
 import de.pdbm.team18.business.customers.entity.Customer;
 import jakarta.enterprise.context.RequestScoped;
+import jakarta.faces.application.FacesMessage;
+import jakarta.faces.context.FacesContext;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 
@@ -69,17 +71,25 @@ public class CustomerBoundary {
     /**
      * Creates a Customer entity and sends it to the controller to be stored persistently.
      */
-    public void addCustomer() {
-        Customer customer = new Customer(firstName, lastName);
-        customer.setAddress(address);
-        customer.setEmail(email);
-        customer.setPhone(phone);
-        controller.saveCustomer(customer);
-        this.firstName = null;
-        this.lastName = null;
-        this.address = null;
-        this.email = null;
-        this.phone = null;
+    public String addCustomer() {
+        try {
+            Customer customer = new Customer(firstName, lastName);
+            customer.setAddress(address);
+            customer.setEmail(email);
+            customer.setPhone(phone);
+            controller.saveCustomer(customer);
+            this.firstName = null;
+            this.lastName = null;
+            this.address = null;
+            this.email = null;
+            this.phone = null;
+            return "kunden?faces-redirect=true";
+        } catch (Exception e) {
+            FacesContext.getCurrentInstance()
+                    .addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                            "Ungültige Eingabe. Bitte überprüfen Sie Ihre Daten.", null));
+            return null;
+        }
     }
 
 }
