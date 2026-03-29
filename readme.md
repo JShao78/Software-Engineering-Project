@@ -101,19 +101,3 @@ psql -U postgres -d team18 -f db/seeds/001_sample_data.sql
 Eine kurze Uebersicht der aktuell verfuegbaren Repository-Funktionen (Interface + JPA-Implementierung) liegt hier:
 
 - `docs/repository-api.md`
-
-## Was bereits umgesetzt ist
-
-- Team-18 Build- und Deployment-Konfiguration
-- Datenquellen-/Persistence-Verdrahtung
-- ECB-Grundstruktur (Boundary, Control, Entity) fuer Kunden, Produkte und Bestellungen
-- Startseite als technischer Einstiegspunkt
-
-## Was noch nicht umgesetzt ist
-
-- Anlegen von Kunden/Produkten/Bestellungen
-- Listenansichten mit Datenbankinhalten
-- Popup mit Bestellpositionen und Mengen
-- Bereichsspezifische UI-Seiten und End-to-End-Interaktionsfluss
-
-Diese Punkte folgen in den naechsten Arbeitsschritten gemaess `docs/planung-18.txt`.
