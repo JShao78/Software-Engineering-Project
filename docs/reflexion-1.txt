@@ -11,4 +11,5 @@ Reflexion Iteration 1 - Team 18
 - 
 
 4) Prozentuale individuelle Anteile
-- Anton 70487463: 20 %
+- Anton Metzner 70487463: 20 %
+- Finn Schäfgen 70489487: 20%
