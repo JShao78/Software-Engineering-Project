@@ -2,22 +2,22 @@ package de.pdbm.team18.business.orders.control;
 
 import de.pdbm.team18.business.customers.control.CustomerControl;
 import de.pdbm.team18.business.customers.entity.Customer;
+import de.pdbm.team18.business.orders.entity.OrderPosition;
 import de.pdbm.team18.business.orders.entity.SalesOrder;
 import de.pdbm.team18.business.orders.repository.OrderRepository;
 import de.pdbm.team18.business.products.control.ProductControl;
 import de.pdbm.team18.business.products.entity.Product;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
 import jakarta.ejb.Stateless;
 import jakarta.inject.Inject;
 
+import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @Stateless
 public class OrderControl {
-    @PersistenceContext
-    private EntityManager em;
     //References needed for SalesOrder and OrderPosition handling
     @Inject
     private CustomerControl customerControl;
@@ -27,21 +27,19 @@ public class OrderControl {
     @Inject
     private OrderRepository orderRepository;
 
-    public Product getProduct(UUID id) {
-        return productControl.findById(id);
-    }
-
-    public Customer getCustomer(UUID id) {
-        return customerControl.findCustomerById(id);
+    public SalesOrder startOrder(UUID customerId) {
+        if (customerId == null) {
+            throw new IllegalArgumentException("Kunden-ID fehlt.");
+        }
+        Customer customer = customerControl.findCustomerById(customerId);
+        if (customer == null) {
+            throw new IllegalArgumentException("Kein Kunde mit dieser ID gefunden.");
+        }
+        return new SalesOrder(customer);
     }
 
     public List<SalesOrder> findPage(UUID customerId, String orderStatus, int offset, int limit) {
-        return em.createQuery(
-                        "SELECT DISTINCT o FROM SalesOrder o LEFT JOIN FETCH o.positions",
-                        SalesOrder.class)
-                .setFirstResult(offset)
-                .setMaxResults(limit)
-                .getResultList();
+        return orderRepository.findPage(customerId, orderStatus, offset, limit);
     }
 
     public long count(UUID customerId, String orderStatus) {
@@ -55,7 +53,46 @@ public class OrderControl {
         return  orderRepository.findByIdWithPositions(id).orElse(null);
     }
 
+    public void addProductToOrder(SalesOrder salesOrder, UUID productId, int quantity) {
+        if (salesOrder == null) {
+            throw new IllegalArgumentException("Bitte zuerst eine Bestellung starten.");
+        }
+        if (productId == null) {
+            throw new IllegalArgumentException("Produkt-ID fehlt.");
+        }
+        if (quantity < 1) {
+            throw new IllegalArgumentException("Die Menge muss mindestens 1 sein.");
+        }
+
+        Product product = productControl.findById(productId);
+        if (product == null) {
+            throw new IllegalArgumentException("Kein Produkt mit dieser ID gefunden.");
+        }
+
+        for (OrderPosition existing : salesOrder.getPositions()) {
+            if (existing.getProduct() != null && productId.equals(existing.getProduct().getId())) {
+                existing.setQuantity(existing.getQuantity() + quantity);
+                salesOrder.setTotalCost(salesOrder.getTotalPrice());
+                return;
+            }
+        }
+
+        salesOrder.addPosition(new OrderPosition(product, quantity, product.getPrice()));
+        salesOrder.setTotalCost(salesOrder.getTotalPrice());
+    }
+
     public SalesOrder save(SalesOrder salesOrder) {
+        if (salesOrder == null) {
+            throw new IllegalArgumentException("Keine Bestellung zum Speichern vorhanden.");
+        }
+        if (salesOrder.getCustomer() == null) {
+            throw new IllegalArgumentException("Für die Bestellung ist kein Kunde gesetzt.");
+        }
+        if (salesOrder.getPositions().isEmpty()) {
+            throw new IllegalArgumentException("Bitte mindestens ein Produkt hinzufügen.");
+        }
+        mergeDuplicatePositions(salesOrder);
+        salesOrder.setTotalCost(salesOrder.getTotalPrice());
         return orderRepository.save(salesOrder);
     }
 
@@ -63,5 +100,29 @@ public class OrderControl {
         return orderRepository.updateStatus(orderId, orderStatus, shippingStatus);
     }
 
+    private void mergeDuplicatePositions(SalesOrder salesOrder) {
+        Map<UUID, OrderPosition> positionByProductId = new LinkedHashMap<>();
+        Iterator<OrderPosition> iterator = salesOrder.getPositions().iterator();
+
+        while (iterator.hasNext()) {
+            OrderPosition position = iterator.next();
+            Product product = position.getProduct();
+            if (product == null || product.getId() == null) {
+                throw new IllegalArgumentException("Eine Position enthält kein gültiges Produkt.");
+            }
+            if (position.getQuantity() == null || position.getQuantity() < 1) {
+                throw new IllegalArgumentException("Die Menge muss mindestens 1 sein.");
+            }
+
+            OrderPosition existing = positionByProductId.get(product.getId());
+            if (existing == null) {
+                positionByProductId.put(product.getId(), position);
+                continue;
+            }
+
+            existing.setQuantity(existing.getQuantity() + position.getQuantity());
+            iterator.remove();
+        }
+    }
 
 }

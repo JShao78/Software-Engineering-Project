@@ -7,7 +7,9 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
 
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -27,22 +29,44 @@ public class JpaOrderRepository implements OrderRepository {
         boolean hasStatus = RepositoryQueryUtils.hasText(orderStatus);
         String normalizedStatus = hasStatus ? RepositoryQueryUtils.normalizeLowercase(orderStatus) : "";
 
-        TypedQuery<SalesOrder> query = entityManager.createQuery(
-            "SELECT o FROM SalesOrder o " +
-                "JOIN FETCH o.customer " +
+        List<UUID> ids = entityManager.createQuery(
+            "SELECT o.id FROM SalesOrder o " +
                 "WHERE (:customerId IS NULL OR o.customer.id = :customerId) " +
                 "  AND (:hasStatus = false OR o.orderStatus = :orderStatus) " +
                 "ORDER BY o.orderDate DESC, o.id DESC",
-            SalesOrder.class
-        );
-
-        return query
+            UUID.class
+        )
             .setParameter("customerId", customerId)
             .setParameter("hasStatus", hasStatus)
             .setParameter("orderStatus", normalizedStatus)
             .setFirstResult(RepositoryQueryUtils.sanitizeOffset(offset))
             .setMaxResults(RepositoryQueryUtils.sanitizeLimit(limit))
             .getResultList();
+
+        if (ids.isEmpty()) {
+            return List.of();
+        }
+
+        List<SalesOrder> orders = entityManager.createQuery(
+            "SELECT DISTINCT o FROM SalesOrder o " +
+                "JOIN FETCH o.customer " +
+                "LEFT JOIN FETCH o.positions " +
+                "WHERE o.id IN :ids " +
+                "ORDER BY o.orderDate DESC, o.id DESC",
+            SalesOrder.class
+        )
+            .setParameter("ids", ids)
+            .getResultList();
+
+        Map<UUID, SalesOrder> byId = new LinkedHashMap<>();
+        for (SalesOrder order : orders) {
+            byId.put(order.getId(), order);
+        }
+
+        return ids.stream()
+            .map(byId::get)
+            .filter(java.util.Objects::nonNull)
+            .toList();
     }
 
     @Override

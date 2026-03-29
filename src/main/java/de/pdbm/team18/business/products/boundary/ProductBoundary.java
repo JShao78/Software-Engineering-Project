@@ -64,7 +64,7 @@ public class ProductBoundary {
      * Sends a product to the controller to be stored persistently.
      */
     public void addProduct() {
-        controller.saveProduct(new Product(productName, Long.toString(controller.count(null)), price));
+        controller.createProduct(productName, price);
         this.productName = null;
         this.price = null;
     }

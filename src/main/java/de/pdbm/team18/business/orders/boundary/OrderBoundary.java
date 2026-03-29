@@ -1,10 +1,7 @@
 package de.pdbm.team18.business.orders.boundary;
 
-import de.pdbm.team18.business.customers.entity.Customer;
 import de.pdbm.team18.business.orders.control.OrderControl;
-import de.pdbm.team18.business.orders.entity.OrderPosition;
 import de.pdbm.team18.business.orders.entity.SalesOrder;
-import de.pdbm.team18.business.products.entity.Product;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.ViewScoped;
@@ -47,59 +44,62 @@ public class OrderBoundary implements Serializable {
     //Actions
 
     public void startOrder() {
+        if (selectedCustomerId == null || selectedCustomerId.isBlank()) {
+            addFieldError("stepOneForm:customerId", "Bitte eine Kunden-ID eingeben.");
+            return;
+        }
+
         try {
-            Customer customer = controller.getCustomer(UUID.fromString(selectedCustomerId));
-            if (customer == null) {
-                FacesContext.getCurrentInstance()
-                        .addMessage("stepOneForm:customerId",
-                                new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                                        "Kein Kunde mit dieser ID gefunden.", null));
-                return;
-            }
-            this.order = new SalesOrder(customer);
+            this.order = controller.startOrder(UUID.fromString(selectedCustomerId));
             orderStarted = true;
         } catch (IllegalArgumentException e) {
-            FacesContext.getCurrentInstance()
-                    .addMessage("stepOneForm:customerId",
-                            new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                                    "Kein Kunden mit dieser ID gefunden.", null));
+            String message = e.getMessage() != null ? e.getMessage() :
+                    "Ungültige Kunden-ID. Bitte die ID aus der Kundenliste kopieren.";
+            addFieldError("stepOneForm:customerId", message);
         }
     }
 
     public void addPosition() {
-        if (this.order == null) return;
+        if (this.order == null) {
+            addGlobalError("Bitte zuerst eine Bestellung starten.");
+            return;
+        }
+        if (selectedProductId == null || selectedProductId.isBlank()) {
+            addFieldError("stepTwoForm:productId", "Bitte eine Produkt-ID eingeben.");
+            return;
+        }
+
         try {
-            Product product = controller.getProduct(UUID.fromString(selectedProductId));
-            if (product == null) {
-                FacesContext.getCurrentInstance()
-                        .addMessage("stepTwoForm:productId",
-                                new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                                        "Kein Produkt mit dieser ID gefunden.", null));
-                return;
-            }
-            this.order.addPosition(new OrderPosition(product, quantity, product.getPrice()));
+            controller.addProductToOrder(this.order, UUID.fromString(selectedProductId), quantity);
             selectedProductId = null;
             quantity = 1;
         } catch (IllegalArgumentException e) {
-            FacesContext.getCurrentInstance()
-                    .addMessage("stepTwoForm:productId",
-                            new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                                    "Ungültige UUID. Bitte kopieren Sie die ID aus der Produktliste.", null));
+            String message = e.getMessage() != null ? e.getMessage() :
+                    "Ungültige Eingabe. Bitte prüfen Sie Produkt-ID und Menge.";
+            String fieldId = message.toLowerCase().contains("menge")
+                    ? "stepTwoForm:quantity"
+                    : "stepTwoForm:productId";
+            addFieldError(fieldId, message);
         }
     }
 
     public String finishOrder() {
-        if (this.order.getPositions().isEmpty()) {
-            FacesContext.getCurrentInstance()
-                    .addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                            "Bitte mindestens ein Produkt hinzufügen.", null));
+        if (this.order == null) {
+            addGlobalError("Keine aktive Bestellung vorhanden.");
             return null;
         }
-        this.order.setTotalCost(this.order.getTotalPrice());
-        controller.save(this.order);  // ← back to save()
-        this.order = null;
-        orderStarted = false;
-        return "bestellungen?faces-redirect=true";
+        try {
+            controller.save(this.order);
+            this.order = null;
+            orderStarted = false;
+            return "bestellungen?faces-redirect=true";
+        } catch (IllegalArgumentException e) {
+            addGlobalError(e.getMessage());
+            return null;
+        } catch (RuntimeException e) {
+            addGlobalError("Bestellung konnte nicht gespeichert werden. Bitte Eingaben prüfen und erneut versuchen.");
+            return null;
+        }
     }
 
     //  Queries
@@ -110,5 +110,15 @@ public class OrderBoundary implements Serializable {
 
     public List<SalesOrder> getAllOrders(UUID customerId, String orderStatus, int offset, int limit) {
         return controller.findPage(customerId, orderStatus, offset, limit);
+    }
+
+    private void addFieldError(String fieldId, String message) {
+        FacesContext.getCurrentInstance()
+                .addMessage(fieldId, new FacesMessage(FacesMessage.SEVERITY_ERROR, message, null));
+    }
+
+    private void addGlobalError(String message) {
+        FacesContext.getCurrentInstance()
+                .addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, message, null));
     }
 }

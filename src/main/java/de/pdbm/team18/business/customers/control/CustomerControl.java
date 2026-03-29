@@ -4,8 +4,6 @@ import de.pdbm.team18.business.customers.repository.CustomerRepository;
 import jakarta.ejb.Stateless;
 import de.pdbm.team18.business.customers.entity.Customer;
 import jakarta.inject.Inject;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
 
 import java.util.List;
 import java.util.UUID;
@@ -14,9 +12,6 @@ import java.util.UUID;
 public class CustomerControl {
     @Inject
     private CustomerRepository customerRepository;
-
-    @PersistenceContext
-    private EntityManager em;
 
     public List<Customer> findPage(String searchTerm, int offset, int limit) {
         return customerRepository.findPage(searchTerm, offset, limit);
