@@ -19,14 +19,13 @@ public class CustomerControl {
     private EntityManager em;
 
     public List<Customer> findPage(String searchTerm, int offset, int limit) {
-        return em.createQuery("SELECT c FROM Customer c", Customer.class)
-                .setFirstResult(offset)
-                .setMaxResults(limit)
-                .getResultList();
+        return customerRepository.findPage(searchTerm, offset, limit);
     }
-    public void saveCustomer(Customer customer) {
-        em.persist(customer);
+
+    public Customer saveCustomer(Customer customer) {
+        return customerRepository.save(customer);
     }
+
     public long countCustomers(String searchTerm) {
         return customerRepository.count(searchTerm);
     }
