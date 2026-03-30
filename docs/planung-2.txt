@@ -1,0 +1,9 @@
+Wir möchten in der 2. Iteration die gegebene Datenbank in unser existirendes layout der 1. Iteration Integrieren.
+Dazu müssen wir alte Entitäten entfernen und basierend auf der gegebenen Datenbankstruktur neue Entitäten erstellen.
+Um diese neuen Daten richtig darstellen zu können, werden wir für neue Views für Kunden, Produkte, Bestellungen, Niederlassungen und Lagerbestände anlegen.
+Generell soll die UI gestaltung dem der ersten Iteration möglichst gleich sein. Die Kunden-View kann fast identisch übernommen werden.
+Bei der Produkt-View wollen wir noch die gesamellten Lagerbestände aller Niederlassungen für ein Produkt anzeigen.
+Die Bestellungs-View soll wieder wie die Iteration 1 aufgebaut sein mit einer Liste der bestellten Produkte zu jeder Bestellung.
+Zudem wollen wir neben der Store-ID auch den Store Namen angezeigen.
+Für die Niederlassungs-View soll der Kunden- und Produkt-View als einfache Tabellenansicht ähneln.
+Die Lagerbestands-View zeigt wie die anderen Views auch die Daten als einfache Liste an, aber mit dem Zusatz einer Sortierfunkiton wo man diese nach den Produkten oder Niederlassungen sortieren kann.
