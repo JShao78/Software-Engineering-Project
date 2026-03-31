@@ -1,0 +1,11 @@
+Team 18:
+- Keine planung-1.txt (19.3.2026)
+- EAGER in Assoziation
+- Verzeichnis db mit Inhalt nicht sinnvoll. Geht doch alles automatisch. Warum kommen Sie nicht in die Veranstaltung?
+- Eingabe einer UUID sehr seltsam
+- Völlig over-engineered und dann nicht verwendet. Bitte Agiles Manifest lesen.
+- Interface mit einer implementierenden Klasse ist Anti-Pattern
+- Das Verhältnis (Funktionalität / Lines of Code) ist SEHR klein
+- Ihre Arbeitsweise ist nicht agil, da Sie Dinge realisieren, die Sie nicht verwenden.
+- Arbeiten Sie in kleinen Schritten mit jeweils wachsender Funktionalität
+Bewertung: 68% (3,0)
