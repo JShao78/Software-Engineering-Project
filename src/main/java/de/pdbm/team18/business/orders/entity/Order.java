@@ -1,5 +1,7 @@
 package de.pdbm.team18.business.orders.entity;
 import de.pdbm.team18.business.customers.entity.Customer;
+import de.pdbm.team18.business.stores.entity.Staff;
+import de.pdbm.team18.business.stores.entity.Store;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
@@ -30,11 +32,13 @@ public class Order {
     @JoinColumn(name = "customer_id")
     private Customer customer;
 
-    @Column(name = "staff_id")
-    private Integer staffId;
+    @ManyToOne
+    @JoinColumn(name = "staff_id")
+    private Staff staff;
 
-    @Column(name = "store_id")
-    private Integer storeId;
+    @ManyToOne
+    @JoinColumn(name = "store_id")
+    private Store store;
 
     @OneToMany(mappedBy = "orderId", fetch = FetchType.LAZY)
     private List<OrderItem> orderItems = new ArrayList<>();
@@ -87,20 +91,20 @@ public class Order {
         this.customer = customer;
     }
 
-    public Integer getStaffId() {
-        return staffId;
+    public Staff getStaff() {
+        return staff;
     }
 
-    public void setStaffId(Integer staffId) {
-        this.staffId = staffId;
+    public void setStaff(Staff staff) {
+        this.staff = staff;
     }
 
-    public Integer getStoreId() {
-        return storeId;
+    public Store getStore() {
+        return store;
     }
 
-    public void setStoreId(Integer storeId) {
-        this.storeId = storeId;
+    public void setStore(Store store) {
+        this.store = store;
     }
 
     public List<OrderItem> getOrderItems() {

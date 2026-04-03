@@ -1,8 +1,8 @@
 package de.pdbm.team18.business.orders.entity;
 
 import java.util.Objects;
-
-public class OrderItemId {
+import java.io.Serializable;
+public class OrderItemId implements Serializable {
     private Integer orderId;
     private Integer itemId;
 
