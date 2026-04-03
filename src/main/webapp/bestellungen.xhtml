@@ -140,8 +140,28 @@
                          var="order"
                          styleClass="data-table">
                 <h:column>
+                    <f:facet name="header"><span class="col-header">ID</span></f:facet>
+                    <h:outputText value="#{order.customer.firstName}"/>
+                </h:column>
+                <h:column>
                     <f:facet name="header"><span class="col-header">Kunde</span></f:facet>
                     <h:outputText value="#{order.customer.firstName} #{order.customer.lastName}"/>
+                </h:column>
+                <h:column>
+                    <f:facet name="header"><span class="col-header">Bestelldatum</span></f:facet>
+                    <h:outputText value="#{order.customer.firstName}"/>
+                </h:column>
+                <h:column>
+                    <f:facet name="header"><span class="col-header">Versanddatum</span></f:facet>
+                    <h:outputText value="#{order.customer.firstName}"/>
+                </h:column>
+                <h:column>
+                    <f:facet name="header"><span class="col-header">Store</span></f:facet>
+                    <h:outputText value="#{order.customer.firstName}"/>
+                </h:column>
+                <h:column>
+                    <f:facet name="header"><span class="col-header">Versandstatus</span></f:facet>
+                    <h:outputText value="#{order.customer.firstName}"/>
                 </h:column>
                 <h:column>
                     <f:facet name="header"><span class="col-header">Positionen</span></f:facet>

@@ -89,14 +89,32 @@
                             <h:message for="phone" styleClass="field-error"/>
                         </div>
 
-                        <div class="modal-section-label">Adresse</div>
+                        <div class="modal-section-label">Land</div>
                         <div class="form-group floating">
-                            <h:inputText id="address"
+                            <h:inputText id="state"
                                          value="#{customerBoundary.address}"
                                          styleClass="form-input"
                                          placeholder=" "/>
-                            <label for="kundenForm:address" class="floating-label">Adresse</label>
-                            <span class="field-hint">z. B. Musterstraße 1, 10115 Berlin</span>
+                            <label for="kundenForm:state" class="floating-label">Land</label>
+                            <span class="field-hint">z. B. Deutschland</span>
+                        </div>
+                        <div class="modal-section-label">Postleitzahl</div>
+                        <div class="form-group floating">
+                            <h:inputText id="zip_code"
+                                         value="#{customerBoundary.address}"
+                                         styleClass="form-input"
+                                         placeholder=" "/>
+                            <label for="kundenForm:zip_code" class="floating-label">PLZ</label>
+                            <span class="field-hint">z. B. 10115</span>
+                        </div>
+                        <div class="modal-section-label">Straße</div>
+                        <div class="form-group floating">
+                            <h:inputText id="street"
+                                         value="#{customerBoundary.address}"
+                                         styleClass="form-input"
+                                         placeholder="Musterstraße 1" />
+                            <label for="kundenForm:street" class="floating-label">Straße</label>
+                            <span class="field-hint">z. B. Musterstraße 1</span>
                         </div>
 
                     </div>
@@ -120,8 +138,8 @@
                          var="kunde"
                          styleClass="data-table">
                 <h:column>
-                    <f:facet name="header"><span class="col-header">UUID</span></f:facet>
-                    <h:outputText value="#{kunde.id}" styleClass="uuid-text"/>
+                    <f:facet name="header"><span class="col-header">ID</span></f:facet>
+                    <h:outputText value="#{kunde.id}" styleClass="id-text"/>
                 </h:column>
                 <h:column>
                     <f:facet name="header"><span class="col-header">Vorname</span></f:facet>
@@ -140,8 +158,16 @@
                     <h:outputText value="#{kunde.phone}"/>
                 </h:column>
                 <h:column>
-                    <f:facet name="header"><span class="col-header">Adresse</span></f:facet>
-                    <h:outputText value="#{kunde.address}"/>
+                    <f:facet name="header"><span class="col-header">Land</span></f:facet>
+                    <h:outputText value="#{kunde.addresse}"/>
+                </h:column>
+                <h:column>
+                    <f:facet name="header"><span class="col-header">Postleitzahl</span></f:facet>
+                    <h:outputText value="#{kunde.addresse}"/>
+                </h:column>
+                <h:column>
+                    <f:facet name="header"><span class="col-header">Straße</span></f:facet>
+                    <h:outputText value="#{kunde.addresse}"/>
                 </h:column>
             </h:dataTable>
         </div>

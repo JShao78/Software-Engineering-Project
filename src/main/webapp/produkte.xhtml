@@ -35,17 +35,53 @@
                         <div class="modal-section-label">Produktdaten</div>
 
                         <div class="form-group floating">
-                            <h:inputText id="produktname"
+                            <h:inputText id="productname"
                                          value="#{productBoundary.productName}"
                                          styleClass="form-input"
                                          placeholder=" "
                                          required="true"/>
-                            <label for="produktForm:produktname" class="floating-label">Produktname *</label>
+                            <label for="produktForm:productname" class="floating-label">Produktname *</label>
                             <span class="field-hint">z. B. Wireless Mouse</span>
-                            <h:message for="produktname" styleClass="field-error"/>
+                            <h:message for="productname" styleClass="field-error"/>
                         </div>
 
                         <div class="form-group floating">
+                            <h:inputText id="brandname"
+                                         value="#{productBoundary.price}"
+                                         styleClass="form-input"
+                                         placeholder=" "
+                                         required="true">
+                                <f:convertNumber minFractionDigits="2" maxFractionDigits="2" locale="de"/>
+                            </h:inputText>
+                            <label for="produktForm:brandname" class="floating-label">Brandname *</label>
+                            <h:message for="brandname" styleClass="field-error"/>
+                        </div>
+
+                        <div class="form-group floating">
+                            <h:inputText id="category"
+                                         value="#{productBoundary.price}"
+                                         styleClass="form-input"
+                                         placeholder=" "
+                                         required="true">
+                                <f:convertNumber minFractionDigits="2" maxFractionDigits="2" locale="de"/>
+                            </h:inputText>
+                            <label for="produktForm:category" class="floating-label">Kategorien</label>
+                            <h:message for="category" styleClass="field-error"/>
+                        </div>
+                        
+						<div class="form-group floating">
+                            <h:inputText id="modell_year"
+                                         value="#{productBoundary.price}"
+                                         styleClass="form-input"
+                                         placeholder=" "
+                                         required="true">
+                                <f:convertNumber minFractionDigits="2" maxFractionDigits="2" locale="de"/>
+                            </h:inputText>
+                            <label for="produktForm:modell_year" class="floating-label">Modelljahr *</label>
+                            <h:message for="modell_year" styleClass="field-error"/>
+                        </div>
+                        
+						<div class="form-group floating">
                             <h:inputText id="price"
                                          value="#{productBoundary.price}"
                                          styleClass="form-input"
@@ -69,22 +105,34 @@
                                          action="#{productBoundary.addProduct()}"
                                          styleClass="btn-primary btn-save"/>
                     </div>
-                </h:form>
+				</h:form>
             </div>
         </div>
 
-        <!--  Product Table  -->
-        <div class="table-container" style="margin-top: 20px;">
+		<!--  Product Table  -->
+		<div class="table-container" style="margin-top: 20px;">
             <h:dataTable value="#{productBoundary.allProducts}"
                          var="product"
                          styleClass="data-table">
                 <h:column>
-                    <f:facet name="header"><span class="col-header">UUID</span></f:facet>
+                    <f:facet name="header"><span class="col-header">ID</span></f:facet>
                     <h:outputText value="#{product.id}" styleClass="uuid-text"/>
                 </h:column>
                 <h:column>
                     <f:facet name="header"><span class="col-header">Produktname</span></f:facet>
                     <h:outputText value="#{product.productName}"/>
+                </h:column>
+                <h:column>
+                    <f:facet name="header"><span class="col-header">Brand</span></f:facet>
+                    <h:outputText />
+                </h:column>
+                <h:column>
+                    <f:facet name="header"><span class="col-header">Kategorien</span></f:facet>
+                    <h:outputText />
+                </h:column>
+                <h:column>
+                    <f:facet name="header"><span class="col-header">Modelljahr</span></f:facet>
+                    <h:outputText />
                 </h:column>
                 <h:column>
                     <f:facet name="header"><span class="col-header">Stückpreis</span></f:facet>
@@ -93,7 +141,7 @@
                     </h:outputText>
                 </h:column>
             </h:dataTable>
-        </div>
+		</div>
 
     </ui:define>
 
