@@ -3,7 +3,6 @@ package de.pdbm.team18.business.customers.repository;
 import de.pdbm.team18.business.customers.entity.Customer;
 import de.pdbm.team18.business.shared.repository.RepositoryQueryUtils;
 import jakarta.ejb.Stateless;
-import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 
