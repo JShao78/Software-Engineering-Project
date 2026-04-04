@@ -1,7 +1,10 @@
 package de.pdbm.team18.business.orders.entity;
 
+import jakarta.persistence.Embeddable;
 import java.util.Objects;
 import java.io.Serializable;
+
+@Embeddable
 public class OrderItemId implements Serializable {
     private Integer orderId;
     private Integer itemId;

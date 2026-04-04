@@ -2,23 +2,19 @@ package de.pdbm.team18.business.orders.entity;
 
 import de.pdbm.team18.business.products.entity.Product;
 import jakarta.persistence.*;
-
-import java.io.Serializable;
 import java.math.BigDecimal;
 
 @Entity
 @Table(name = "order_items")
-@IdClass(OrderItemId.class)
-public class OrderItem implements Serializable {
+public class OrderItem {
 
-    @Id
-    @Column(name = "item_id")
-    private Integer itemId;
+    @EmbeddedId
+    private OrderItemId id = new OrderItemId();
 
-    @Id
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
+    @MapsId("orderId")
     @JoinColumn(name = "order_id")
-    private Order orderId;
+    private Order order;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id")
@@ -34,21 +30,20 @@ public class OrderItem implements Serializable {
     private BigDecimal discount;
 
 
-
-    public Integer getItemId() {
-        return itemId;
+    public OrderItemId getId() {
+        return id;
     }
 
-    public void setItemId(Integer itemId) {
-        this.itemId = itemId;
+    public void setId(OrderItemId id) {
+        this.id = id;
     }
 
-    public Order getOrderId() {
-        return orderId;
+    public Order getOrder() {
+        return order;
     }
 
-    public void setOrderId(Order orderId) {
-        this.orderId = orderId;
+    public void setOrder(Order order) {
+        this.order = order;
     }
 
     public Product getProduct() {
