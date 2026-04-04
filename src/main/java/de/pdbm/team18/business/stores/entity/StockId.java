@@ -1,8 +1,12 @@
 package de.pdbm.team18.business.stores.entity;
 
+import jakarta.persistence.Embeddable;
+
+import java.io.Serializable;
 import java.util.Objects;
 
-public class StockId {
+@Embeddable
+public class StockId implements Serializable {
 
     private int storeId;
 

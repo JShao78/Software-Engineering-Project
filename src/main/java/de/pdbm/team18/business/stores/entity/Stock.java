@@ -1,5 +1,6 @@
 package de.pdbm.team18.business.stores.entity;
 
+import de.pdbm.team18.business.products.entity.Product;
 import jakarta.persistence.*;
 
 @Entity
@@ -7,23 +8,28 @@ import jakarta.persistence.*;
 @IdClass(StockId.class)
 public class Stock {
 
-    @Id
-    @JoinColumn(name = "product_id")
-    private int productId;
+    @Embedded
+    private StockId stockId;
 
-    @Id
+    @ManyToOne(optional = false)
+    @MapsId("productId")
+    @JoinColumn(name = "product_id")
+    private Product product;
+
+    @ManyToOne(optional = false)
+    @MapsId("storeId")
     @JoinColumn(name = "store_id")
-    private int storeId;
+    private Store store;
 
     @Column
     private int quantity;
 
-    public int getProductId() {
-        return productId;
+    public Product getProduct() {
+        return product;
     }
 
-    public int getStoreId() {
-        return storeId;
+    public Store getStore() {
+        return store;
     }
 
     public int getQuantity() {
