@@ -1,6 +1,7 @@
 package de.pdbm.team18.business.stores.entity;
 
 import jakarta.persistence.Embeddable;
+import jakarta.persistence.Column;
 
 import java.io.Serializable;
 import java.util.Objects;
@@ -8,8 +9,10 @@ import java.util.Objects;
 @Embeddable
 public class StockId implements Serializable {
 
+    @Column(name = "store_id")
     private int storeId;
 
+    @Column(name = "product_id")
     private int productId;
 
     //Default constructor

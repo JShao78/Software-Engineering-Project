@@ -5,10 +5,9 @@ import jakarta.persistence.*;
 
 @Entity
 @Table(name = "stocks")
-@IdClass(StockId.class)
 public class Stock {
 
-    @Embedded
+    @EmbeddedId
     private StockId stockId;
 
     @ManyToOne(optional = false)
@@ -23,6 +22,14 @@ public class Stock {
 
     @Column
     private int quantity;
+
+    public StockId getStockId() {
+        return stockId;
+    }
+
+    public void setStockId(StockId stockId) {
+        this.stockId = stockId;
+    }
 
     public Product getProduct() {
         return product;
