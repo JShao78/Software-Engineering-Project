@@ -40,7 +40,7 @@ public class Order {
     @JoinColumn(name = "store_id")
     private Store store;
 
-    @OneToMany(mappedBy = "orderId", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "order", fetch = FetchType.LAZY)
     private List<OrderItem> orderItems = new ArrayList<>();
 
     public Integer getOrderId() {
