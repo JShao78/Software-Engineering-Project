@@ -25,10 +25,10 @@ public class CustomerRepository {
                 .getResultList();
     }
 
-    public long count() {
+    public int count() {
         return em.createQuery(
                 "SELECT COUNT(c) FROM customers c",
-                Long.class
+                Integer.class
         ).getSingleResult();
     }
 

@@ -2,6 +2,7 @@ package de.pdbm.team18.business.customers.control;
 
 import de.pdbm.team18.business.customers.repository.CustomerRepository;
 import de.pdbm.team18.business.customers.entity.Customer;
+import de.pdbm.team18.business.shared.repository.RepositoryQueryUtils;
 import jakarta.ejb.Stateless;
 import jakarta.inject.Inject;
 
@@ -13,17 +14,13 @@ public class CustomerController {
     @Inject
     private CustomerRepository customerRepository;
 
-    public List<Customer> findPage(int offset, int limit) {
-        return customerRepository.findPage(offset, limit);
+    public List<Customer> findPage(int pageNumber) {
+        int offset = (pageNumber - 1) * RepositoryQueryUtils.DEFAULT_LIMIT;
+        return customerRepository.findPage(offset, 0);
     }
 
-    @Deprecated
-    public List<Customer> findAll() {
-        return findPage(0, (int) count());
-    }
-
-    public long count() {
-        return customerRepository.count();
+    public int totalPages() {
+        return Math.ceilDivExact(customerRepository.count(), RepositoryQueryUtils.DEFAULT_LIMIT);
     }
 
 }
