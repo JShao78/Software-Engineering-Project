@@ -25,11 +25,11 @@ public class Product {
     @Column(name = "list_price", precision = 19, scale = 2)
     private BigDecimal listPrice;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "brand_id")
     private Brand brand;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
     private Category category;
 
