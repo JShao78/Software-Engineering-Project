@@ -16,11 +16,18 @@ public class OrderRepository {
     public List<Order> findPage(int offset, int limit) {
         offset = RepositoryQueryUtils.sanitizeOffset(offset);
         limit = RepositoryQueryUtils.sanitizeLimit(limit);
-        return em.createQuery("SELECT o FROM Order o", Order.class)
+        return em.createQuery("SELECT DISTINCT o FROM Order o " +
+                                "LEFT JOIN FETCH o.customer " +
+                                "LEFT JOIN FETCH o.store " +
+                                "LEFT JOIN FETCH o.orderItems " +
+                                "ORDER BY o.orderId ",
+                                     Order.class)
                 .setFirstResult(offset)
                 .setMaxResults(limit)
                 .getResultList();
     }
+
+    public long count() {return em.createQuery("SELECT COUNT(o) FROM Order o", Long.class).getSingleResult();}
 
 
 }
