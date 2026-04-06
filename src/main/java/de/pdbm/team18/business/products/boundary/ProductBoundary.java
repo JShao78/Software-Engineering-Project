@@ -10,10 +10,24 @@ import java.util.List;
 @RequestScoped
 public class ProductBoundary {
 
+    private int currentPage = 1;
+
     @Inject
     ProductController productController;
 
-    public List<Product> findPage(int offset, int limit) {
-        return productController.findPage(offset, limit);
+    public List<Product> findPage() {
+        return productController.findPage(currentPage);
+    }
+
+    public int totalPages() {
+        return productController.totalPages();
+    }
+
+    public int getCurrentPage() {
+        return currentPage;
+    }
+
+    public void setCurrentPage(int currentPage) {
+        this.currentPage = Math.max(currentPage, 1);
     }
 }

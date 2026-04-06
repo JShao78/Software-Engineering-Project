@@ -29,4 +29,8 @@ public class ProductRepository {
                 .setMaxResults(limit)
                 .getResultList();
     }
+
+    public int count() {
+        return Math.toIntExact(em.createQuery("SELECT COUNT(p) FROM Product p", Long.class).getSingleResult());
+    }
 }
