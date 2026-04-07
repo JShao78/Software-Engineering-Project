@@ -2,7 +2,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="jakarta.faces.html"
       xmlns:ui="jakarta.faces.facelets"
-      xmlns:f="jakarta.faces.core">
+      xmlns:f="jakarta.faces.core"
+	  xmlns:my="jakarta.faces.composite/components">
 <ui:composition template="templates/navbar.xhtml">
 
     <ui:define name="title">Niederlassungen – Vertriebsunterstützung</ui:define>
@@ -10,7 +11,7 @@
     <ui:define name="content">
         <h1 class="page-title">Niederlassungen</h1>
 
-		<cc:pagination boundary="#{storesBoundary}" />
+		<my:pagination boundary="#{storesBoundary}" />
 			
 		<!--  Product Table  -->
 		<div class="table-container" style="margin-top: 20px;">

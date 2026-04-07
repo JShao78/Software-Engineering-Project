@@ -2,7 +2,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="jakarta.faces.html"
       xmlns:ui="jakarta.faces.facelets"
-      xmlns:f="jakarta.faces.core">
+      xmlns:f="jakarta.faces.core"
+	  xmlns:my="jakarta.faces.composite/components">
 <ui:composition template="templates/navbar.xhtml">
 
     <ui:define name="title">Lagerbestände – Vertriebsunterstützung</ui:define>
@@ -10,7 +11,7 @@
     <ui:define name="content">
         <h1 class="page-title">Lagerbestände</h1>
 
-		<cc:pagination boundary="#{stocksBoundary}" />
+		<my:pagination boundary="#{stocksBoundary}" />
 
         <div class="table-container">
             <table class="data-table">
