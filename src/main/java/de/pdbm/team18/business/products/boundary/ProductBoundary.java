@@ -1,36 +1,72 @@
 package de.pdbm.team18.business.products.boundary;
 
-import de.pdbm.team18.business.products.control.ProductController;
+import de.pdbm.team18.business.products.control.ProductControl;
 import de.pdbm.team18.business.products.entity.Product;
-import jakarta.faces.view.ViewScoped;
+import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 
-import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.List;
+import java.util.UUID;
 
 @Named
-@ViewScoped
-public class ProductBoundary implements Serializable {
+@RequestScoped
+public class ProductBoundary {
 
-    private int currentPage = 1;
+    //Properties
+    private String productName;
+    private BigDecimal price;
+
+    public void setProductName(String productName) { this.productName = productName; }
+    public String getProductName() { return this.productName; }
+
+    public void setPrice(BigDecimal price) { this.price = price; }
+    public BigDecimal getPrice() { return this.price; }
 
     @Inject
-    ProductController productController;
+    private ProductControl controller;
 
-    public List<Product> findPage() {
-        return productController.findPage(currentPage);
+    public long getCount() {
+	    return controller.count(null);
     }
 
-    public int totalPages() {
-        return productController.totalPages();
+    /**
+     * Returns the Product with the provided UUID.
+     * @param id the Product's UUID.
+     * @return the Product or null if none exists.
+     */
+    public Product getProduct(UUID id) {
+        return controller.findById(id);
     }
 
-    public int getCurrentPage() {
-        return currentPage;
+    /**
+     * Returns a page of Products matching the search term. For more info see repository.
+     * @param searchTerm the search term.
+     * @param offset the page number.
+     * @param limit the page size.
+     * @return a list representing the page.
+     */
+    public List<Product> getAllProducts(String searchTerm, int offset, int limit) {
+        return controller.findPage(searchTerm, offset, limit);
     }
 
-    public void setCurrentPage(int currentPage) {
-        this.currentPage = Math.max(currentPage, 1);
+    /**
+     * Calls the parameterized getAllProducts()-method with default parameters.
+     * @deprecated use parameterized method instead. TODO remove once unused.
+     * @return the first page of up to 100 Products.
+     */
+    public List<Product> getAllProducts() {
+        return getAllProducts(null, 0, 100);
     }
+
+    /**
+     * Sends a product to the controller to be stored persistently.
+     */
+    public void addProduct() {
+        controller.createProduct(productName, price);
+        this.productName = null;
+        this.price = null;
+    }
+
 }
