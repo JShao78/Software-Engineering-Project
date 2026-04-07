@@ -2,8 +2,9 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="jakarta.faces.html"
       xmlns:ui="jakarta.faces.facelets"
-      xmlns:f="jakarta.faces.core">
-<ui:composition template="template.xhtml">
+      xmlns:f="jakarta.faces.core"
+      xmlns:my="jakarta.faces.composite/components">
+<ui:composition template="templates/navbar.xhtml">
 
     <ui:define name="title">Kunden – Vertriebsunterstützung</ui:define>
 
@@ -47,7 +48,6 @@
                         <div class="field-row">
                             <div class="form-group floating">
                                 <h:inputText id="vorname"
-                                             value="#{customerBoundary.firstName}"
                                              styleClass="form-input"
                                              placeholder=" "
                                              required="true"/>
@@ -57,7 +57,6 @@
                             </div>
                             <div class="form-group floating">
                                 <h:inputText id="nachname"
-                                             value="#{customerBoundary.lastName}"
                                              styleClass="form-input"
                                              placeholder=" "
                                              required="true"/>
@@ -70,7 +69,6 @@
                         <div class="modal-section-label">Kontaktdaten</div>
                         <div class="form-group floating">
                             <h:inputText id="email"
-                                         value="#{customerBoundary.email}"
                                          styleClass="form-input"
                                          placeholder=" "/>
                             <label for="kundenForm:email" class="floating-label">E-Mail</label>
@@ -79,7 +77,6 @@
                         </div>
                         <div class="form-group floating">
                             <h:inputText id="phone"
-                                         value="#{customerBoundary.phone}"
                                          styleClass="form-input"
                                          placeholder=" ">
                                 <f:validateRegex pattern="[\+\d\s\-\(\)]*"/>
@@ -89,14 +86,29 @@
                             <h:message for="phone" styleClass="field-error"/>
                         </div>
 
-                        <div class="modal-section-label">Adresse</div>
+                        <div class="modal-section-label">Land</div>
                         <div class="form-group floating">
-                            <h:inputText id="address"
-                                         value="#{customerBoundary.address}"
+                            <h:inputText id="state"
                                          styleClass="form-input"
                                          placeholder=" "/>
-                            <label for="kundenForm:address" class="floating-label">Adresse</label>
-                            <span class="field-hint">z. B. Musterstraße 1, 10115 Berlin</span>
+                            <label for="kundenForm:state" class="floating-label">Land</label>
+                            <span class="field-hint">z. B. Deutschland</span>
+                        </div>
+                        <div class="modal-section-label">Postleitzahl</div>
+                        <div class="form-group floating">
+                            <h:inputText id="zip_code"
+                                         styleClass="form-input"
+                                         placeholder=" "/>
+                            <label for="kundenForm:zip_code" class="floating-label">PLZ</label>
+                            <span class="field-hint">z. B. 10115</span>
+                        </div>
+                        <div class="modal-section-label">Straße</div>
+                        <div class="form-group floating">
+                            <h:inputText id="street"
+                                         styleClass="form-input"
+                                         placeholder="Musterstraße 1" />
+                            <label for="kundenForm:street" class="floating-label">Straße</label>
+                            <span class="field-hint">z. B. Musterstraße 1</span>
                         </div>
 
                     </div>
@@ -106,22 +118,25 @@
                                 onclick="document.getElementById('kundenModal').style.display='none'">
                             Abbrechen
                         </button>
-                        <h:commandButton value="Speichern"
-                                         action="#{customerBoundary.addCustomer()}"
-                                         styleClass="btn-primary btn-save"/>
+                        <button type="button" class="btn-primary btn-save"
+                                onclick="document.getElementById('kundenModal').style.display='none'">
+                            Speichern
+                        </button>
                     </div>
                 </h:form>
             </div>
         </div>
 
+        <my:pagination boundary="#{customerBoundary}" />
+
         <!--  Customer Table  -->
         <div class="table-container" style="margin-top: 20px;">
-            <h:dataTable value="#{customerBoundary.allCustomers}"
+            <h:dataTable value="#{customerBoundary.findPage()}"
                          var="kunde"
                          styleClass="data-table">
                 <h:column>
-                    <f:facet name="header"><span class="col-header">UUID</span></f:facet>
-                    <h:outputText value="#{kunde.id}" styleClass="uuid-text"/>
+                    <f:facet name="header"><span class="col-header">ID</span></f:facet>
+                    <h:outputText value="#{kunde.customerId}" styleClass="id-text"/>
                 </h:column>
                 <h:column>
                     <f:facet name="header"><span class="col-header">Vorname</span></f:facet>
@@ -140,8 +155,16 @@
                     <h:outputText value="#{kunde.phone}"/>
                 </h:column>
                 <h:column>
-                    <f:facet name="header"><span class="col-header">Adresse</span></f:facet>
-                    <h:outputText value="#{kunde.address}"/>
+                    <f:facet name="header"><span class="col-header">Land</span></f:facet>
+                    <h:outputText value="#{kunde.state}"/>
+                </h:column>
+                <h:column>
+                    <f:facet name="header"><span class="col-header">Postleitzahl</span></f:facet>
+                    <h:outputText value="#{kunde.zipCode}"/>
+                </h:column>
+                <h:column>
+                    <f:facet name="header"><span class="col-header">Straße</span></f:facet>
+                    <h:outputText value="#{kunde.street}"/>
                 </h:column>
             </h:dataTable>
         </div>

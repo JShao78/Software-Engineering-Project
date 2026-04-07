@@ -1,95 +1,38 @@
 package de.pdbm.team18.business.customers.boundary;
 
-import de.pdbm.team18.business.customers.control.CustomerControl;
+import de.pdbm.team18.business.customers.control.CustomerController;
 import de.pdbm.team18.business.customers.entity.Customer;
-import jakarta.enterprise.context.RequestScoped;
-import jakarta.faces.application.FacesMessage;
-import jakarta.faces.context.FacesContext;
+import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 
+import java.io.Serializable;
 import java.util.List;
-import java.util.UUID;
 
 @Named
-@RequestScoped
-public class CustomerBoundary {
-    private String firstName;
-    private String lastName;
-    private String address;
-    private String email;
-    private String phone;
+@ViewScoped
+public class CustomerBoundary implements Serializable {
 
-    //Getters and Setters for properties
-    public String getFirstName() { return firstName; }
-    public void setFirstName(String v) { this.firstName = v; }
-
-    public String getLastName() { return lastName; }
-    public void setLastName(String v) { this.lastName = v; }
-
-    public String getAddress() { return address; }
-    public void setAddress(String address) { this.address = address; }
-
-    public String getEmail() { return email; }
-    public void setEmail(String email) {this.email = email; }
-
-    public String getPhone() { return phone; }
-    public void setPhone(String phone) { this.phone = phone; }
+    private int currentPage = 1;
 
     @Inject
-    private CustomerControl controller;
+    CustomerController customerController;
 
-    /**
-     * Calls the CustomerController to return the Customer with the provided UUID.
-     * @param id the UUID of the Customer entity.
-     * @return the Customer entity with the provided UUID or null if none exists.
-     */
-    public Customer getCustomer(UUID id) {
-        return controller.findCustomerById(id);
+    public List<Customer> findPage() {
+        return customerController.findPage(currentPage);
     }
 
-    /**
-     * Returns the selected page of Customers matching the search term. See repository for more info.
-     * @param searchTerm the search term to match the Customers.
-     * @param offset the page number.
-     * @param limit the number of Customers per page.
-     * @return a list representing the page.
-     */
-    public List<Customer> getAllCustomers(String searchTerm, int offset, int limit) {
-        return controller.findPage(searchTerm, offset, limit);
+    public int totalPages() {
+        return customerController.totalPages();
     }
 
-    /**
-     * Calls proper getAllCustomers()-method with default parameters.
-     * @deprecated Use parameterized method instead. TODO remove once unused.
-     * @return a list of up to 100 Customers.
-     */
-    public List<Customer> getAllCustomers() {
-        return getAllCustomers(null, 0, 100);
+    //Getter and Setter
+
+    public int getCurrentPage() {
+        return currentPage;
     }
 
-    /**
-     * Creates a Customer entity and sends it to the controller to be stored persistently.
-     */
-    public String addCustomer() {
-        try {
-            Customer customer = new Customer(firstName, lastName);
-            customer.setAddress(address);
-            customer.setEmail(email);
-            customer.setPhone(phone);
-            controller.saveCustomer(customer);
-            this.firstName = null;
-            this.lastName = null;
-            this.address = null;
-            this.email = null;
-            this.phone = null;
-            return "kunden?faces-redirect=true";
-        } catch (Exception e) {
-            FacesContext.getCurrentInstance()
-                    .addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                            "Ungültige Eingabe. Bitte überprüfen Sie Ihre Daten.", null));
-            return null;
-        }
+    public void setCurrentPage(int currentPage) {
+        this.currentPage = Math.max(currentPage, 1);
     }
-
 }

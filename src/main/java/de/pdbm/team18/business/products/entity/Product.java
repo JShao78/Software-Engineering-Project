@@ -1,92 +1,47 @@
 package de.pdbm.team18.business.products.entity;
 
-import de.pdbm.team18.business.orders.entity.OrderPosition;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.PrePersist;
-import jakarta.persistence.PreUpdate;
-import jakarta.persistence.Table;
-import jakarta.validation.constraints.DecimalMin;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
+import de.pdbm.team18.business.orders.entity.OrderItem;
+import jakarta.persistence.*;
 
 import java.math.BigDecimal;
-import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 @Entity
 @Table(name = "products")
 public class Product {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "product_id")
+    private Integer productId;
 
-    @NotBlank
-    @Size(max = 200)
-    @Column(name = "product_name", nullable = false)
+    @Column(name = "product_name")
     private String productName;
 
-    @NotBlank
-    @Size(max = 80)
-    @Column(name = "product_number", nullable = false, unique = true)
-    private String productNumber;
+    @Column(name = "model_year")
+    private Integer modelYear;
 
-    @DecimalMin("0.00")
-    @Column(nullable = false, precision = 12, scale = 2)
-    private BigDecimal price;
+    @Column(name = "list_price", precision = 19, scale = 2)
+    private BigDecimal listPrice;
 
-    @Min(0)
-    @Column(nullable = false)
-    private Integer stock;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "brand_id")
+    private Brand brand;
 
-    @Column(name = "created_at", nullable = false)
-    private OffsetDateTime createdAt;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id")
+    private Category category;
 
-    @Column(name = "updated_at", nullable = false)
-    private OffsetDateTime updatedAt;
+    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY)
+    private List<OrderItem> orderItems = new ArrayList<>();
 
-    @OneToMany(mappedBy = "product")
-    private List<OrderPosition> orderItems = new ArrayList<>();
-
-    protected Product() {
+    public Integer getProductId() {
+        return productId;
     }
 
-    public Product(String productName, String productNumber, BigDecimal price) {
-        this.productName = productName;
-        this.productNumber = productNumber;
-        this.price = price;
-        this.stock = 0;
-    }
-
-    @PrePersist
-    void prePersist() {
-        OffsetDateTime now = OffsetDateTime.now();
-        if (createdAt == null) {
-            createdAt = now;
-        }
-        if (updatedAt == null) {
-            updatedAt = now;
-        }
-        if (stock == null) {
-            stock = 0;
-        }
-    }
-
-    @PreUpdate
-    void preUpdate() {
-        updatedAt = OffsetDateTime.now();
-    }
-
-    public UUID getId() {
-        return id;
+    public void setProductId(Integer productId) {
+        this.productId = productId;
     }
 
     public String getProductName() {
@@ -97,39 +52,43 @@ public class Product {
         this.productName = productName;
     }
 
-    public String getProductNumber() {
-        return productNumber;
+    public Integer getModelYear() {
+        return modelYear;
     }
 
-    public void setProductNumber(String productNumber) {
-        this.productNumber = productNumber;
+    public void setModelYear(Integer modelYear) {
+        this.modelYear = modelYear;
     }
 
-    public BigDecimal getPrice() {
-        return price;
+    public BigDecimal getListPrice() {
+        return listPrice;
     }
 
-    public void setPrice(BigDecimal price) {
-        this.price = price;
+    public void setListPrice(BigDecimal listPrice) {
+        this.listPrice = listPrice;
     }
 
-    public Integer getStock() {
-        return stock;
+    public Brand getBrand() {
+        return brand;
     }
 
-    public void setStock(Integer stock) {
-        this.stock = stock;
+    public void setBrand(Brand brand) {
+        this.brand = brand;
     }
 
-    public OffsetDateTime getCreatedAt() {
-        return createdAt;
+    public Category getCategory() {
+        return category;
     }
 
-    public OffsetDateTime getUpdatedAt() {
-        return updatedAt;
+    public void setCategory(Category category) {
+        this.category = category;
     }
 
-    public List<OrderPosition> getOrderItems() {
+    public List<OrderItem> getOrderItems() {
         return orderItems;
+    }
+
+    public void setOrderItems(List<OrderItem> orderItems) {
+        this.orderItems = orderItems;
     }
 }
