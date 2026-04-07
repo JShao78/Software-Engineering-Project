@@ -19,8 +19,12 @@ public class CustomerBoundary {
         return customerController.findPage(currentPage);
     }
 
-    public int totalPages() {
-        return customerController.totalPages();
+    public List<Integer> totalPages() {
+        List<Integer> pages = new java.util.List<>();
+		for (int i = 1; i <= customerController.totalPages(); i++) {
+			pages.add(i);
+		}
+		return pages;
     }
 
     //Getter and Setter

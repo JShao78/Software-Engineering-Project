@@ -2,7 +2,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="jakarta.faces.html"
       xmlns:ui="jakarta.faces.facelets"
-      xmlns:f="jakarta.faces.core">
+      xmlns:f="jakarta.faces.core"
+	  xmlns:cc="jakarta.faces.composite/components">
 <ui:composition template="templates/navbar.xhtml">
 
     <ui:define name="title">Kunden – Vertriebsunterstützung</ui:define>
@@ -131,6 +132,8 @@
                 </h:form>
             </div>
         </div>
+
+		<cc:pagination boundary="#{customerBoundary}" />
 
         <!--  Customer Table  -->
         <div class="table-container" style="margin-top: 20px;">

@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:ui="jakarta.faces.facelets"
+      xmlns:cc="jakarta.faces.composite">
+
+<cc:interface>
+    <cc:attribute name="boundary" required="true"/>
+</cc:interface>
+
+<cc:implementation>
+    <h:form id="paginationForm">
+        <div class="pagination">
+            <ui:repeat value="#{cc.attrs.boundary.pageNumbers}" var="page">
+                <h:commandButton
+                    value="#{page}"
+                    styleClass="btn-page #{cc.attrs.boundary.currentPage == page ? 'btn-page-active' : ''}"
+                    action="#{cc.attrs.boundary.setCurrentPage(page)}" />
+            </ui:repeat>
+        </div>
+    </h:form>
+</cc:implementation>
+
+</html>

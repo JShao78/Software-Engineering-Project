@@ -10,6 +10,8 @@
     <ui:define name="content">
         <h1 class="page-title">Niederlassungen</h1>
 
+		<cc:pagination boundary="#{storesBoundary}" />
+			
 		<!--  Product Table  -->
 		<div class="table-container" style="margin-top: 20px;">
             <h:dataTable var="product"
