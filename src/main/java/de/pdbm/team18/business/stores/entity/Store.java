@@ -7,8 +7,9 @@ import jakarta.persistence.*;
 public class Store {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    private int id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "store_id")
+    private Integer storeId;
 
     @Column(name = "city")
     private String city;
@@ -31,8 +32,12 @@ public class Store {
     @Column(name = "zip_code")
     private String zipCode;
 
-    public int getId() {
-        return id;
+    public Integer getStoreId() {
+        return storeId;
+    }
+
+    public void setStoreId(Integer storeId) {
+        this.storeId = storeId;
     }
 
     public String getCity() {
