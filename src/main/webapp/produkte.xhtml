@@ -3,7 +3,7 @@
       xmlns:h="jakarta.faces.html"
       xmlns:ui="jakarta.faces.facelets"
       xmlns:f="jakarta.faces.core"
-	  xmlns:my="jakarta.faces.composite/components">
+      xmlns:my="jakarta.faces.composite/components">
 <ui:composition template="templates/navbar.xhtml">
 
     <ui:define name="title">Produkte – Vertriebsunterstützung</ui:define>
@@ -37,7 +37,6 @@
 
                         <div class="form-group floating">
                             <h:inputText id="productname"
-                                         value="#{productBoundary.productName}"
                                          styleClass="form-input"
                                          placeholder=" "
                                          required="true"/>
@@ -48,43 +47,35 @@
 
                         <div class="form-group floating">
                             <h:inputText id="brandname"
-                                         value="#{productBoundary.price}"
                                          styleClass="form-input"
                                          placeholder=" "
-                                         required="true">
-                                <f:convertNumber minFractionDigits="2" maxFractionDigits="2" locale="de"/>
-                            </h:inputText>
+                                         required="true"/>
                             <label for="produktForm:brandname" class="floating-label">Brandname *</label>
                             <h:message for="brandname" styleClass="field-error"/>
                         </div>
 
                         <div class="form-group floating">
                             <h:inputText id="category"
-                                         value="#{productBoundary.price}"
                                          styleClass="form-input"
                                          placeholder=" "
-                                         required="true">
-                                <f:convertNumber minFractionDigits="2" maxFractionDigits="2" locale="de"/>
-                            </h:inputText>
+                                         required="true"/>
                             <label for="produktForm:category" class="floating-label">Kategorien</label>
                             <h:message for="category" styleClass="field-error"/>
                         </div>
                         
-						<div class="form-group floating">
+							<div class="form-group floating">
                             <h:inputText id="modell_year"
-                                         value="#{productBoundary.price}"
                                          styleClass="form-input"
                                          placeholder=" "
                                          required="true">
-                                <f:convertNumber minFractionDigits="2" maxFractionDigits="2" locale="de"/>
+                                <f:convertNumber integerOnly="true"/>
                             </h:inputText>
                             <label for="produktForm:modell_year" class="floating-label">Modelljahr *</label>
                             <h:message for="modell_year" styleClass="field-error"/>
                         </div>
                         
-						<div class="form-group floating">
+							<div class="form-group floating">
                             <h:inputText id="price"
-                                         value="#{productBoundary.price}"
                                          styleClass="form-input"
                                          placeholder=" "
                                          required="true">
@@ -102,18 +93,19 @@
                                 onclick="document.getElementById('produktModal').style.display='none'">
                             Abbrechen
                         </button>
-                        <h:commandButton value="Speichern"
-                                         action="#{productBoundary.addProduct()}"
-                                         styleClass="btn-primary btn-save"/>
+                        <button type="button" class="btn-primary btn-save"
+                                onclick="document.getElementById('produktModal').style.display='none'">
+                            Speichern
+                        </button>
                     </div>
-						</h:form>-->
+					</h:form>
             </div>
         </div>
 
-		<my:pagination boundary="#{productBoundary}" />
+        <my:pagination boundary="#{productBoundary}" />
 
-		<!--  Product Table  -->
-		<div class="table-container" style="margin-top: 20px;">
+			<!--  Product Table  -->
+			<div class="table-container" style="margin-top: 20px;">
             <h:dataTable value="#{productBoundary.findPage()}"
                          var="product"
                          styleClass="data-table">
@@ -127,7 +119,7 @@
                 </h:column>
                 <h:column>
                     <f:facet name="header"><span class="col-header">Brand</span></f:facet>
-					<h:outputText value="#{product.brand.brandName}" />
+                    <h:outputText value="#{product.brand.brandName}" />
                 </h:column>
                 <h:column>
                     <f:facet name="header"><span class="col-header">Kategorien</span></f:facet>

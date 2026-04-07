@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="jakarta.faces.html"
-      xmlns:ui="jakarta.faces.facelets"
+      xmlns:c="jakarta.tags.core"
       xmlns:cc="jakarta.faces.composite">
 
 <cc:interface>
@@ -11,12 +11,12 @@
 <cc:implementation>
     <h:form id="paginationForm">
         <div class="pagination">
-            <ui:repeat value="#{cc.attrs.boundary.totalPages()}" var="page">
+            <c:forEach begin="1" end="#{cc.attrs.boundary.totalPages()}" var="page">
                 <h:commandButton
                     value="#{page}"
                     styleClass="btn-page #{cc.attrs.boundary.currentPage == page ? 'btn-page-active' : ''}"
                     action="#{cc.attrs.boundary.setCurrentPage(page)}" />
-            </ui:repeat>
+            </c:forEach>
         </div>
     </h:form>
 </cc:implementation>

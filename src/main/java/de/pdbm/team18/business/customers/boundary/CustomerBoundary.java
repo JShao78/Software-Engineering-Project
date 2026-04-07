@@ -22,12 +22,8 @@ public class CustomerBoundary implements Serializable {
         return customerController.findPage(currentPage);
     }
 
-    public List<Integer> totalPages() {
-        List<Integer> pages = new java.util.ArrayList<>();
-		for (int i = 1; i <= customerController.totalPages(); i++) {
-			pages.add(i);
-		}
-		return pages;
+    public int totalPages() {
+        return customerController.totalPages();
     }
 
     //Getter and Setter
@@ -37,6 +33,6 @@ public class CustomerBoundary implements Serializable {
     }
 
     public void setCurrentPage(int currentPage) {
-        this.currentPage = currentPage;
+        this.currentPage = Math.max(currentPage, 1);
     }
 }
