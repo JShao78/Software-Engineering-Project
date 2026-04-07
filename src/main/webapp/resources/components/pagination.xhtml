@@ -11,7 +11,7 @@
 <cc:implementation>
     <h:form id="paginationForm">
         <div class="pagination">
-            <ui:repeat value="#{cc.attrs.boundary.pageNumbers}" var="page">
+            <ui:repeat value="#{cc.attrs.boundary.totalPages()}" var="page">
                 <h:commandButton
                     value="#{page}"
                     styleClass="btn-page #{cc.attrs.boundary.currentPage == page ? 'btn-page-active' : ''}"

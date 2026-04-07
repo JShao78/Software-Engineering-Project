@@ -30,7 +30,7 @@
                             onclick="document.getElementById('produktModal').style.display='none'">✕</button>
                 </div>
 
-                <h:form id="produktForm">
+                <!--<h:form id="produktForm">
                     <div class="modal-body">
 
                         <div class="modal-section-label">Produktdaten</div>
@@ -106,7 +106,7 @@
                                          action="#{productBoundary.addProduct()}"
                                          styleClass="btn-primary btn-save"/>
                     </div>
-				</h:form>
+						</h:form>-->
             </div>
         </div>
 
@@ -114,12 +114,12 @@
 
 		<!--  Product Table  -->
 		<div class="table-container" style="margin-top: 20px;">
-            <h:dataTable value="#{productBoundary.allProducts}"
+            <h:dataTable value="#{productBoundary.findPage()}"
                          var="product"
                          styleClass="data-table">
                 <h:column>
                     <f:facet name="header"><span class="col-header">ID</span></f:facet>
-                    <h:outputText value="#{product.id}" styleClass="uuid-text"/>
+                    <h:outputText value="#{product.productId}" styleClass="uuid-text"/>
                 </h:column>
                 <h:column>
                     <f:facet name="header"><span class="col-header">Produktname</span></f:facet>
@@ -127,19 +127,19 @@
                 </h:column>
                 <h:column>
                     <f:facet name="header"><span class="col-header">Brand</span></f:facet>
-                    <h:outputText />
+					<h:outputText value="#{product.brand.brandName}" />
                 </h:column>
                 <h:column>
                     <f:facet name="header"><span class="col-header">Kategorien</span></f:facet>
-                    <h:outputText />
+                    <h:outputText value="#{product.category.categoryName}" />
                 </h:column>
                 <h:column>
                     <f:facet name="header"><span class="col-header">Modelljahr</span></f:facet>
-                    <h:outputText />
+                    <h:outputText value="#{product.modelYear}" />
                 </h:column>
                 <h:column>
                     <f:facet name="header"><span class="col-header">Stückpreis</span></f:facet>
-                    <h:outputText value="#{product.price}" styleClass="text-accent">
+                    <h:outputText value="#{product.listPrice}" styleClass="text-accent">
                         <f:convertNumber minFractionDigits="2" maxFractionDigits="2" locale="de"/>
                     </h:outputText>
                 </h:column>
