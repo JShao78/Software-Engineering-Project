@@ -4,11 +4,14 @@ import de.pdbm.team18.business.customers.control.CustomerController;
 import de.pdbm.team18.business.customers.entity.Customer;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
+import jakarta.inject.Named;
 
+import java.io.Serializable;
 import java.util.List;
 
+@Named
 @ViewScoped
-public class CustomerBoundary {
+public class CustomerBoundary implements Serializable {
 
     private int currentPage = 1;
 
@@ -20,7 +23,7 @@ public class CustomerBoundary {
     }
 
     public List<Integer> totalPages() {
-        List<Integer> pages = new java.util.List<>();
+        List<Integer> pages = new java.util.ArrayList<>();
 		for (int i = 1; i <= customerController.totalPages(); i++) {
 			pages.add(i);
 		}
