@@ -18,7 +18,7 @@ public class CustomerRepository {
         offset = RepositoryQueryUtils.sanitizeOffset(offset);
         limit = RepositoryQueryUtils.sanitizeLimit(limit);
 
-        return em.createQuery("SELECT c FROM customers",
+        return em.createQuery("SELECT c FROM Customer c ORDER BY c.customerId",
                         Customer.class)
                 .setFirstResult(offset)
                 .setMaxResults(limit)
@@ -26,10 +26,10 @@ public class CustomerRepository {
     }
 
     public int count() {
-        return em.createQuery(
-                "SELECT COUNT(c) FROM customers c",
-                Integer.class
-        ).getSingleResult();
+        return Math.toIntExact(
+                em.createQuery("SELECT COUNT(c) FROM Customer c", Long.class)
+                        .getSingleResult()
+        );
     }
 
 }
