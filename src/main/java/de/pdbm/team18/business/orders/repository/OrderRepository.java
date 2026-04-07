@@ -1,33 +1,21 @@
 package de.pdbm.team18.business.orders.repository;
 
-import de.pdbm.team18.business.orders.entity.Order;
-import de.pdbm.team18.business.shared.repository.RepositoryQueryUtils;
-import jakarta.ejb.Stateless;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
+import de.pdbm.team18.business.orders.entity.SalesOrder;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
-@Stateless
-public class OrderRepository {
-    @PersistenceContext
-    EntityManager em;
+public interface OrderRepository {
+    List<SalesOrder> findPage(UUID customerId, String orderStatus, int offset, int limit);
 
-    public List<Order> findPage(int offset, int limit) {
-        offset = RepositoryQueryUtils.sanitizeOffset(offset);
-        limit = RepositoryQueryUtils.sanitizeLimit(limit);
-        return em.createQuery("SELECT DISTINCT o FROM Order o " +
-                                "LEFT JOIN FETCH o.customer " +
-                                "LEFT JOIN FETCH o.store " +
-                                "LEFT JOIN FETCH o.orderItems " +
-                                "ORDER BY o.orderId ",
-                                     Order.class)
-                .setFirstResult(offset)
-                .setMaxResults(limit)
-                .getResultList();
-    }
+    long count(UUID customerId, String orderStatus);
 
-    public long count() {return em.createQuery("SELECT COUNT(o) FROM Order o", Long.class).getSingleResult();}
+    Optional<SalesOrder> findById(UUID id);
 
+    Optional<SalesOrder> findByIdWithPositions(UUID id);
 
+    SalesOrder save(SalesOrder order);
+
+    boolean updateStatus(UUID orderId, String orderStatus, String shippingStatus);
 }
