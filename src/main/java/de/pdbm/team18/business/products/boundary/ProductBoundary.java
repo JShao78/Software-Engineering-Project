@@ -31,6 +31,6 @@ public class ProductBoundary implements Serializable {
     }
 
     public void setCurrentPage(int currentPage) {
-        this.currentPage = Math.max(currentPage, 1);
+        this.currentPage = Math.clamp(currentPage, 1, Math.max(totalPages(), 1));
     }
 }

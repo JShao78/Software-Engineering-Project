@@ -15,7 +15,6 @@ public class ProductController {
     private ProductRepository productRepository;
 
     public List<Product> findPage(int pageNumber) {
-        pageNumber = Math.max(pageNumber, 1);
         int offset = (pageNumber - 1) * RepositoryQueryUtils.DEFAULT_LIMIT;
         return productRepository.findPage(offset, 0);
     }

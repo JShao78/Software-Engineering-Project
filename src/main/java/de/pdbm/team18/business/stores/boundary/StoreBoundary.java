@@ -31,6 +31,6 @@ public class StoreBoundary implements Serializable {
     }
 
     public void setCurrentPage(int currentPage) {
-        this.currentPage = currentPage;
+        this.currentPage = Math.clamp(currentPage, 1, Math.max(totalPages(), 1));
     }
 }
