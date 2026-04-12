@@ -19,12 +19,12 @@ public class StockRepository {
         limit = RepositoryQueryUtils.sanitizeLimit(limit);
 
         return em.createQuery("""
-                        SELECT stock
-                        FROM Stock stock
-                        JOIN FETCH stock.store store
-                        JOIN FETCH stock.product product
-                        ORDER BY store.storeId, product.productId
-                        """, Stock.class)
+                    SELECT stock
+                    FROM Stock stock
+                    JOIN FETCH stock.store
+                    JOIN FETCH stock.product
+                    ORDER BY stock.store.storeId, stock.product.productId
+                    """, Stock.class)
                 .setFirstResult(offset)
                 .setMaxResults(limit)
                 .getResultList();

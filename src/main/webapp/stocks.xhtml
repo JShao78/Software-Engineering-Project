@@ -2,7 +2,9 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="jakarta.faces.html"
       xmlns:ui="jakarta.faces.facelets"
-	  xmlns:f="jakarta.faces.core">
+      xmlns:f="jakarta.faces.core"
+      xmlns:my="jakarta.faces.composite/components">
+
 <ui:composition template="templates/navbar.xhtml">
 
     <ui:define name="title">Lagerbestände – Vertriebsunterstützung</ui:define>
@@ -10,16 +12,35 @@
     <ui:define name="content">
         <h1 class="page-title">Lagerbestände</h1>
 
-        <div class="table-container">
-            <table class="data-table">
-                <thead>
-                <tr>
-                    <th class="col-header">Filiale</th>
-                    <th class="col-header">Produkt</th>
-                    <th class="col-header">Bestand</th>
-                </tr>
-                </thead>
-            </table>
+        <my:pagination boundary="#{stockBoundary}" />
+
+        <div class="table-container" style="margin-top: 20px;">
+            <h:dataTable value="#{stockBoundary.findPage()}"
+                         var="stock"
+                         styleClass="data-table">
+
+                <h:column>
+                    <f:facet name="header">
+                        <span class="col-header">Produkt ID</span>
+                    </f:facet>
+                    <h:outputText value="#{stock.product.productId}" />
+                </h:column>
+
+                <h:column>
+                    <f:facet name="header">
+                        <span class="col-header">Store ID</span>
+                    </f:facet>
+                    <h:outputText value="#{stock.store.storeId}" />
+                </h:column>
+
+                <h:column>
+                    <f:facet name="header">
+                        <span class="col-header">Bestand</span>
+                    </f:facet>
+                    <h:outputText value="#{stock.quantity}" />
+                </h:column>
+
+            </h:dataTable>
         </div>
     </ui:define>
 
