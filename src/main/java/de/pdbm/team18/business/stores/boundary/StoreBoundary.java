@@ -23,7 +23,7 @@ public class StoreBoundary implements Serializable {
     }
 
     public int totalPages(){
-        return storeController.pageCount(pageSize);
+        return storeController.totalPages(pageSize);
     }
 
     public int getCurrentPage() {
@@ -32,5 +32,14 @@ public class StoreBoundary implements Serializable {
 
     public void setCurrentPage(int currentPage) {
         this.currentPage = Math.clamp(currentPage, 1, Math.max(totalPages(), 1));
+    }
+
+    public int getPageSize() {
+        return pageSize;
+    }
+
+    public void setPageSize(int pageSize) {
+        this.pageSize = Math.clamp(pageSize, 1, RepositoryQueryUtils.MAX_LIMIT);
+        setCurrentPage(1);
     }
 }

@@ -14,8 +14,8 @@ public class ProductController {
     @Inject
     private ProductRepository productRepository;
 
-    public List<Product> findPage(int pageNumber) {
-        int offset = (pageNumber - 1) * RepositoryQueryUtils.DEFAULT_LIMIT;
+    public List<Product> findPage(int pageNumber, int pageSize) {
+        int offset = (pageNumber - 1) * pageSize;
         return productRepository.findPage(offset, 0);
     }
 

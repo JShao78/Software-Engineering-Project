@@ -18,7 +18,7 @@ public class StoreController {
         return storeRepository.findPage(offset, pageSize);
     }
 
-    public int pageCount(int pageSize) {
+    public int totalPages(int pageSize) {
         return Math.ceilDivExact(storeRepository.count(),  pageSize);
     }
 
