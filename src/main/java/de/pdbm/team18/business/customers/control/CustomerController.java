@@ -14,13 +14,13 @@ public class CustomerController {
     @Inject
     private CustomerRepository customerRepository;
 
-    public List<Customer> findPage(int pageNumber) {
-        int offset = (pageNumber - 1) * RepositoryQueryUtils.DEFAULT_LIMIT;
-        return customerRepository.findPage(offset, 0);
+    public List<Customer> findPage(int pageNumber,int pageSize) {
+        int offset = (pageNumber - 1) * pageSize;
+        return customerRepository.findPage(offset, pageSize);
     }
 
-    public int totalPages() {
-        return Math.ceilDivExact(customerRepository.count(), RepositoryQueryUtils.DEFAULT_LIMIT);
+    public int totalPages(int pageSize) {
+        return Math.ceilDivExact(customerRepository.count(), pageSize);
     }
 
 }

@@ -33,4 +33,13 @@ public class StockBoundary implements Serializable {
     public void setCurrentPage(int currentPage) {
         this.currentPage = Math.clamp(currentPage, 1, Math.max(totalPages(), 1));
     }
+
+    public int getPageSize() {
+        return pageSize;
+    }
+
+    public void setPageSize(int pageSize) {
+        this.pageSize = Math.clamp(pageSize, 1, RepositoryQueryUtils.MAX_LIMIT);
+        this.currentPage = 1;
+    }
 }

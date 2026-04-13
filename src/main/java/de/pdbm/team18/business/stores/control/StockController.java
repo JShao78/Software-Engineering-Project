@@ -1,5 +1,6 @@
 package de.pdbm.team18.business.stores.control;
 
+import de.pdbm.team18.business.shared.repository.RepositoryQueryUtils;
 import de.pdbm.team18.business.stores.entity.Stock;
 import de.pdbm.team18.business.stores.repository.StockRepository;
 import jakarta.ejb.Stateless;
