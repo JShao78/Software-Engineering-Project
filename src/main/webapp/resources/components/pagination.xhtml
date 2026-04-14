@@ -2,21 +2,70 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="jakarta.faces.html"
       xmlns:c="jakarta.tags.core"
-      xmlns:cc="jakarta.faces.composite">
+      xmlns:cc="jakarta.faces.composite"
+      xmlns:f="jakarta.faces.core">
 
 <cc:interface>
     <cc:attribute name="boundary" required="true"/>
 </cc:interface>
 
 <cc:implementation>
-    <h:form id="paginationForm">
-        <div class="pagination">
-            <c:forEach begin="1" end="#{cc.attrs.boundary.totalPages()}" var="page">
-                <h:commandButton
-                    value="#{page}"
-                    styleClass="btn-page #{cc.attrs.boundary.currentPage == page ? 'btn-page-active' : ''}"
-                    action="#{cc.attrs.boundary.setCurrentPage(page)}" />
-            </c:forEach>
+    <h:form id="paginationForm" rendered="#{cc.attrs.boundary.totalPages() > 1}">
+        <div class="pagination-bar">
+
+            <div class="pagination-info">
+                Seite #{cc.attrs.boundary.currentPage} von #{cc.attrs.boundary.totalPages()}
+            </div>
+
+            <div class="pagination">
+
+                <h:commandButton value="‹ Zurück"
+                                 styleClass="btn-page btn-page-nav"
+                                 disabled="#{cc.attrs.boundary.currentPage == 1}">
+                    <f:setPropertyActionListener target="#{cc.attrs.boundary.currentPage}"
+                                                 value="#{cc.attrs.boundary.currentPage - 1}" />
+                </h:commandButton>
+
+                <h:commandButton value="1"
+                                 rendered="#{cc.attrs.boundary.totalPages() >= 1}"
+                                 styleClass="btn-page #{cc.attrs.boundary.currentPage == 1 ? 'btn-page-active' : ''}">
+                    <f:setPropertyActionListener target="#{cc.attrs.boundary.currentPage}" value="1" />
+                </h:commandButton>
+
+                <h:outputText value="…"
+                              rendered="#{cc.attrs.boundary.currentPage gt 4}"
+                              styleClass="pagination-ellipsis" />
+
+                <c:forEach begin="#{cc.attrs.boundary.currentPage - 2 lt 2 ? 2 : cc.attrs.boundary.currentPage - 2}"
+                           end="#{cc.attrs.boundary.currentPage + 2 gt cc.attrs.boundary.totalPages() - 1 ? cc.attrs.boundary.totalPages() - 1 : cc.attrs.boundary.currentPage + 2}"
+                           var="page">
+                    <h:commandButton value="#{page}"
+                                     rendered="#{page gt 1 and page lt cc.attrs.boundary.totalPages()}"
+                                     styleClass="btn-page #{cc.attrs.boundary.currentPage == page ? 'btn-page-active' : ''}">
+                        <f:setPropertyActionListener target="#{cc.attrs.boundary.currentPage}"
+                                                     value="#{page}" />
+                    </h:commandButton>
+                </c:forEach>
+
+                <h:outputText value="…"
+                              rendered="#{cc.attrs.boundary.currentPage lt cc.attrs.boundary.totalPages() - 3}"
+                              styleClass="pagination-ellipsis" />
+
+                <h:commandButton value="#{cc.attrs.boundary.totalPages()}"
+                                 rendered="#{cc.attrs.boundary.totalPages() > 1}"
+                                 styleClass="btn-page #{cc.attrs.boundary.currentPage == cc.attrs.boundary.totalPages() ? 'btn-page-active' : ''}">
+                    <f:setPropertyActionListener target="#{cc.attrs.boundary.currentPage}"
+                                                 value="#{cc.attrs.boundary.totalPages()}" />
+                </h:commandButton>
+
+                <h:commandButton value="Weiter ›"
+                                 styleClass="btn-page btn-page-nav"
+                                 disabled="#{cc.attrs.boundary.currentPage == cc.attrs.boundary.totalPages()}">
+                    <f:setPropertyActionListener target="#{cc.attrs.boundary.currentPage}"
+                                                 value="#{cc.attrs.boundary.currentPage + 1}" />
+                </h:commandButton>
+
+            </div>
         </div>
     </h:form>
 </cc:implementation>

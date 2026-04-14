@@ -412,3 +412,72 @@ body {
     min-width: 60px;
     text-align: right;
 }
+.pagination-bar {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin: 12px 0 18px;
+}
+
+.pagination-info {
+    font-size: 14px;
+    color: #6c757d;
+    font-weight: 500;
+}
+
+.pagination {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+}
+
+.btn-page {
+    min-width: 42px;
+    height: 38px;
+    padding: 0 14px;
+    border: 1px solid #d0d7de;
+    border-radius: 10px;
+    background: #ffffff;
+    color: #212529;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.02);
+}
+
+.btn-page:hover:not(:disabled) {
+    background: #f8f9fa;
+    border-color: #adb5bd;
+    transform: translateY(-1px);
+}
+
+.btn-page-active {
+    background: #1a73e8;
+    color: #ffffff;
+    border-color: #1a73e8;
+    font-weight: 600;
+}
+
+.btn-page-nav {
+    padding: 0 16px;
+    min-width: auto;
+}
+
+.btn-page:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background: #f8f9fa;
+    transform: none;
+}
+
+.pagination-ellipsis {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 28px;
+    color: #6c757d;
+    font-size: 18px;
+    font-weight: 600;
+}

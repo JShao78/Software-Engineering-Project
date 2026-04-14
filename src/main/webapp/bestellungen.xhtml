@@ -3,7 +3,7 @@
       xmlns:h="jakarta.faces.html"
       xmlns:ui="jakarta.faces.facelets"
       xmlns:f="jakarta.faces.core"
-      xmlns:c="jakarta.tags.core">
+      xmlns:my="jakarta.faces.composite/components">
 
 <ui:composition template="templates/navbar.xhtml">
 
@@ -12,16 +12,7 @@
     <ui:define name="content">
         <h1 class="page-title">Bestellungen</h1>
 
-        <h:form id="orderPaginationForm" rendered="#{orderBoundary.totalPages() > 1}">
-            <div class="pagination">
-                <c:forEach begin="1" end="#{orderBoundary.totalPages()}" var="page">
-                    <h:commandButton value="#{page}"
-                                     styleClass="btn-page #{orderBoundary.currentPage eq page ? 'btn-page-active' : ''}">
-                        <f:setPropertyActionListener target="#{orderBoundary.currentPage}" value="#{page}" />
-                    </h:commandButton>
-                </c:forEach>
-            </div>
-        </h:form>
+        <my:pagination boundary="#{orderBoundary}" />
 
         <div class="table-container" style="margin-top: 20px;">
             <h:dataTable value="#{orderBoundary.findPage()}"
