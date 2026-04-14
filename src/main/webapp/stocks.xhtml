@@ -21,6 +21,20 @@
 
                 <h:column>
                     <f:facet name="header">
+                        <span class="col-header">Store ID</span>
+                    </f:facet>
+                    <h:outputText value="#{stock.store.storeId}" />
+                </h:column>
+
+                <h:column>
+                    <f:facet name="header">
+                        <span class="col-header">Niederlassung</span>
+                    </f:facet>
+                    <h:outputText value="#{stock.store.storeName}" />
+                </h:column>
+
+                <h:column>
+                    <f:facet name="header">
                         <span class="col-header">Produkt ID</span>
                     </f:facet>
                     <h:outputText value="#{stock.product.productId}" />
@@ -28,9 +42,9 @@
 
                 <h:column>
                     <f:facet name="header">
-                        <span class="col-header">Store ID</span>
+                        <span class="col-header">Produktname</span>
                     </f:facet>
-                    <h:outputText value="#{stock.store.storeId}" />
+                    <h:outputText value="#{stock.product.productName}" />
                 </h:column>
 
                 <h:column>
