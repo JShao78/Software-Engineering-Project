@@ -21,7 +21,7 @@ public class StockBoundary implements Serializable {
     }
 
     public int totalPages() {
-        return stockController.getTotalPages(pageSize);
+        return stockController.totalPages(pageSize);
     }
 
 

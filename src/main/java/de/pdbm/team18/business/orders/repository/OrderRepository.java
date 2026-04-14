@@ -27,7 +27,9 @@ public class OrderRepository {
                 .getResultList();
     }
 
-    public long count() {return em.createQuery("SELECT COUNT(o) FROM Order o", Long.class).getSingleResult();}
+    public int count() {
+        return Math.toIntExact(em.createQuery("SELECT COUNT(o) FROM Order o", Long.class).getSingleResult());
+    }
 
 
 }

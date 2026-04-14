@@ -19,7 +19,7 @@ public class StoreController {
     }
 
     public int totalPages(int pageSize) {
-        return Math.ceilDivExact(storeRepository.count(),  pageSize);
+        return Math.ceilDivExact(storeRepository.count(), pageSize);
     }
 
 }

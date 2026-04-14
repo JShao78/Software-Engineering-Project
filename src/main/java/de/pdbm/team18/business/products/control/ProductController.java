@@ -2,7 +2,6 @@ package de.pdbm.team18.business.products.control;
 
 import de.pdbm.team18.business.products.entity.Product;
 import de.pdbm.team18.business.products.repository.ProductRepository;
-import de.pdbm.team18.business.shared.repository.RepositoryQueryUtils;
 import jakarta.ejb.Stateless;
 import jakarta.inject.Inject;
 
@@ -14,12 +13,12 @@ public class ProductController {
     @Inject
     private ProductRepository productRepository;
 
-    public List<Product> findPage(int pageNumber, int pageSize) {
-        int offset = (pageNumber - 1) * pageSize;
-        return productRepository.findPage(offset, 0);
+    public List<Product> findPage(int currentPage, int pageSize) {
+        int offset = (currentPage - 1) * pageSize;
+        return productRepository.findPage(offset, pageSize);
     }
 
-    public int totalPages() {
-        return Math.ceilDivExact(productRepository.count(), RepositoryQueryUtils.DEFAULT_LIMIT);
+    public int totalPages(int pageSize) {
+        return Math.ceilDivExact(productRepository.count(), pageSize);
     }
 }

@@ -1,6 +1,5 @@
 package de.pdbm.team18.business.stores.control;
 
-import de.pdbm.team18.business.shared.repository.RepositoryQueryUtils;
 import de.pdbm.team18.business.stores.entity.Stock;
 import de.pdbm.team18.business.stores.repository.StockRepository;
 import jakarta.ejb.Stateless;
@@ -19,7 +18,7 @@ public class StockController {
         return stockRepository.findPage(offset, pageSize);
     }
 
-    public int getTotalPages(int pageSize) {
+    public int totalPages(int pageSize) {
         return Math.ceilDivExact(stockRepository.count(), pageSize);
     }
 

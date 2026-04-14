@@ -25,7 +25,7 @@ public class ProductBoundary implements Serializable {
     }
 
     public int totalPages() {
-        return productController.totalPages();
+        return productController.totalPages(pageSize);
     }
 
     public int getCurrentPage() {

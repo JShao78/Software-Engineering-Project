@@ -33,7 +33,7 @@ public class OrderBoundary implements Serializable {
     }
 
     public int totalPages() {
-        return orderController.getTotalPages(pageSize);
+        return orderController.totalPages(pageSize);
     }
 
     public int getPageSize() {
@@ -41,19 +41,7 @@ public class OrderBoundary implements Serializable {
     }
 
     public void setPageSize(int pageSize) {
-        this.pageSize = pageSize;
-        this.currentPage = 1;
+        this.pageSize = Math.clamp(pageSize, 1, RepositoryQueryUtils.MAX_LIMIT);
+        setCurrentPage(1);
     }
-
-    public void nextPage() {
-        if (this.currentPage < this.totalPages()) {
-            this.currentPage++;
-        }
-    }
-    public void previousPage() {
-        if (this.currentPage > 1) {
-            this.currentPage--;
-        }
-    }
-
 }
