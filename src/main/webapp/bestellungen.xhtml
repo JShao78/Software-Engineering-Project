@@ -1,181 +1,90 @@
-
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="jakarta.faces.html"
       xmlns:ui="jakarta.faces.facelets"
-      xmlns:f="jakarta.faces.core">
+      xmlns:f="jakarta.faces.core"
+      xmlns:c="jakarta.tags.core">
+
 <ui:composition template="templates/navbar.xhtml">
 
     <ui:define name="title">Bestellungen – Vertriebsunterstützung</ui:define>
 
     <ui:define name="content">
         <h1 class="page-title">Bestellungen</h1>
-        <p class="page-subtitle">Total 5 orders</p>
 
-        <div class="table-container">
-            <table class="data-table orders-table">
-                <thead>
-                <tr>
-                    <th class="col-header">Order ID</th>
-                    <th class="col-header">Kunde</th>
-                    <th class="col-header">Bestelldatum</th>
-                    <th class="col-header">Wunschdatum</th>
-                    <th class="col-header">Versanddatum</th>
-                    <th class="col-header">Filiale</th>
-                    <th class="col-header">Status</th>
-                    <th class="col-header">Positionen</th>
-                </tr>
-                </thead>
-                <tbody>
+        <h:form id="orderPaginationForm" rendered="#{orderBoundary.totalPages() > 1}">
+            <div class="pagination">
+                <c:forEach begin="1" end="#{orderBoundary.totalPages()}" var="page">
+                    <h:commandButton value="#{page}"
+                                     styleClass="btn-page #{orderBoundary.currentPage eq page ? 'btn-page-active' : ''}">
+                        <f:setPropertyActionListener target="#{orderBoundary.currentPage}" value="#{page}" />
+                    </h:commandButton>
+                </c:forEach>
+            </div>
+        </h:form>
 
-                <!-- Order 1 -->
-                <tr class="order-row" onclick="toggleRow('items1', this)">
-                    <td><span class="order-id">#1</span></td>
-                    <td>Debra Burks</td>
-                    <td>2016-01-01</td>
-                    <td>2016-01-03</td>
-                    <td>2016-01-03</td>
-                    <td>Santa Cruz Bikes</td>
-                    <td><span class="badge badge-completed">Completed</span></td>
-                    <td><span class="toggle-hint">&#x276F; Show (2)</span></td>
-                </tr>
-                <tr id="items1" class="items-row" style="display:none;">
-                    <td colspan="8">
-                        <div class="items-expand">
-                            <div class="items-expand-label">Order Items</div>
-                            <table class="items-table">
-                                <thead><tr><th>Item ID</th><th>Produkt</th><th>Menge</th><th>Preis</th><th>Rabatt</th><th>Gesamt</th></tr></thead>
-                                <tbody>
-                                <tr><td>#1</td><td>Electra Cruiser 1 (24-Inch) - 2016</td><td>3</td><td>$269.99</td><td>—</td><td>$809.97</td></tr>
-                                <tr><td>#2</td><td>Trek Domane SLR 9 Disc - 2016</td><td>1</td><td>$11,999.99</td><td><span class="badge badge-discount">15%</span></td><td>$10,199.99</td></tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </td>
-                </tr>
+        <div class="table-container" style="margin-top: 20px;">
+            <h:dataTable value="#{orderBoundary.findPage()}"
+                         var="order"
+                         styleClass="data-table">
 
-                <!-- Order 2 -->
-                <tr class="order-row" onclick="toggleRow('items2', this)">
-                    <td><span class="order-id">#2</span></td>
-                    <td>Kasha Todd</td>
-                    <td>2016-01-01</td>
-                    <td>2016-01-04</td>
-                    <td>2016-01-03</td>
-                    <td>Baldwin Bikes</td>
-                    <td><span class="badge badge-completed">Completed</span></td>
-                    <td><span class="toggle-hint">&#x276F; Show (2)</span></td>
-                </tr>
-                <tr id="items2" class="items-row" style="display:none;">
-                    <td colspan="8">
-                        <div class="items-expand">
-                            <div class="items-expand-label">Order Items</div>
-                            <table class="items-table">
-                                <thead><tr><th>Item ID</th><th>Produkt</th><th>Menge</th><th>Preis</th><th>Rabatt</th><th>Gesamt</th></tr></thead>
-                                <tbody>
-                                <tr><td>#1</td><td>Trek 820 - 2016</td><td>2</td><td>$379.99</td><td>—</td><td>$759.98</td></tr>
-                                <tr><td>#2</td><td>Surly Wednesday - 2016</td><td>1</td><td>$1,499.99</td><td><span class="badge badge-discount">10%</span></td><td>$1,349.99</td></tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </td>
-                </tr>
+                <h:column>
+                    <f:facet name="header">
+                        <span class="col-header">Bestell-ID</span>
+                    </f:facet>
+                    <h:outputText value="#{order.orderId}" />
+                </h:column>
 
-                <!-- Order 3 -->
-                <tr class="order-row" onclick="toggleRow('items3', this)">
-                    <td><span class="order-id">#3</span></td>
-                    <td>Tameka Fisher</td>
-                    <td>2016-01-02</td>
-                    <td>2016-01-05</td>
-                    <td>—</td>
-                    <td>Santa Cruz Bikes</td>
-                    <td><span class="badge badge-processing">Processing</span></td>
-                    <td><span class="toggle-hint">&#x276F; Show (1)</span></td>
-                </tr>
-                <tr id="items3" class="items-row" style="display:none;">
-                    <td colspan="8">
-                        <div class="items-expand">
-                            <div class="items-expand-label">Order Items</div>
-                            <table class="items-table">
-                                <thead><tr><th>Item ID</th><th>Produkt</th><th>Menge</th><th>Preis</th><th>Rabatt</th><th>Gesamt</th></tr></thead>
-                                <tbody>
-                                <tr><td>#1</td><td>Electra Townie Original 21D - 2016</td><td>1</td><td>$599.99</td><td>—</td><td>$599.99</td></tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </td>
-                </tr>
+                <h:column>
+                    <f:facet name="header">
+                        <span class="col-header">Bestelldatum</span>
+                    </f:facet>
+                    <h:outputText value="#{order.orderDate}">
+                        <f:convertDateTime type="localDate" pattern="dd.MM.yyyy" />
+                    </h:outputText>
+                </h:column>
 
-                <!-- Order 4 -->
-                <tr class="order-row" onclick="toggleRow('items4', this)">
-                    <td><span class="order-id">#4</span></td>
-                    <td>Daryl Spence</td>
-                    <td>2016-01-03</td>
-                    <td>2016-01-06</td>
-                    <td>2016-01-05</td>
-                    <td>Rowlett Bikes</td>
-                    <td><span class="badge badge-completed">Completed</span></td>
-                    <td><span class="toggle-hint">&#x276F; Show (2)</span></td>
-                </tr>
-                <tr id="items4" class="items-row" style="display:none;">
-                    <td colspan="8">
-                        <div class="items-expand">
-                            <div class="items-expand-label">Order Items</div>
-                            <table class="items-table">
-                                <thead><tr><th>Item ID</th><th>Produkt</th><th>Menge</th><th>Preis</th><th>Rabatt</th><th>Gesamt</th></tr></thead>
-                                <tbody>
-                                <tr><td>#1</td><td>Trek 520 - 2016</td><td>1</td><td>$1,799.99</td><td><span class="badge badge-discount">5%</span></td><td>$1,709.99</td></tr>
-                                <tr><td>#2</td><td>Heller Shagamaw Frame - 2016</td><td>2</td><td>$829.99</td><td>—</td><td>$1,659.98</td></tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </td>
-                </tr>
+                <h:column>
+                    <f:facet name="header">
+                        <span class="col-header">Status</span>
+                    </f:facet>
+                    <h:outputText value="#{order.orderStatus}" />
+                </h:column>
 
-                <!-- Order 5 -->
-                <tr class="order-row" onclick="toggleRow('items5', this)">
-                    <td><span class="order-id">#5</span></td>
-                    <td>Charolette Rice</td>
-                    <td>2016-01-04</td>
-                    <td>2016-01-07</td>
-                    <td>—</td>
-                    <td>Santa Cruz Bikes</td>
-                    <td><span class="badge badge-pending">Pending</span></td>
-                    <td><span class="toggle-hint">&#x276F; Show (1)</span></td>
-                </tr>
-                <tr id="items5" class="items-row" style="display:none;">
-                    <td colspan="8">
-                        <div class="items-expand">
-                            <div class="items-expand-label">Order Items</div>
-                            <table class="items-table">
-                                <thead><tr><th>Item ID</th><th>Produkt</th><th>Menge</th><th>Preis</th><th>Rabatt</th><th>Gesamt</th></tr></thead>
-                                <tbody>
-                                <tr><td>#1</td><td>Pure Cycles Western 3-Speed - 2016</td><td>1</td><td>$449.99</td><td>—</td><td>$449.99</td></tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </td>
-                </tr>
+                <h:column>
+                    <f:facet name="header">
+                        <span class="col-header">Kunde</span>
+                    </f:facet>
+                    <h:outputText value="#{order.customer.firstName} #{order.customer.lastName}" />
+                </h:column>
 
-                </tbody>
-            </table>
+                <h:column>
+                    <f:facet name="header">
+                        <span class="col-header">Niederlassung</span>
+                    </f:facet>
+                    <h:outputText value="#{order.store.storeName}" />
+                </h:column>
+
+                <h:column>
+                    <f:facet name="header">
+                        <span class="col-header">Lieferdatum</span>
+                    </f:facet>
+                    <h:outputText value="#{order.requiredDate}">
+                        <f:convertDateTime type="localDate" pattern="dd.MM.yyyy" />
+                    </h:outputText>
+                </h:column>
+
+                <h:column>
+                    <f:facet name="header">
+                        <span class="col-header">Versanddatum</span>
+                    </f:facet>
+                    <h:outputText value="#{order.shippedDate}">
+                        <f:convertDateTime type="localDate" pattern="dd.MM.yyyy" />
+                    </h:outputText>
+                </h:column>
+
+            </h:dataTable>
         </div>
-
-        <script>
-            function toggleRow(id, orderRow) {
-                var itemsRow = document.getElementById(id);
-                var hint = orderRow.querySelector('.toggle-hint');
-                var count = itemsRow.querySelectorAll('tbody tr').length;
-                if (itemsRow.style.display === 'none') {
-                    itemsRow.style.display = 'table-row';
-                    hint.innerHTML = '&#x2303; Hide';
-                    orderRow.classList.add('order-row-open');
-                } else {
-                    itemsRow.style.display = 'none';
-                    hint.innerHTML = '&#x276F; Show (' + count + ')';
-                    orderRow.classList.remove('order-row-open');
-                }
-            }
-        </script>
 
     </ui:define>
 
