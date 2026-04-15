@@ -36,11 +36,11 @@
                               rendered="#{cc.attrs.boundary.currentPage gt 4}"
                               styleClass="pagination-ellipsis" />
 
-                <c:forEach begin="#{cc.attrs.boundary.currentPage - 2 lt 2 ? 2 : cc.attrs.boundary.currentPage - 2}"
-                           end="#{cc.attrs.boundary.currentPage + 2 gt cc.attrs.boundary.totalPages() - 1 ? cc.attrs.boundary.totalPages() - 1 : cc.attrs.boundary.currentPage + 2}"
+                <c:forEach begin="2"
+                           end="#{cc.attrs.boundary.totalPages() - 1}"
                            var="page">
                     <h:commandButton value="#{page}"
-                                     rendered="#{page gt 1 and page lt cc.attrs.boundary.totalPages()}"
+                                     rendered="#{page ge cc.attrs.boundary.currentPage - 2 and page le cc.attrs.boundary.currentPage + 2}"
                                      styleClass="btn-page #{cc.attrs.boundary.currentPage == page ? 'btn-page-active' : ''}">
                         <f:setPropertyActionListener target="#{cc.attrs.boundary.currentPage}"
                                                      value="#{page}" />
