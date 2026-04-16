@@ -10,72 +10,181 @@
     <ui:define name="title">Bestellungen – Vertriebsunterstützung</ui:define>
 
     <ui:define name="content">
-        <h1 class="page-title">Bestellungen</h1>
+
+        <h:outputScript target="body">
+            function saveScrollPosition() {
+            sessionStorage.setItem('ordersScrollY', String(window.scrollY));
+            }
+
+            function restoreScrollPosition(data) {
+            if (data.status === 'success') {
+            const y = sessionStorage.getItem('ordersScrollY');
+            if (y !== null) {
+            window.scrollTo(0, parseInt(y, 10));
+            }
+            }
+            }
+        </h:outputScript>
+
+        <div class="orders-header">
+            <h1 class="page-title orders-title">Bestellungen</h1>
+            <p class="orders-subtitle">Insgesamt #{orderBoundary.count()} Bestellungen</p>
+        </div>
 
         <my:pagination boundary="#{orderBoundary}" />
 
-        <div class="table-container" style="margin-top: 20px;">
-            <h:dataTable value="#{orderBoundary.findPage()}"
-                         var="order"
-                         styleClass="data-table">
+        <h:form id="ordersForm">
+            <div class="orders-card">
+                <table class="data-table orders-table">
+                    <thead>
+                    <tr>
+                        <th><span class="col-header">Bestell-ID</span></th>
+                        <th><span class="col-header">Kunde</span></th>
+                        <th><span class="col-header">Bestelldatum</span></th>
+                        <th><span class="col-header">Lieferdatum</span></th>
+                        <th><span class="col-header">Versanddatum</span></th>
+                        <th><span class="col-header">Niederlassung</span></th>
+                        <th><span class="col-header">Status</span></th>
+                        <th><span class="col-header">Positionen</span></th>
+                    </tr>
+                    </thead>
 
-                <h:column>
-                    <f:facet name="header">
-                        <span class="col-header">Bestell-ID</span>
-                    </f:facet>
-                    <h:outputText value="#{order.orderId}" />
-                </h:column>
+                    <tbody>
+                    <ui:repeat value="#{orderBoundary.findPage()}" var="order">
 
-                <h:column>
-                    <f:facet name="header">
-                        <span class="col-header">Bestelldatum</span>
-                    </f:facet>
-                    <h:outputText value="#{order.orderDate}">
-                        <f:convertDateTime type="localDate" pattern="dd.MM.yyyy" />
-                    </h:outputText>
-                </h:column>
+                        <tr>
+                            <td>
+                                <h:outputText value="#{order.orderId}" />
+                            </td>
 
-                <h:column>
-                    <f:facet name="header">
-                        <span class="col-header">Status</span>
-                    </f:facet>
-                    <h:outputText value="#{order.orderStatus}" />
-                </h:column>
+                            <td>
+                                <h:outputText value="#{order.customer.firstName} #{order.customer.lastName}" />
+                            </td>
 
-                <h:column>
-                    <f:facet name="header">
-                        <span class="col-header">Kunde</span>
-                    </f:facet>
-                    <h:outputText value="#{order.customer.firstName} #{order.customer.lastName}" />
-                </h:column>
+                            <td>
+                                <h:outputText value="#{order.orderDate}">
+                                    <f:convertDateTime type="localDate" pattern="dd.MM.yyyy" />
+                                </h:outputText>
+                            </td>
 
-                <h:column>
-                    <f:facet name="header">
-                        <span class="col-header">Niederlassung</span>
-                    </f:facet>
-                    <h:outputText value="#{order.store.storeName}" />
-                </h:column>
+                            <td>
+                                <h:outputText value="#{order.requiredDate}">
+                                    <f:convertDateTime type="localDate" pattern="dd.MM.yyyy" />
+                                </h:outputText>
+                            </td>
 
-                <h:column>
-                    <f:facet name="header">
-                        <span class="col-header">Lieferdatum</span>
-                    </f:facet>
-                    <h:outputText value="#{order.requiredDate}">
-                        <f:convertDateTime type="localDate" pattern="dd.MM.yyyy" />
-                    </h:outputText>
-                </h:column>
+                            <td>
+                                <h:outputText value="#{order.shippedDate}" rendered="#{not empty order.shippedDate}">
+                                    <f:convertDateTime type="localDate" pattern="dd.MM.yyyy" />
+                                </h:outputText>
+                                <h:outputText value="—" rendered="#{empty order.shippedDate}" />
+                            </td>
 
-                <h:column>
-                    <f:facet name="header">
-                        <span class="col-header">Versanddatum</span>
-                    </f:facet>
-                    <h:outputText value="#{order.shippedDate}">
-                        <f:convertDateTime type="localDate" pattern="dd.MM.yyyy" />
-                    </h:outputText>
-                </h:column>
+                            <td>
+                                <h:outputText value="#{order.store.storeName}" />
+                            </td>
 
-            </h:dataTable>
-        </div>
+                            <td>
+                                <span class="status-pill #{orderBoundary.statusClass(order.orderStatus)}">
+                                    <h:outputText value="#{orderBoundary.statusLabel(order.orderStatus)}" />
+                                </span>
+                            </td>
+
+                            <td class="items-cell">
+                                <h:commandLink action="#{orderBoundary.toggleItems(order.orderId)}"
+                                               styleClass="items-toggle"
+                                               onclick="saveScrollPosition()">
+                                    <f:ajax execute="@this" render="@form" onevent="restoreScrollPosition"/>
+
+                                    <span class="items-toggle-icon">
+                                        <h:outputText value="#{orderBoundary.expanded(order.orderId) ? '⌄' : '›'}" />
+                                    </span>
+
+                                    <h:outputText value="Ausblenden"
+                                                  rendered="#{orderBoundary.expanded(order.orderId)}" />
+                                    <h:outputText value="Anzeigen (#{orderBoundary.itemsCount(order.orderId)})"
+                                                  rendered="#{not orderBoundary.expanded(order.orderId)}" />
+                                </h:commandLink>
+                            </td>
+                        </tr>
+
+                        <ui:fragment rendered="#{orderBoundary.expanded(order.orderId)}">
+                            <tr class="order-items-row">
+                                <td colspan="8">
+                                    <div class="order-items-panel">
+                                        <div class="order-items-label">BESTELLPOSITIONEN</div>
+
+                                        <table class="items-table">
+                                            <thead>
+                                            <tr>
+                                                <th><span class="col-header">Positions-ID</span></th>
+                                                <th><span class="col-header">Produkt</span></th>
+                                                <th><span class="col-header">Menge</span></th>
+                                                <th><span class="col-header">Listenpreis</span></th>
+                                                <th><span class="col-header">Rabatt</span></th>
+                                                <th><span class="col-header">Gesamt</span></th>
+                                            </tr>
+                                            </thead>
+
+                                            <tbody>
+                                            <ui:repeat value="#{orderBoundary.findItems(order.orderId)}" var="item">
+                                                <tr>
+                                                    <td>
+                                                        <h:outputText value="#{item.id.itemId}" />
+                                                    </td>
+
+                                                    <td>
+                                                        <h:outputText value="#{item.product.productName}" />
+                                                        <h:outputText value=" - #{item.product.modelYear}"
+                                                                      rendered="#{not empty item.product.modelYear}" />
+                                                    </td>
+
+                                                    <td>
+                                                        <h:outputText value="#{item.quantity}" />
+                                                    </td>
+
+                                                    <td>
+                                                        <h:outputText value="#{item.listPrice}">
+                                                            <f:convertNumber minFractionDigits="2"
+                                                                             maxFractionDigits="2"
+                                                                             locale="de" />
+                                                        </h:outputText>
+                                                        <h:outputText value=" €" />
+                                                    </td>
+
+                                                    <td>
+                                                        <h:panelGroup rendered="#{orderBoundary.hasDiscount(item)}">
+                                                            <span class="discount-pill">
+                                                                <h:outputText value="#{orderBoundary.discountLabel(item)}" />
+                                                            </span>
+                                                        </h:panelGroup>
+
+                                                        <h:outputText value="—"
+                                                                      rendered="#{not orderBoundary.hasDiscount(item)}" />
+                                                    </td>
+
+                                                    <td>
+                                                        <h:outputText value="#{orderBoundary.itemTotal(item)}">
+                                                            <f:convertNumber minFractionDigits="2"
+                                                                             maxFractionDigits="2"
+                                                                             locale="de" />
+                                                        </h:outputText>
+                                                        <h:outputText value=" €" />
+                                                    </td>
+                                                </tr>
+                                            </ui:repeat>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </td>
+                            </tr>
+                        </ui:fragment>
+
+                    </ui:repeat>
+                    </tbody>
+                </table>
+            </div>
+        </h:form>
 
     </ui:define>
 
