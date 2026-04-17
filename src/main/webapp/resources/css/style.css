@@ -452,6 +452,7 @@ body {
     align-items: center;
 }
 
+.pagination > select,
 .btn-page {
     min-width: 42px;
     height: 38px;
