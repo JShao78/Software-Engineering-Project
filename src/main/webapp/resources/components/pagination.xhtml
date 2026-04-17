@@ -2,21 +2,80 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="jakarta.faces.html"
       xmlns:c="jakarta.tags.core"
-      xmlns:cc="jakarta.faces.composite">
+      xmlns:cc="jakarta.faces.composite"
+      xmlns:f="jakarta.faces.core">
 
 <cc:interface>
     <cc:attribute name="boundary" required="true"/>
 </cc:interface>
 
 <cc:implementation>
-    <h:form id="paginationForm">
-        <div class="pagination">
-            <c:forEach begin="1" end="#{cc.attrs.boundary.totalPages()}" var="page">
-                <h:commandButton
-                    value="#{page}"
-                    styleClass="btn-page #{cc.attrs.boundary.currentPage == page ? 'btn-page-active' : ''}"
-                    action="#{cc.attrs.boundary.setCurrentPage(page)}" />
-            </c:forEach>
+    <h:form id="paginationForm" rendered="#{cc.attrs.boundary.totalPages() > 1}">
+        <div class="pagination-bar">
+
+            <div class="pagination-info">
+                Seite #{cc.attrs.boundary.currentPage} von #{cc.attrs.boundary.totalPages()}
+            </div>
+
+            <div class="pagination">
+
+                <h:commandButton value="‹ Zurück"
+                                 styleClass="btn-page btn-page-nav"
+                                 disabled="#{cc.attrs.boundary.currentPage == 1}">
+                    <f:setPropertyActionListener target="#{cc.attrs.boundary.currentPage}"
+                                                 value="#{cc.attrs.boundary.currentPage - 1}" />
+                </h:commandButton>
+
+                <h:commandButton value="1"
+                                 rendered="#{cc.attrs.boundary.totalPages() >= 1}"
+                                 styleClass="btn-page #{cc.attrs.boundary.currentPage == 1 ? 'btn-page-active' : ''}">
+                    <f:setPropertyActionListener target="#{cc.attrs.boundary.currentPage}" value="1" />
+                </h:commandButton>
+
+                <h:outputText value="…"
+                              rendered="#{cc.attrs.boundary.currentPage gt 4}"
+                              styleClass="pagination-ellipsis" />
+
+                <c:forEach begin="2"
+                           end="#{cc.attrs.boundary.totalPages() - 1}"
+                           var="page">
+                    <h:commandButton value="#{page}"
+                                     rendered="#{page ge cc.attrs.boundary.currentPage - 2 and page le cc.attrs.boundary.currentPage + 2}"
+                                     styleClass="btn-page #{cc.attrs.boundary.currentPage == page ? 'btn-page-active' : ''}">
+                        <f:setPropertyActionListener target="#{cc.attrs.boundary.currentPage}"
+                                                     value="#{page}" />
+                    </h:commandButton>
+                </c:forEach>
+
+                <h:outputText value="…"
+                              rendered="#{cc.attrs.boundary.currentPage lt cc.attrs.boundary.totalPages() - 3}"
+                              styleClass="pagination-ellipsis" />
+
+                <h:commandButton value="#{cc.attrs.boundary.totalPages()}"
+                                 rendered="#{cc.attrs.boundary.totalPages() > 1}"
+                                 styleClass="btn-page #{cc.attrs.boundary.currentPage == cc.attrs.boundary.totalPages() ? 'btn-page-active' : ''}">
+                    <f:setPropertyActionListener target="#{cc.attrs.boundary.currentPage}"
+                                                 value="#{cc.attrs.boundary.totalPages()}" />
+                </h:commandButton>
+
+                <h:commandButton value="Weiter ›"
+                                 styleClass="btn-page btn-page-nav"
+                                 disabled="#{cc.attrs.boundary.currentPage == cc.attrs.boundary.totalPages()}">
+                    <f:setPropertyActionListener target="#{cc.attrs.boundary.currentPage}"
+                                                 value="#{cc.attrs.boundary.currentPage + 1}" />
+                </h:commandButton>
+
+				<div class="pg-size">
+					<label for="pagesize">Seitenlänge: </label>
+					<h:selectOneMenu value="#{cc.attrs.boundary.pageSize}" name="pagesize">
+						<f:selectItem itemValue="10" itemLabel="10" />
+						<f:selectItem itemValue="25" itemLabel="25" />
+						<f:selectItem itemValue="50" itemLabel="50" />
+						<f:selectItem itemValue="100" itemLabel="100" />
+						<f:ajax listener="#{cc.attrs.boundary.onPageSizeChange}" render="@all" />
+					</h:selectOneMenu>
+				</div>
+            </div>
         </div>
     </h:form>
 </cc:implementation>

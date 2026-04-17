@@ -10,12 +10,12 @@ public class Stock {
     @EmbeddedId
     private StockId stockId;
 
-    @ManyToOne(optional = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @MapsId("productId")
     @JoinColumn(name = "product_id")
     private Product product;
 
-    @ManyToOne(optional = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @MapsId("storeId")
     @JoinColumn(name = "store_id")
     private Store store;

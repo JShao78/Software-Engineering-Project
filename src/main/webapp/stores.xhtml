@@ -2,7 +2,9 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="jakarta.faces.html"
       xmlns:ui="jakarta.faces.facelets"
-	  xmlns:f="jakarta.faces.core">
+      xmlns:f="jakarta.faces.core"
+      xmlns:c="jakarta.tags.core">
+
 <ui:composition template="templates/navbar.xhtml">
 
     <ui:define name="title">Niederlassungen – Vertriebsunterstützung</ui:define>
@@ -10,44 +12,80 @@
     <ui:define name="content">
         <h1 class="page-title">Niederlassungen</h1>
 
-		<!--  Product Table  -->
-		<div class="table-container" style="margin-top: 20px;">
-            <h:dataTable var="product"
+        <h:form id="storePaginationForm" rendered="#{storeBoundary.totalPages() > 1}">
+            <div class="pagination">
+                <c:forEach begin="1" end="#{storeBoundary.totalPages()}" var="page">
+                    <h:commandButton value="#{page}"
+                                     styleClass="btn-page #{storeBoundary.currentPage eq page ? 'btn-page-active' : ''}">
+                        <f:setPropertyActionListener target="#{storeBoundary.currentPage}" value="#{page}" />
+                    </h:commandButton>
+                </c:forEach>
+            </div>
+        </h:form>
+
+        <div class="table-container" style="margin-top: 20px;">
+            <h:dataTable value="#{storeBoundary.findPage()}"
+                         var="store"
                          styleClass="data-table">
+
                 <h:column>
-                    <f:facet name="header"><span class="col-header">ID</span></f:facet>
-                    <h:outputText styleClass="uuid-accent" />
+                    <f:facet name="header">
+                        <span class="col-header">ID</span>
+                    </f:facet>
+                    <h:outputText value="#{store.storeId}" />
                 </h:column>
+
                 <h:column>
-                    <f:facet name="header"><span class="col-header">Titel</span></f:facet>
-                    <h:outputText styleClass="text-accent" />
+                    <f:facet name="header">
+                        <span class="col-header">Stadt</span>
+                    </f:facet>
+                    <h:outputText value="#{store.city}" />
                 </h:column>
+
                 <h:column>
-                    <f:facet name="header"><span class="col-header">Land</span></f:facet>
-                    <h:outputText styleClass="text-accent" />
+                    <f:facet name="header">
+                        <span class="col-header">E-Mail</span>
+                    </f:facet>
+                    <h:outputText value="#{store.email}" />
                 </h:column>
+
                 <h:column>
-                    <f:facet name="header"><span class="col-header">Stadt</span></f:facet>
-                    <h:outputText styleClass="text-accent" />
+                    <f:facet name="header">
+                        <span class="col-header">Telefonnummer</span>
+                    </f:facet>
+                    <h:outputText value="#{store.phone}" />
                 </h:column>
+
                 <h:column>
-                    <f:facet name="header"><span class="col-header">Postleitzahl</span></f:facet>
-                    <h:outputText styleClass="text-accent" />
+                    <f:facet name="header">
+                        <span class="col-header">Bundesstaat</span>
+                    </f:facet>
+                    <h:outputText value="#{store.state}" />
                 </h:column>
+
                 <h:column>
-                    <f:facet name="header"><span class="col-header">Straße</span></f:facet>
-                    <h:outputText styleClass="text-accent" />
+                    <f:facet name="header">
+                        <span class="col-header">Niederlassung</span>
+                    </f:facet>
+                    <h:outputText value="#{store.storeName}" />
                 </h:column>
+
                 <h:column>
-                    <f:facet name="header"><span class="col-header">E-Mail</span></f:facet>
-                    <h:outputText styleClass="text-accent" />
+                    <f:facet name="header">
+                        <span class="col-header">Straße</span>
+                    </f:facet>
+                    <h:outputText value="#{store.street}" />
                 </h:column>
+
                 <h:column>
-                    <f:facet name="header"><span class="col-header">Telefonnummer</span></f:facet>
-                    <h:outputText styleClass="text-accent" />
+                    <f:facet name="header">
+                        <span class="col-header">Postleitzahl</span>
+                    </f:facet>
+                    <h:outputText value="#{store.zipCode}" />
                 </h:column>
+
             </h:dataTable>
-		</div>
+        </div>
 
     </ui:define>
 

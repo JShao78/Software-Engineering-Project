@@ -1,181 +1,190 @@
-
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="jakarta.faces.html"
       xmlns:ui="jakarta.faces.facelets"
-      xmlns:f="jakarta.faces.core">
+      xmlns:f="jakarta.faces.core"
+      xmlns:my="jakarta.faces.composite/components">
+
 <ui:composition template="templates/navbar.xhtml">
 
     <ui:define name="title">Bestellungen – Vertriebsunterstützung</ui:define>
 
     <ui:define name="content">
-        <h1 class="page-title">Bestellungen</h1>
-        <p class="page-subtitle">Total 5 orders</p>
 
-        <div class="table-container">
-            <table class="data-table orders-table">
-                <thead>
-                <tr>
-                    <th class="col-header">Order ID</th>
-                    <th class="col-header">Kunde</th>
-                    <th class="col-header">Bestelldatum</th>
-                    <th class="col-header">Wunschdatum</th>
-                    <th class="col-header">Versanddatum</th>
-                    <th class="col-header">Filiale</th>
-                    <th class="col-header">Status</th>
-                    <th class="col-header">Positionen</th>
-                </tr>
-                </thead>
-                <tbody>
+        <h:outputScript target="body">
+            function saveScrollPosition() {
+            sessionStorage.setItem('ordersScrollY', String(window.scrollY));
+            }
 
-                <!-- Order 1 -->
-                <tr class="order-row" onclick="toggleRow('items1', this)">
-                    <td><span class="order-id">#1</span></td>
-                    <td>Debra Burks</td>
-                    <td>2016-01-01</td>
-                    <td>2016-01-03</td>
-                    <td>2016-01-03</td>
-                    <td>Santa Cruz Bikes</td>
-                    <td><span class="badge badge-completed">Completed</span></td>
-                    <td><span class="toggle-hint">&#x276F; Show (2)</span></td>
-                </tr>
-                <tr id="items1" class="items-row" style="display:none;">
-                    <td colspan="8">
-                        <div class="items-expand">
-                            <div class="items-expand-label">Order Items</div>
-                            <table class="items-table">
-                                <thead><tr><th>Item ID</th><th>Produkt</th><th>Menge</th><th>Preis</th><th>Rabatt</th><th>Gesamt</th></tr></thead>
-                                <tbody>
-                                <tr><td>#1</td><td>Electra Cruiser 1 (24-Inch) - 2016</td><td>3</td><td>$269.99</td><td>—</td><td>$809.97</td></tr>
-                                <tr><td>#2</td><td>Trek Domane SLR 9 Disc - 2016</td><td>1</td><td>$11,999.99</td><td><span class="badge badge-discount">15%</span></td><td>$10,199.99</td></tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </td>
-                </tr>
+            function restoreScrollPosition(data) {
+            if (data.status === 'success') {
+            const y = sessionStorage.getItem('ordersScrollY');
+            if (y !== null) {
+            window.scrollTo(0, parseInt(y, 10));
+            }
+            }
+            }
+        </h:outputScript>
 
-                <!-- Order 2 -->
-                <tr class="order-row" onclick="toggleRow('items2', this)">
-                    <td><span class="order-id">#2</span></td>
-                    <td>Kasha Todd</td>
-                    <td>2016-01-01</td>
-                    <td>2016-01-04</td>
-                    <td>2016-01-03</td>
-                    <td>Baldwin Bikes</td>
-                    <td><span class="badge badge-completed">Completed</span></td>
-                    <td><span class="toggle-hint">&#x276F; Show (2)</span></td>
-                </tr>
-                <tr id="items2" class="items-row" style="display:none;">
-                    <td colspan="8">
-                        <div class="items-expand">
-                            <div class="items-expand-label">Order Items</div>
-                            <table class="items-table">
-                                <thead><tr><th>Item ID</th><th>Produkt</th><th>Menge</th><th>Preis</th><th>Rabatt</th><th>Gesamt</th></tr></thead>
-                                <tbody>
-                                <tr><td>#1</td><td>Trek 820 - 2016</td><td>2</td><td>$379.99</td><td>—</td><td>$759.98</td></tr>
-                                <tr><td>#2</td><td>Surly Wednesday - 2016</td><td>1</td><td>$1,499.99</td><td><span class="badge badge-discount">10%</span></td><td>$1,349.99</td></tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </td>
-                </tr>
-
-                <!-- Order 3 -->
-                <tr class="order-row" onclick="toggleRow('items3', this)">
-                    <td><span class="order-id">#3</span></td>
-                    <td>Tameka Fisher</td>
-                    <td>2016-01-02</td>
-                    <td>2016-01-05</td>
-                    <td>—</td>
-                    <td>Santa Cruz Bikes</td>
-                    <td><span class="badge badge-processing">Processing</span></td>
-                    <td><span class="toggle-hint">&#x276F; Show (1)</span></td>
-                </tr>
-                <tr id="items3" class="items-row" style="display:none;">
-                    <td colspan="8">
-                        <div class="items-expand">
-                            <div class="items-expand-label">Order Items</div>
-                            <table class="items-table">
-                                <thead><tr><th>Item ID</th><th>Produkt</th><th>Menge</th><th>Preis</th><th>Rabatt</th><th>Gesamt</th></tr></thead>
-                                <tbody>
-                                <tr><td>#1</td><td>Electra Townie Original 21D - 2016</td><td>1</td><td>$599.99</td><td>—</td><td>$599.99</td></tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </td>
-                </tr>
-
-                <!-- Order 4 -->
-                <tr class="order-row" onclick="toggleRow('items4', this)">
-                    <td><span class="order-id">#4</span></td>
-                    <td>Daryl Spence</td>
-                    <td>2016-01-03</td>
-                    <td>2016-01-06</td>
-                    <td>2016-01-05</td>
-                    <td>Rowlett Bikes</td>
-                    <td><span class="badge badge-completed">Completed</span></td>
-                    <td><span class="toggle-hint">&#x276F; Show (2)</span></td>
-                </tr>
-                <tr id="items4" class="items-row" style="display:none;">
-                    <td colspan="8">
-                        <div class="items-expand">
-                            <div class="items-expand-label">Order Items</div>
-                            <table class="items-table">
-                                <thead><tr><th>Item ID</th><th>Produkt</th><th>Menge</th><th>Preis</th><th>Rabatt</th><th>Gesamt</th></tr></thead>
-                                <tbody>
-                                <tr><td>#1</td><td>Trek 520 - 2016</td><td>1</td><td>$1,799.99</td><td><span class="badge badge-discount">5%</span></td><td>$1,709.99</td></tr>
-                                <tr><td>#2</td><td>Heller Shagamaw Frame - 2016</td><td>2</td><td>$829.99</td><td>—</td><td>$1,659.98</td></tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </td>
-                </tr>
-
-                <!-- Order 5 -->
-                <tr class="order-row" onclick="toggleRow('items5', this)">
-                    <td><span class="order-id">#5</span></td>
-                    <td>Charolette Rice</td>
-                    <td>2016-01-04</td>
-                    <td>2016-01-07</td>
-                    <td>—</td>
-                    <td>Santa Cruz Bikes</td>
-                    <td><span class="badge badge-pending">Pending</span></td>
-                    <td><span class="toggle-hint">&#x276F; Show (1)</span></td>
-                </tr>
-                <tr id="items5" class="items-row" style="display:none;">
-                    <td colspan="8">
-                        <div class="items-expand">
-                            <div class="items-expand-label">Order Items</div>
-                            <table class="items-table">
-                                <thead><tr><th>Item ID</th><th>Produkt</th><th>Menge</th><th>Preis</th><th>Rabatt</th><th>Gesamt</th></tr></thead>
-                                <tbody>
-                                <tr><td>#1</td><td>Pure Cycles Western 3-Speed - 2016</td><td>1</td><td>$449.99</td><td>—</td><td>$449.99</td></tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </td>
-                </tr>
-
-                </tbody>
-            </table>
+        <div class="orders-header">
+            <h1 class="page-title orders-title">Bestellungen</h1>
+            <p class="orders-subtitle">Insgesamt #{orderBoundary.count()} Bestellungen</p>
         </div>
 
-        <script>
-            function toggleRow(id, orderRow) {
-                var itemsRow = document.getElementById(id);
-                var hint = orderRow.querySelector('.toggle-hint');
-                var count = itemsRow.querySelectorAll('tbody tr').length;
-                if (itemsRow.style.display === 'none') {
-                    itemsRow.style.display = 'table-row';
-                    hint.innerHTML = '&#x2303; Hide';
-                    orderRow.classList.add('order-row-open');
-                } else {
-                    itemsRow.style.display = 'none';
-                    hint.innerHTML = '&#x276F; Show (' + count + ')';
-                    orderRow.classList.remove('order-row-open');
-                }
-            }
-        </script>
+        <my:pagination boundary="#{orderBoundary}" />
+
+        <h:form id="ordersForm">
+            <div class="orders-card">
+                <table class="data-table orders-table">
+                    <thead>
+                    <tr>
+                        <th><span class="col-header">Bestell-ID</span></th>
+                        <th><span class="col-header">Kunde</span></th>
+                        <th><span class="col-header">Bestelldatum</span></th>
+                        <th><span class="col-header">Lieferdatum</span></th>
+                        <th><span class="col-header">Versanddatum</span></th>
+                        <th><span class="col-header">Niederlassung</span></th>
+                        <th><span class="col-header">Status</span></th>
+                        <th><span class="col-header">Positionen</span></th>
+                    </tr>
+                    </thead>
+
+                    <tbody>
+                    <ui:repeat value="#{orderBoundary.findPage()}" var="order">
+
+                        <tr>
+                            <td>
+                                <h:outputText value="#{order.orderId}" />
+                            </td>
+
+                            <td>
+                                <h:outputText value="#{order.customer.firstName} #{order.customer.lastName}" />
+                            </td>
+
+                            <td>
+                                <h:outputText value="#{order.orderDate}">
+                                    <f:convertDateTime type="localDate" pattern="dd.MM.yyyy" />
+                                </h:outputText>
+                            </td>
+
+                            <td>
+                                <h:outputText value="#{order.requiredDate}">
+                                    <f:convertDateTime type="localDate" pattern="dd.MM.yyyy" />
+                                </h:outputText>
+                            </td>
+
+                            <td>
+                                <h:outputText value="#{order.shippedDate}" rendered="#{not empty order.shippedDate}">
+                                    <f:convertDateTime type="localDate" pattern="dd.MM.yyyy" />
+                                </h:outputText>
+                                <h:outputText value="—" rendered="#{empty order.shippedDate}" />
+                            </td>
+
+                            <td>
+                                <h:outputText value="#{order.store.storeName}" />
+                            </td>
+
+                            <td>
+                                <span class="status-pill #{orderBoundary.statusClass(order.orderStatus)}">
+                                    <h:outputText value="#{orderBoundary.statusLabel(order.orderStatus)}" />
+                                </span>
+                            </td>
+
+                            <td class="items-cell">
+                                <h:commandLink action="#{orderBoundary.toggleItems(order.orderId)}"
+                                               styleClass="items-toggle"
+                                               onclick="saveScrollPosition()">
+                                    <f:ajax execute="@this" render="@form" onevent="restoreScrollPosition"/>
+
+                                    <span class="items-toggle-icon">
+                                        <h:outputText value="#{orderBoundary.expanded(order.orderId) ? '⌄' : '›'}" />
+                                    </span>
+
+                                    <h:outputText value="Ausblenden"
+                                                  rendered="#{orderBoundary.expanded(order.orderId)}" />
+                                    <h:outputText value="Anzeigen (#{orderBoundary.itemsCount(order.orderId)})"
+                                                  rendered="#{not orderBoundary.expanded(order.orderId)}" />
+                                </h:commandLink>
+                            </td>
+                        </tr>
+
+                        <ui:fragment rendered="#{orderBoundary.expanded(order.orderId)}">
+                            <tr class="order-items-row">
+                                <td colspan="8">
+                                    <div class="order-items-panel">
+                                        <div class="order-items-label">BESTELLPOSITIONEN</div>
+
+                                        <table class="items-table">
+                                            <thead>
+                                            <tr>
+                                                <th><span class="col-header">Positions-ID</span></th>
+                                                <th><span class="col-header">Produkt</span></th>
+                                                <th><span class="col-header">Menge</span></th>
+                                                <th><span class="col-header">Listenpreis</span></th>
+                                                <th><span class="col-header">Rabatt</span></th>
+                                                <th><span class="col-header">Gesamt</span></th>
+                                            </tr>
+                                            </thead>
+
+                                            <tbody>
+                                            <ui:repeat value="#{orderBoundary.findItems(order.orderId)}" var="item">
+                                                <tr>
+                                                    <td>
+                                                        <h:outputText value="#{item.id.itemId}" />
+                                                    </td>
+
+                                                    <td>
+                                                        <h:outputText value="#{item.product.productName}" />
+                                                        <h:outputText value=" - #{item.product.modelYear}"
+                                                                      rendered="#{not empty item.product.modelYear}" />
+                                                    </td>
+
+                                                    <td>
+                                                        <h:outputText value="#{item.quantity}" />
+                                                    </td>
+
+                                                    <td>
+                                                        <h:outputText value="#{item.listPrice}">
+                                                            <f:convertNumber minFractionDigits="2"
+                                                                             maxFractionDigits="2"
+                                                                             locale="de" />
+                                                        </h:outputText>
+                                                        <h:outputText value=" €" />
+                                                    </td>
+
+                                                    <td>
+                                                        <h:panelGroup rendered="#{orderBoundary.hasDiscount(item)}">
+                                                            <span class="discount-pill">
+                                                                <h:outputText value="#{orderBoundary.discountLabel(item)}" />
+                                                            </span>
+                                                        </h:panelGroup>
+
+                                                        <h:outputText value="—"
+                                                                      rendered="#{not orderBoundary.hasDiscount(item)}" />
+                                                    </td>
+
+                                                    <td>
+                                                        <h:outputText value="#{orderBoundary.itemTotal(item)}">
+                                                            <f:convertNumber minFractionDigits="2"
+                                                                             maxFractionDigits="2"
+                                                                             locale="de" />
+                                                        </h:outputText>
+                                                        <h:outputText value=" €" />
+                                                    </td>
+                                                </tr>
+                                            </ui:repeat>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </td>
+                            </tr>
+                        </ui:fragment>
+
+                    </ui:repeat>
+                    </tbody>
+                </table>
+            </div>
+        </h:form>
 
     </ui:define>
 
