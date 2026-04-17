@@ -6,6 +6,7 @@ import de.pdbm.team18.business.shared.repository.RepositoryQueryUtils;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
+import jakarta.faces.event.AjaxBehaviorEvent;
 
 import java.io.Serializable;
 import java.util.List;
@@ -40,8 +41,12 @@ public class ProductBoundary implements Serializable {
         return pageSize;
     }
 
-    public void setPageSize(int pageSize) {
+	public void setPageSize(int pageSize) {
+		this.pageSize = pageSize;
+	}
+
+    public void onPageSizeChange(AjaxBehaviorEvent event) {
         this.pageSize = Math.clamp(pageSize, 1, RepositoryQueryUtils.MAX_LIMIT);
-        setCurrentPage(1);
+        this.currentPage = 1;
     }
 }

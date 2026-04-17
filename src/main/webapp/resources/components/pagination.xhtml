@@ -65,6 +65,13 @@
                                                  value="#{cc.attrs.boundary.currentPage + 1}" />
                 </h:commandButton>
 
+				<h:selectOneMenu value="#{cc.attrs.boundary.pageSize}" label="Seitenlänge">
+					<f:selectItem itemValue="10" itemLabel="10" />
+					<f:selectItem itemValue="25" itemLabel="25" />
+					<f:selectItem itemValue="50" itemLabel="50" />
+					<f:selectItem itemValue="100" itemLabel="100" />
+					<f:ajax listener="#{cc.attrs.boundary.onPageSizeChange}" render="@all" />
+				</h:selectOneMenu>
             </div>
         </div>
     </h:form>
