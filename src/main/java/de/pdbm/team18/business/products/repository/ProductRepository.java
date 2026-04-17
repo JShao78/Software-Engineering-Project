@@ -1,24 +1,36 @@
 package de.pdbm.team18.business.products.repository;
 
 import de.pdbm.team18.business.products.entity.Product;
+import de.pdbm.team18.business.shared.repository.RepositoryQueryUtils;
+import jakarta.ejb.Stateless;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 
 import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
 
-public interface ProductRepository {
-    List<Product> findPage(String searchTerm, int offset, int limit);
+@Stateless
+public class ProductRepository {
 
-    long count(String searchTerm);
+    @PersistenceContext
+    EntityManager em;
 
-    Optional<Product> findById(UUID id);
+    public List<Product> findPage(int offset, int limit) {
+        offset = RepositoryQueryUtils.sanitizeOffset(offset);
+        limit = RepositoryQueryUtils.sanitizeLimit(limit);
 
-    List<Product> findByIds(Set<UUID> ids);
+        return em.createQuery("""
+                        SELECT p
+                        FROM Product p
+                        LEFT JOIN FETCH p.brand
+                        LEFT JOIN FETCH p.category
+                        ORDER BY p.productId
+                        """, Product.class)
+                .setFirstResult(offset)
+                .setMaxResults(limit)
+                .getResultList();
+    }
 
-    Optional<Product> findByProductNumber(String productNumber);
-
-    Product save(Product product);
-
-    boolean updateStock(UUID productId, int newStock);
+    public int count() {
+        return Math.toIntExact(em.createQuery("SELECT COUNT(p) FROM Product p", Long.class).getSingleResult());
+    }
 }

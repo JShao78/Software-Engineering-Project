@@ -1,17 +1,35 @@
 package de.pdbm.team18.business.customers.repository;
 
 import de.pdbm.team18.business.customers.entity.Customer;
+import de.pdbm.team18.business.shared.repository.RepositoryQueryUtils;
+import jakarta.ejb.Stateless;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 
 import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
 
-public interface CustomerRepository {
-    List<Customer> findPage(String searchTerm, int offset, int limit);
+@Stateless
+public class CustomerRepository {
 
-    long count(String searchTerm);
+    @PersistenceContext
+    EntityManager em;
 
-    Optional<Customer> findById(UUID id);
+    public List<Customer> findPage(int offset, int limit) {
+        offset = RepositoryQueryUtils.sanitizeOffset(offset);
+        limit = RepositoryQueryUtils.sanitizeLimit(limit);
 
-    Customer save(Customer customer);
+        return em.createQuery("SELECT c FROM Customer c ORDER BY c.customerId",
+                        Customer.class)
+                .setFirstResult(offset)
+                .setMaxResults(limit)
+                .getResultList();
+    }
+
+    public int count() {
+        return Math.toIntExact(
+                em.createQuery("SELECT COUNT(c) FROM Customer c", Long.class)
+                        .getSingleResult()
+        );
+    }
+
 }
