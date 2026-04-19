@@ -7,7 +7,10 @@ import jakarta.ejb.Stateless;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Stateless
 public class OrderRepository {
@@ -59,5 +62,29 @@ public class OrderRepository {
                         .setParameter("orderId", orderId)
                         .getSingleResult()
         );
+    }
+
+    public Map<Integer, Integer> countItemsByOrderIds(List<Integer> orderIds) {
+        if (orderIds == null || orderIds.isEmpty()) {
+            return Collections.emptyMap();
+        }
+
+        List<Object[]> rows = em.createQuery("""
+                        SELECT oi.order.orderId, COUNT(oi)
+                        FROM OrderItem oi
+                        WHERE oi.order.orderId IN :orderIds
+                        GROUP BY oi.order.orderId
+                        """, Object[].class)
+                .setParameter("orderIds", orderIds)
+                .getResultList();
+
+        Map<Integer, Integer> countsByOrderId = new HashMap<>();
+        for (Object[] row : rows) {
+            Integer orderId = (Integer) row[0];
+            int count = Math.toIntExact((Long) row[1]);
+            countsByOrderId.put(orderId, count);
+        }
+
+        return countsByOrderId;
     }
 }

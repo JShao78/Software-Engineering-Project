@@ -12,7 +12,9 @@ import jakarta.faces.event.AjaxBehaviorEvent;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 @Named
@@ -25,9 +27,16 @@ public class OrderBoundary implements Serializable {
     private int pageSize = RepositoryQueryUtils.DEFAULT_LIMIT;
     private int currentPage = 1;
     private Integer expandedOrderId;
+    private Map<Integer, Integer> itemsCountByOrderId = Collections.emptyMap();
 
     public List<Order> findPage() {
-        return orderController.findPage(currentPage, pageSize);
+        List<Order> orders = orderController.findPage(currentPage, pageSize);
+        List<Integer> orderIds = orders.stream()
+                .map(Order::getOrderId)
+                .filter(Objects::nonNull)
+                .toList();
+        itemsCountByOrderId = orderController.countItemsByOrderIds(orderIds);
+        return orders;
     }
 
     public int count() {
@@ -55,7 +64,10 @@ public class OrderBoundary implements Serializable {
     }
 
     public int itemsCount(Integer orderId) {
-        return orderController.countItems(orderId);
+        if (orderId == null) {
+            return 0;
+        }
+        return itemsCountByOrderId.getOrDefault(orderId, 0);
     }
 
     public String statusLabel(Integer status) {

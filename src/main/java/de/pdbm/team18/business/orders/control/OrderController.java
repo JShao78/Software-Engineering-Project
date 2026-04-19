@@ -7,6 +7,8 @@ import jakarta.ejb.Stateless;
 import jakarta.inject.Inject;
 
 import java.util.List;
+import java.util.Map;
+
 @Stateless
 public class OrderController {
     @Inject
@@ -32,5 +34,9 @@ public class OrderController {
 
     public int countItems(Integer orderId) {
         return orderRepository.countItemsByOrderId(orderId);
+    }
+
+    public Map<Integer, Integer> countItemsByOrderIds(List<Integer> orderIds) {
+        return orderRepository.countItemsByOrderIds(orderIds);
     }
 }

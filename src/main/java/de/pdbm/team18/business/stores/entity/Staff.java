@@ -7,9 +7,9 @@ import jakarta.persistence.*;
 public class Staff {
 
     @Id
-    @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    private int id;
+    @Column(name = "staff_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int staffId;
 
     @Column(name = "first_name")
     private String firstName;
