@@ -10,7 +10,10 @@
     <ui:define name="title">Lagerbestände – Vertriebsunterstützung</ui:define>
 
     <ui:define name="content">
-        <h1 class="page-title">Lagerbestände</h1>
+        <div class="orders-header">
+            <h1 class="page-title orders-title">Lagerbestände</h1>
+            <p class="orders-subtitle">Insgesamt #{stockBoundary.count()} Lagerbestände</p>
+        </div>
 
         <my:pagination boundary="#{stockBoundary}" />
 

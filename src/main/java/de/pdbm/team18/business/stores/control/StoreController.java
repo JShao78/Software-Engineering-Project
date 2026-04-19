@@ -13,13 +13,12 @@ public class StoreController {
     @Inject
     private StoreRepository storeRepository;
 
-    public List<Store> findPage(int currentPage, int pageSize) {
-        int offset = (currentPage - 1) * pageSize;
-        return storeRepository.findPage(offset, pageSize);
+    public List<Store> findAll() {
+        return storeRepository.findAll();
     }
 
-    public int totalPages(int pageSize) {
-        return Math.ceilDivExact(storeRepository.count(), pageSize);
+    public int count() {
+        return storeRepository.count();
     }
 
 }

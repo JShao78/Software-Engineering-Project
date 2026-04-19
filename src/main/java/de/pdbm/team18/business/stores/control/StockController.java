@@ -22,4 +22,8 @@ public class StockController {
         return Math.ceilDivExact(stockRepository.count(), pageSize);
     }
 
+    public int count() {
+        return stockRepository.count();
+    }
+
 }

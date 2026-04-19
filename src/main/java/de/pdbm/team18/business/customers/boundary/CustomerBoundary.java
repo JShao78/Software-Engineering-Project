@@ -29,6 +29,10 @@ public class CustomerBoundary implements Serializable {
         return customerController.totalPages(pageSize);
     }
 
+    public int count() {
+        return customerController.count();
+    }
+
     //Getter and Setter
 
     public int getCurrentPage() {

@@ -9,7 +9,10 @@
     <ui:define name="title">Produkte – Vertriebsunterstützung</ui:define>
 
     <ui:define name="content">
-        <h1 class="page-title">Produkte</h1>
+        <div class="orders-header">
+            <h1 class="page-title orders-title">Produkte</h1>
+            <p class="orders-subtitle">Insgesamt #{productBoundary.count()} Produkte</p>
+        </div>
 
         <my:pagination boundary="#{productBoundary}" />
 

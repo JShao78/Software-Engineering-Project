@@ -2,29 +2,20 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="jakarta.faces.html"
       xmlns:ui="jakarta.faces.facelets"
-      xmlns:f="jakarta.faces.core"
-      xmlns:c="jakarta.tags.core">
+      xmlns:f="jakarta.faces.core">
 
 <ui:composition template="templates/navbar.xhtml">
 
     <ui:define name="title">Niederlassungen – Vertriebsunterstützung</ui:define>
 
     <ui:define name="content">
-        <h1 class="page-title">Niederlassungen</h1>
-
-        <h:form id="storePaginationForm" rendered="#{storeBoundary.totalPages() > 1}">
-            <div class="pagination">
-                <c:forEach begin="1" end="#{storeBoundary.totalPages()}" var="page">
-                    <h:commandButton value="#{page}"
-                                     styleClass="btn-page #{storeBoundary.currentPage eq page ? 'btn-page-active' : ''}">
-                        <f:setPropertyActionListener target="#{storeBoundary.currentPage}" value="#{page}" />
-                    </h:commandButton>
-                </c:forEach>
-            </div>
-        </h:form>
+        <div class="orders-header">
+            <h1 class="page-title orders-title">Niederlassungen</h1>
+            <p class="orders-subtitle">Insgesamt #{storeBoundary.count()} Niederlassungen</p>
+        </div>
 
         <div class="table-container" style="margin-top: 20px;">
-            <h:dataTable value="#{storeBoundary.findPage()}"
+            <h:dataTable value="#{storeBoundary.findAll()}"
                          var="store"
                          styleClass="data-table">
 

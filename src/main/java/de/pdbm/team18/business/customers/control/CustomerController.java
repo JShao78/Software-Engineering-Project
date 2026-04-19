@@ -22,4 +22,8 @@ public class CustomerController {
         return Math.ceilDivExact(customerRepository.count(), pageSize);
     }
 
+    public int count() {
+        return customerRepository.count();
+    }
+
 }

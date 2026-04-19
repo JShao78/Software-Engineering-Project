@@ -1,6 +1,5 @@
 package de.pdbm.team18.business.stores.repository;
 
-import de.pdbm.team18.business.shared.repository.RepositoryQueryUtils;
 import de.pdbm.team18.business.stores.entity.Store;
 import jakarta.ejb.Stateless;
 import jakarta.persistence.EntityManager;
@@ -14,13 +13,8 @@ public class StoreRepository {
     @PersistenceContext
     EntityManager em;
 
-    public List<Store> findPage(int offset, int limit) {
-        offset = RepositoryQueryUtils.sanitizeOffset(offset);
-        limit = RepositoryQueryUtils.sanitizeLimit(limit);
-
+    public List<Store> findAll() {
         return em.createQuery("SELECT s FROM Store s ORDER BY s.storeId", Store.class)
-                .setFirstResult(offset)
-                .setMaxResults(limit)
                 .getResultList();
     }
 

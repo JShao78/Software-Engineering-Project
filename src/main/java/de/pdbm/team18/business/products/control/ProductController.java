@@ -21,4 +21,8 @@ public class ProductController {
     public int totalPages(int pageSize) {
         return Math.ceilDivExact(productRepository.count(), pageSize);
     }
+
+    public int count() {
+        return productRepository.count();
+    }
 }
