@@ -1,0 +1,22 @@
+Reflexion Iteration 2 - Team 18
+================================
+
+1) Geplante Features
+- Views für Produkte, Kunden, Bestellungen, Niederlassungen und Lagerbestände basierend auf dem gegebenem SQL dump
+- Die Datenbank in der JPA integrieren und alte JPA teile entfernen
+- Sortierung in der Lagerbestände View
+- Paging in der UI um nicht nach Valhalla scrollen zu müssen
+
+2) Tatsaechlich umgesetzt
+- Fast alles, außer die Sortierung bei den Lagerbeständen
+
+3) Abweichungen von der Planung
+- In planung-2.txt hatten wir noch eine Sortierfunktion angesprochen.
+    Nach der absprache am ersten Mittwoch haben wir uns dann entschieden das fallen zu lassen.
+
+4) Prozentuale individuelle Anteile
+- Anton Metzner 70487463: 20 %
+- Finn Schäfgen 70489487: 20%
+- Dominik Schwarz 70476741: 20%
+- Aminah Mohammaad 70489506: 20%
+- Jiawei Shao 70499593: 20%
