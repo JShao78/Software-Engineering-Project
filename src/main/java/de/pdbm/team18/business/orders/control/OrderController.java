@@ -32,10 +32,6 @@ public class OrderController {
         return orderRepository.findItemsByOrderId(orderId);
     }
 
-    public int countItems(Integer orderId) {
-        return orderRepository.countItemsByOrderId(orderId);
-    }
-
     public Map<Integer, Integer> countItemsByOrderIds(List<Integer> orderIds) {
         return orderRepository.countItemsByOrderIds(orderIds);
     }

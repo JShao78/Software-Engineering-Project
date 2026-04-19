@@ -52,18 +52,6 @@ public class OrderRepository {
                 .getResultList();
     }
 
-    public int countItemsByOrderId(Integer orderId) {
-        return Math.toIntExact(
-                em.createQuery("""
-                        SELECT COUNT(oi)
-                        FROM OrderItem oi
-                        WHERE oi.order.orderId = :orderId
-                        """, Long.class)
-                        .setParameter("orderId", orderId)
-                        .getSingleResult()
-        );
-    }
-
     public Map<Integer, Integer> countItemsByOrderIds(List<Integer> orderIds) {
         if (orderIds == null || orderIds.isEmpty()) {
             return Collections.emptyMap();
