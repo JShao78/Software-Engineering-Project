@@ -1,0 +1,7 @@
+- neue View und Tabelle fuer Staff
+- CRUD wieder einfuegen (ausser Stores)
+-> Customer einfuegen und altern 
+-> 
+
+ADMIN, USER1, USER2
+- Master-Views 
