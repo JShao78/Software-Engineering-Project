@@ -1,0 +1,6 @@
+Team 18:
+- Einige unnötige Column-Annotationen
+- Schönes, übersichtliches UI
+- Guter Java-Code
+- Sie überschreiben einen globalen JNDI-Namen, damit gehen alle anderen Anwendungen evtl nicht mehr
+Bewertung: 85% (1,7)
