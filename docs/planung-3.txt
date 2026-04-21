@@ -1,0 +1,21 @@
+- neue View und Tabelle fuer Staff
+
+- CRUD:
+    - Staff (nur admin) (all)
+    - Customer nur wenn keine bestellungsverknüfung besteht(anpassen & erstellen ok)
+    - orders garnicht nur create und alter nur für orderstatus und shipped date
+    - order items damit auch nicht
+    - Products (create and alter immer) (kein löschen? Oder wenn kein stock da ist?)
+    - Stocks (anpassen aber nicht manuel kreieren)
+    - Stores garnichts!
+ 
+-Anmeldung:
+    - ADMIN zugriff auf alles
+    - USER1 kein zugriff auf staff, sonst alles
+    - USER2 nur lesen von Master seiten
+
+- Bestellung:
+    - Prüfung ob produkt auf lager ist
+    - Lagerbestandsaktualisierung bei wechsel von Processing zu completed
+
+- UI mobile friendly machen
