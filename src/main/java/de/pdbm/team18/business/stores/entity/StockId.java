@@ -29,6 +29,10 @@ public class StockId implements Serializable {
         return storeId;
     }
 
+    public void setStoreId(int storeId) {
+        this.storeId = storeId;
+    }
+
     public int getProductId() {
         return productId;
     }
