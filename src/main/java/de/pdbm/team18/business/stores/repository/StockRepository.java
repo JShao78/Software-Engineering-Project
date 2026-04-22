@@ -33,4 +33,14 @@ public class StockRepository {
     public int count() {
         return Math.toIntExact(em.createQuery("SELECT COUNT(stock) FROM Stock stock", Long.class).getSingleResult());
     }
+
+    public Stock create(Stock stock) {
+        if (stock == null) {
+            throw new IllegalArgumentException("stock must not be null");
+        }
+
+        em.persist(stock);
+        em.flush();
+        return stock;
+    }
 }

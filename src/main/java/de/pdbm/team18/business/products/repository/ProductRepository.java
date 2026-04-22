@@ -33,4 +33,14 @@ public class ProductRepository {
     public int count() {
         return Math.toIntExact(em.createQuery("SELECT COUNT(p) FROM Product p", Long.class).getSingleResult());
     }
+
+    public Product create(Product product) {
+        if (product == null) {
+            throw new IllegalArgumentException("product must not be null");
+        }
+
+        em.persist(product);
+        em.flush();
+        return product;
+    }
 }
