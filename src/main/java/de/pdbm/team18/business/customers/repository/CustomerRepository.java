@@ -31,5 +31,9 @@ public class CustomerRepository {
                         .getSingleResult()
         );
     }
-
+    public Customer create(Customer customer) {
+        em.persist(customer);
+        em.flush();
+        return customer;
+    }
 }

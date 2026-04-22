@@ -75,4 +75,16 @@ public class OrderRepository {
 
         return countsByOrderId;
     }
+
+    public Order create(Order order) {
+        em.persist(order);
+        em.flush();
+        return order;
+    }
+
+    public OrderItem create(OrderItem orderItem) {
+        em.persist(orderItem);
+        em.flush();
+        return orderItem;
+    }
 }
