@@ -20,13 +20,12 @@ public class OrderItem {
     @JoinColumn(name = "product_id")
     private Product product;
 
-    @Column(name = "quantity")
     private Integer quantity;
 
     @Column(name = "list_price", precision = 19, scale = 2)
     private BigDecimal listPrice;
 
-    @Column(name = "discount", precision = 19, scale = 2)
+    @Column(precision = 19, scale = 2)
     private BigDecimal discount;
 
 

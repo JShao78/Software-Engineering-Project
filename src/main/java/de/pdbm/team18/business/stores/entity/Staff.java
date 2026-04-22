@@ -17,13 +17,8 @@ public class Staff {
     @Column(name = "last_name")
     private String lastName;
 
-    @Column
     private String email;
-
-    @Column
     private int active;
-
-    @Column
     private String phone;
 
 

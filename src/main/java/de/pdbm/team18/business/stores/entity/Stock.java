@@ -20,7 +20,6 @@ public class Stock {
     @JoinColumn(name = "store_id")
     private Store store;
 
-    @Column
     private int quantity;
 
     public StockId getStockId() {
