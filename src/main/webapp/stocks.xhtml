@@ -26,7 +26,7 @@
                     <f:facet name="header">
                         <span class="col-header">Store ID</span>
                     </f:facet>
-                    <h:outputText value="#{stock.store.storeId}" />
+                    <h:outputText value="#{stock.store.storeId}" styleClass="uuid-text" />
                 </h:column>
 
                 <h:column>
@@ -40,7 +40,7 @@
                     <f:facet name="header">
                         <span class="col-header">Produkt ID</span>
                     </f:facet>
-                    <h:outputText value="#{stock.product.productId}" />
+                    <h:outputText value="#{stock.product.productId}" styleClass="uuid-text" />
                 </h:column>
 
                 <h:column>
@@ -54,7 +54,7 @@
                     <f:facet name="header">
                         <span class="col-header">Bestand</span>
                     </f:facet>
-                    <h:outputText value="#{stock.quantity}" />
+                    <h:outputText value="#{stock.quantity}" styleClass="text-accent" />
                 </h:column>
 
             </h:dataTable>
