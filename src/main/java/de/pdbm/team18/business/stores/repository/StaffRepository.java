@@ -25,11 +25,12 @@ public class StaffRepository {
         limit = RepositoryQueryUtils.sanitizeLimit(limit);
 
         return em.createQuery("""
-                        SELECT s
-                        FROM Staff s
-                        LEFT JOIN FETCH p.store
-                        ORDER BY p.productId
-                        """, Staff.class)
+            SELECT s
+            FROM Staff s
+            LEFT JOIN FETCH s.storeId
+            LEFT JOIN FETCH s.managerId
+            ORDER BY s.staffId
+            """, Staff.class)
                 .setFirstResult(offset)
                 .setMaxResults(limit)
                 .getResultList();

@@ -11,7 +11,8 @@ import jakarta.inject.Named;
 import java.io.Serializable;
 import java.util.List;
 
-@Named@ViewScoped
+@Named
+@ViewScoped
 public class StaffBoundary implements Serializable {
 
     private int currentPage = 1;
@@ -47,7 +48,7 @@ public class StaffBoundary implements Serializable {
     }
 
     public void setCurrentPage(int currentPage) {
-        this.currentPage = Math.clamp(currentPage, 1, this.pageSize);
+        this.currentPage = Math.clamp(currentPage, 1, Math.max(totalPages(), 1)); // fixed: was pageSize
     }
 
     public int getPageSize() {

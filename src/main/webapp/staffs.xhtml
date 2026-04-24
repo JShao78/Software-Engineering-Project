@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:ui="jakarta.faces.facelets"
+      xmlns:f="jakarta.faces.core"
+      xmlns:my="jakarta.faces.composite/components">
+
+<ui:composition template="templates/navbar.xhtml">
+
+    <ui:define name="title">Mitarbeiter – Vertriebsunterstützung</ui:define>
+
+    <ui:define name="content">
+        <div class="orders-header">
+            <h1 class="page-title orders-title">Mitarbeiter</h1>
+            <p class="orders-subtitle">Insgesamt #{staffBoundary.count()} Mitarbeiter</p>
+        </div>
+
+        <my:pagination boundary="#{staffBoundary}" />
+
+        <div class="table-container" style="margin-top: 20px;">
+            <h:dataTable value="#{staffBoundary.findPage()}"
+                         var="staff"
+                         styleClass="data-table">
+
+                <h:column>
+                    <f:facet name="header"><span class="col-header">ID</span></f:facet>
+                    <h:outputText value="#{staff.staffId}" styleClass="uuid-text"/>
+                </h:column>
+
+                <h:column>
+                    <f:facet name="header"><span class="col-header">Vorname</span></f:facet>
+                    <h:outputText value="#{staff.firstName}"/>
+                </h:column>
+
+                <h:column>
+                    <f:facet name="header"><span class="col-header">Nachname</span></f:facet>
+                    <h:outputText value="#{staff.lastName}"/>
+                </h:column>
+
+                <h:column>
+                    <f:facet name="header"><span class="col-header">E-Mail</span></f:facet>
+                    <h:outputText value="#{staff.email}"/>
+                </h:column>
+
+                <h:column>
+                    <f:facet name="header"><span class="col-header">Telefon</span></f:facet>
+                    <h:outputText value="#{staff.phone}"/>
+                </h:column>
+
+                <h:column>
+                    <f:facet name="header"><span class="col-header">Filiale</span></f:facet>
+                    <h:outputText value="#{staff.storeId.storeName}" rendered="#{staff.storeId != null}"/>
+                    <h:outputText value="-" rendered="#{staff.storeId == null}"/>
+                </h:column>
+
+                <h:column>
+                    <f:facet name="header"><span class="col-header">Status</span></f:facet>
+
+                    <h:panelGroup rendered="#{staff.active == 1}">
+                        <span class="status-pill status-completed">Aktiv</span>
+                    </h:panelGroup>
+
+                    <h:panelGroup rendered="#{staff.active != 1}">
+                        <span class="status-pill status-rejected">Inaktiv</span>
+                    </h:panelGroup>
+                </h:column>
+
+            </h:dataTable>
+        </div>
+    </ui:define>
+
+</ui:composition>
+</html>
