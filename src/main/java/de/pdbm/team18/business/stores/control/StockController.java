@@ -26,4 +26,7 @@ public class StockController {
         return stockRepository.count();
     }
 
+    public Stock create(Stock stock) {
+        return stockRepository.create(stock);
+    }
 }

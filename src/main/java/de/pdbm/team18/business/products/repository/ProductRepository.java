@@ -1,5 +1,7 @@
 package de.pdbm.team18.business.products.repository;
 
+import de.pdbm.team18.business.products.entity.Brand;
+import de.pdbm.team18.business.products.entity.Category;
 import de.pdbm.team18.business.products.entity.Product;
 import de.pdbm.team18.business.shared.repository.RepositoryQueryUtils;
 import jakarta.ejb.Stateless;
@@ -32,6 +34,14 @@ public class ProductRepository {
 
     public int count() {
         return Math.toIntExact(em.createQuery("SELECT COUNT(p) FROM Product p", Long.class).getSingleResult());
+    }
+
+    public List<Brand> findBrands() {
+        return em.createQuery("SELECT b FROM Brand b", Brand.class).getResultList();
+    }
+
+    public List<Category> findCategories() {
+        return em.createQuery("SELECT c FROM Category c", Category.class).getResultList();
     }
 
     public Product create(Product product) {
