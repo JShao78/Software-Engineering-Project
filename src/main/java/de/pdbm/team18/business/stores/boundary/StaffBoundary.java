@@ -21,6 +21,8 @@ public class StaffBoundary implements Serializable {
     @Inject
     StaffController staffController;
 
+    private Staff staff = new Staff();
+
     /**
      * Provides a List of Staff representing the selected page.
      * @return The List of Staff
@@ -43,6 +45,11 @@ public class StaffBoundary implements Serializable {
         return staffController.count();
     }
 
+    public void create() {
+        staffController.create(staff);
+        staff = new Staff();
+    }
+
     public int getCurrentPage() {
         return currentPage;
     }
@@ -62,5 +69,9 @@ public class StaffBoundary implements Serializable {
     public void onPageSizeChange(AjaxBehaviorEvent event) {
         this.pageSize = Math.clamp(pageSize, 1, RepositoryQueryUtils.MAX_LIMIT);
         this.currentPage = 1;
+    }
+
+    public Staff getStaff() {
+        return staff;
     }
 }

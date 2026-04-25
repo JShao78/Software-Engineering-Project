@@ -40,4 +40,9 @@ public class StaffController {
     public int count() {
         return staffRepository.count();
     }
+
+    public Staff create(Staff staff) {
+        staff.setActive(1);
+        return staffRepository.create(staff);
+    }
 }
