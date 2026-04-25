@@ -32,6 +32,7 @@ public class CustomerRepository {
         );
     }
     public Customer create(Customer customer) {
+        if (customer == null) throw new IllegalArgumentException("Customer must not be null");
         em.persist(customer);
         em.flush();
         return customer;

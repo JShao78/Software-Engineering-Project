@@ -26,4 +26,7 @@ public class CustomerController {
         return customerRepository.count();
     }
 
+    public void create(Customer customer) {
+        customerRepository.create(customer);
+    }
 }
