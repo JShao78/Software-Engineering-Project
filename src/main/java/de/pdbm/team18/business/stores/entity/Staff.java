@@ -1,6 +1,8 @@
 package de.pdbm.team18.business.stores.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.Pattern;
 
 @Entity
 @Table(name = "staffs")
@@ -17,8 +19,10 @@ public class Staff {
     @Column(name = "last_name")
     private String lastName;
 
+    @Email
     private String email;
     private int active;
+    @Pattern(regexp = "^\\(\\d{3}\\) \\d{3}-\\d{4}$")
     private String phone;
 
 
