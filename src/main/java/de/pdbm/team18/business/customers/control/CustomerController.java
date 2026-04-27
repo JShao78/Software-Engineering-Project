@@ -29,4 +29,16 @@ public class CustomerController {
     public void create(Customer customer) {
         customerRepository.create(customer);
     }
+
+    public boolean delete(Integer customerId) {
+        Customer customer = customerRepository.findById(customerId);
+        if (customer == null) {
+            return false;
+        }
+        if (customerRepository.hasOrders(customerId)) {
+            return false;
+        }
+        customerRepository.delete(customerId);
+        return true;
+    }
 }

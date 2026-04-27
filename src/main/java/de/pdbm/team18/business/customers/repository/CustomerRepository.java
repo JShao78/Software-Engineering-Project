@@ -37,4 +37,22 @@ public class CustomerRepository {
         em.flush();
         return customer;
     }
+
+    public void delete(Integer customerId) {
+        Customer customer = em.find(Customer.class, customerId);
+        if (customer != null) {
+            em.remove(em.merge(customer));
+        }
+    }
+
+    public Customer findById(Integer customerId) {
+        return em.find(Customer.class, customerId);
+    }
+
+    public boolean hasOrders(Integer customerId) {
+        long count = em.createQuery("SELECT COUNT(o) FROM Order o WHERE o.customer.customerId = :customerId", Long.class)
+                .setParameter("customerId", customerId)
+                .getSingleResult();
+        return count > 0;
+    }
 }
