@@ -38,10 +38,19 @@ public class CustomerRepository {
         return customer;
     }
 
+    public Customer update(Customer customer) {
+        if (customer == null) {
+            throw new IllegalArgumentException("Customer must not be null");
+        }
+        Customer managedCustomer = em.merge(customer);
+        em.flush();
+        return managedCustomer;
+    }
+
     public void delete(Integer customerId) {
         Customer customer = em.find(Customer.class, customerId);
         if (customer != null) {
-            em.remove(em.merge(customer));
+            em.remove(customer);
         }
     }
 
