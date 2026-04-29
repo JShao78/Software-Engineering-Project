@@ -19,21 +19,39 @@ public class ProductRepository {
     public List<Product> findPage(int offset, int limit) {
         offset = RepositoryQueryUtils.sanitizeOffset(offset);
         limit = RepositoryQueryUtils.sanitizeLimit(limit);
-
         return em.createQuery("""
-                        SELECT p
-                        FROM Product p
-                        LEFT JOIN FETCH p.brand
-                        LEFT JOIN FETCH p.category
-                        ORDER BY p.productId
-                        """, Product.class)
+                SELECT p FROM Product p
+                LEFT JOIN FETCH p.brand
+                LEFT JOIN FETCH p.category
+                ORDER BY p.productId
+                """, Product.class)
                 .setFirstResult(offset)
                 .setMaxResults(limit)
                 .getResultList();
     }
 
     public int count() {
-        return Math.toIntExact(em.createQuery("SELECT COUNT(p) FROM Product p", Long.class).getSingleResult());
+        return Math.toIntExact(
+                em.createQuery("SELECT COUNT(p) FROM Product p", Long.class)
+                        .getSingleResult());
+    }
+
+    public Product create(Product product) {
+        if (product == null) throw new IllegalArgumentException("Product must not be null");
+        em.persist(product);
+        em.flush();
+        return product;
+    }
+
+    public Product findById(Integer productId) {
+        return em.find(Product.class, productId);
+    }
+
+    public Product update(Product product) {
+        if (product == null) throw new IllegalArgumentException("Product must not be null");
+        Product managed = em.merge(product);
+        em.flush();
+        return managed;
     }
 
     public List<Brand> findBrands() {
@@ -42,15 +60,5 @@ public class ProductRepository {
 
     public List<Category> findCategories() {
         return em.createQuery("SELECT c FROM Category c", Category.class).getResultList();
-    }
-
-    public Product create(Product product) {
-        if (product == null) {
-            throw new IllegalArgumentException("product must not be null");
-        }
-
-        em.persist(product);
-        em.flush();
-        return product;
     }
 }

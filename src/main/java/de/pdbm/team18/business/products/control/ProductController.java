@@ -32,37 +32,41 @@ public class ProductController {
     }
 
     public int totalPages(int pageSize) {
-        return Math.ceilDivExact(productRepository.count(), pageSize);
+        int count = productRepository.count();
+        if (count == 0) return 1;
+        return (int) Math.ceil((double) count / pageSize);
     }
 
     public int count() {
         return productRepository.count();
     }
 
-    /**
-     * Persist the given Product and creates Stock entries for all Stores
-     * @param product the Product to persist
-     * @return the same Product
-     */
     public Product create(Product product) {
         productRepository.create(product);
-        // Create Stocks for each store
-        for (Store store: storeController.findAll()) {
+        for (Store store : storeController.findAll()) {
             Stock stock = new Stock();
             stock.setProduct(product);
             stock.setQuantity(0);
             stock.setStore(store);
-            stock.setStockId(new StockId()); // TODO double check if required
+            stock.setStockId(new StockId());
             stockController.create(stock);
         }
         return product;
+    }
+
+    public Product findById(Integer productId) {
+        return productRepository.findById(productId);
+    }
+
+    public boolean edit(Product product) {
+        return productRepository.update(product) != null;
     }
 
     public List<Category> findCategories() {
         return productRepository.findCategories();
     }
 
-    public List<Brand>  findBrands() {
+    public List<Brand> findBrands() {
         return productRepository.findBrands();
     }
 }

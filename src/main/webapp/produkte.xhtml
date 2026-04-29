@@ -72,7 +72,7 @@
 
                         <div class="product-actions">
                             <h:commandButton value="Bearbeiten"
-                                             action="#{productBoundary.prepareEdit(product)}"
+                                             action="#{productBoundary.prepareEdit(product.productId)}"
                                              styleClass="btn-table btn-table-edit">
                                 <f:ajax execute="@this" render=":editProductModalPanel"/>
                             </h:commandButton>
@@ -186,11 +186,11 @@
                                                      required="true"
                                                      requiredMessage="Bitte wählen Sie eine Marke aus."
                                                      styleClass="product-input product-select">
-                                        <f:selectItem itemValue="" itemLabel="Marke auswählen" noSelectionOption="true"/>
-                                        <f:selectItem itemValue="1" itemLabel="Trek"/>
-                                        <f:selectItem itemValue="2" itemLabel="Electra"/>
-                                        <f:selectItem itemValue="3" itemLabel="Surly"/>
-                                        <f:selectItem itemValue="4" itemLabel="Haro"/>
+                                        <f:selectItem itemValue="#{null}" itemLabel="Marke auswählen" noSelectionOption="true"/>
+                                        <f:selectItems value="#{productBoundary.findBrands()}"
+                                                       var="brand"
+                                                       itemValue="#{brand.brandId}"
+                                                       itemLabel="#{brand.brandName}"/>
                                     </h:selectOneMenu>
 
                                     <h:message for="brandId" styleClass="product-validation-hint"/>
@@ -204,11 +204,11 @@
                                                      required="true"
                                                      requiredMessage="Bitte wählen Sie eine Kategorie aus."
                                                      styleClass="product-input product-select">
-                                        <f:selectItem itemValue="" itemLabel="Kategorie auswählen" noSelectionOption="true"/>
-                                        <f:selectItem itemValue="1" itemLabel="Mountain Bikes"/>
-                                        <f:selectItem itemValue="2" itemLabel="Road Bikes"/>
-                                        <f:selectItem itemValue="3" itemLabel="Electric Bikes"/>
-                                        <f:selectItem itemValue="4" itemLabel="Children Bicycles"/>
+                                        <f:selectItem itemValue="#{null}" itemLabel="Kategorie auswählen" noSelectionOption="true"/>
+                                        <f:selectItems value="#{productBoundary.findCategories()}"
+                                                       var="category"
+                                                       itemValue="#{category.categoryId}"
+                                                       itemLabel="#{category.categoryName}"/>
                                     </h:selectOneMenu>
 
                                     <h:message for="categoryId" styleClass="product-validation-hint"/>
@@ -225,7 +225,7 @@
                         <h:commandButton value="Speichern"
                                          action="#{productBoundary.save}"
                                          styleClass="product-btn product-btn-primary">
-                            <f:ajax execute="@form" render="@form"/>
+                            <f:ajax execute="@form" render="@all"/>
                         </h:commandButton>
                     </div>
 
@@ -236,7 +236,7 @@
 
         <h:panelGroup id="editProductModalPanel"
                       layout="block"
-                      styleClass="#{productBoundary.editModalOpen ? 'product-modal-overlay product-modal-overlay-open' : 'product-modal-overlay'}">
+                      styleClass="#{not empty productBoundary.editProduct.productId ? 'product-modal-overlay product-modal-overlay-open' : 'product-modal-overlay'}">
 
             <div class="product-modal">
 
@@ -347,11 +347,11 @@
                                                      required="true"
                                                      requiredMessage="Bitte wählen Sie eine Marke aus."
                                                      styleClass="product-input product-select">
-                                        <f:selectItem itemValue="" itemLabel="Marke auswählen" noSelectionOption="true"/>
-                                        <f:selectItem itemValue="1" itemLabel="Trek"/>
-                                        <f:selectItem itemValue="2" itemLabel="Electra"/>
-                                        <f:selectItem itemValue="3" itemLabel="Surly"/>
-                                        <f:selectItem itemValue="4" itemLabel="Haro"/>
+                                        <f:selectItem itemValue="#{null}" itemLabel="Marke auswählen" noSelectionOption="true"/>
+                                        <f:selectItems value="#{productBoundary.findBrands()}"
+                                                       var="brand"
+                                                       itemValue="#{brand.brandId}"
+                                                       itemLabel="#{brand.brandName}"/>
                                     </h:selectOneMenu>
 
                                     <h:message for="editBrandId" styleClass="product-validation-hint"/>
@@ -365,11 +365,11 @@
                                                      required="true"
                                                      requiredMessage="Bitte wählen Sie eine Kategorie aus."
                                                      styleClass="product-input product-select">
-                                        <f:selectItem itemValue="" itemLabel="Kategorie auswählen" noSelectionOption="true"/>
-                                        <f:selectItem itemValue="1" itemLabel="Mountain Bikes"/>
-                                        <f:selectItem itemValue="2" itemLabel="Road Bikes"/>
-                                        <f:selectItem itemValue="3" itemLabel="Electric Bikes"/>
-                                        <f:selectItem itemValue="4" itemLabel="Children Bicycles"/>
+                                        <f:selectItem itemValue="#{null}" itemLabel="Kategorie auswählen" noSelectionOption="true"/>
+                                        <f:selectItems value="#{productBoundary.findCategories()}"
+                                                       var="category"
+                                                       itemValue="#{category.categoryId}"
+                                                       itemLabel="#{category.categoryName}"/>
                                     </h:selectOneMenu>
 
                                     <h:message for="editCategoryId" styleClass="product-validation-hint"/>
@@ -389,9 +389,9 @@
                         </h:commandButton>
 
                         <h:commandButton value="Änderungen speichern"
-                                         action="#{productBoundary.update}"
+                                         action="#{productBoundary.saveEdit}"
                                          styleClass="product-btn product-btn-primary">
-                            <f:ajax execute="@form" render="@form :editProductModalPanel"/>
+                            <f:ajax execute="@form" render="@all"/>
                         </h:commandButton>
                     </div>
 

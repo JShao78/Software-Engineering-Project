@@ -5,9 +5,6 @@ import de.pdbm.team18.business.products.entity.Brand;
 import de.pdbm.team18.business.products.entity.Category;
 import de.pdbm.team18.business.products.entity.Product;
 import de.pdbm.team18.business.shared.repository.RepositoryQueryUtils;
-import jakarta.annotation.PostConstruct;
-import jakarta.faces.application.FacesMessage;
-import jakarta.faces.context.FacesContext;
 import jakarta.faces.event.AjaxBehaviorEvent;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
@@ -20,54 +17,19 @@ import java.util.List;
 @ViewScoped
 public class ProductBoundary implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+    private int currentPage = 1;
+    private int pageSize = RepositoryQueryUtils.DEFAULT_LIMIT;
 
-    private int currentPage;
-    private int pageSize;
-
-    private Product product;
-
+    private Product product = new Product();
     private Integer brandId;
     private Integer categoryId;
 
-    private Product editProduct;
-
+    private Product editProduct = new Product();
     private Integer editBrandId;
     private Integer editCategoryId;
 
-    private boolean editModalOpen;
-
     @Inject
     private ProductController productController;
-
-    @PostConstruct
-    private void init() {
-        currentPage = 1;
-        pageSize = RepositoryQueryUtils.DEFAULT_LIMIT;
-
-        prepareNewProduct();
-        prepareEmptyEditProduct();
-
-        editModalOpen = false;
-    }
-
-    private void prepareNewProduct() {
-        product = new Product();
-        product.setBrand(new Brand());
-        product.setCategory(new Category());
-
-        brandId = null;
-        categoryId = null;
-    }
-
-    private void prepareEmptyEditProduct() {
-        editProduct = new Product();
-        editProduct.setBrand(new Brand());
-        editProduct.setCategory(new Category());
-
-        editBrandId = null;
-        editCategoryId = null;
-    }
 
     public List<Product> findPage() {
         return productController.findPage(currentPage, pageSize);
@@ -81,74 +43,50 @@ public class ProductBoundary implements Serializable {
         return productController.count();
     }
 
-    /*
-     * FRONTEND-ONLY SAVE
-     * This does NOT save the product to the database.
-     * It only shows validation + success message and resets the form.
-     */
-    public String save() {
-        FacesContext.getCurrentInstance().addMessage(
-                null,
-                new FacesMessage(
-                        FacesMessage.SEVERITY_INFO,
-                        "Frontend-Demo: Produkt wurde geprüft, aber nicht in der Datenbank gespeichert.",
-                        null
-                )
-        );
-
-        prepareNewProduct();
-
-        return null;
+    public void save() {
+        product.setBrand(productController.findBrands()
+                .stream().filter(b -> b.getBrandId().equals(brandId))
+                .findFirst().orElse(null));
+        product.setCategory(productController.findCategories()
+                .stream().filter(c -> c.getCategoryId().equals(categoryId))
+                .findFirst().orElse(null));
+        productController.create(product);
+        product = new Product();
+        brandId = null;
+        categoryId = null;
     }
 
-    /*
-     * Opens the edit modal and fills it with the selected product data.
-     */
-    public void prepareEdit(Product selectedProduct) {
-        this.editProduct = selectedProduct;
-
-        if (selectedProduct.getBrand() != null) {
-            this.editBrandId = selectedProduct.getBrand().getBrandId();
-        } else {
-            this.editBrandId = null;
+    public boolean prepareEdit(Integer productId) {
+        Product found = productController.findById(productId);
+        if (found == null) {
+            cancelEdit();
+            return false;
         }
-
-        if (selectedProduct.getCategory() != null) {
-            this.editCategoryId = selectedProduct.getCategory().getCategoryId();
-        } else {
-            this.editCategoryId = null;
-        }
-
-        this.editModalOpen = true;
+        this.editProduct = found;
+        this.editBrandId = found.getBrand() != null ? found.getBrand().getBrandId() : null;
+        this.editCategoryId = found.getCategory() != null ? found.getCategory().getCategoryId() : null;
+        return true;
     }
 
-    /*
-     * Closes the edit modal without saving.
-     */
+    public boolean saveEdit() {
+        if (editProduct.getProductId() == null) return false;
+
+        editProduct.setBrand(productController.findBrands()
+                .stream().filter(b -> b.getBrandId().equals(editBrandId))
+                .findFirst().orElse(null));
+        editProduct.setCategory(productController.findCategories()
+                .stream().filter(c -> c.getCategoryId().equals(editCategoryId))
+                .findFirst().orElse(null));
+
+        boolean success = productController.edit(editProduct);
+        if (success) cancelEdit();
+        return success;
+    }
+
     public void cancelEdit() {
-        prepareEmptyEditProduct();
-        this.editModalOpen = false;
-    }
-
-    /*
-     * FRONTEND-ONLY UPDATE
-     * This does NOT call productController.update().
-     * So Maven will compile without needing backend update logic.
-     */
-    public String update() {
-        FacesContext.getCurrentInstance().addMessage(
-                null,
-                new FacesMessage(
-                        FacesMessage.SEVERITY_INFO,
-                        "Frontend-Demo: Änderungen wurden nur in der Oberfläche übernommen.",
-                        null
-                )
-        );
-
-        prepareEmptyEditProduct();
-        editModalOpen = false;
-
-        return null;
+        editProduct = new Product();
+        editBrandId = null;
+        editCategoryId = null;
     }
 
     public void onPageSizeChange(AjaxBehaviorEvent event) {
@@ -156,75 +94,33 @@ public class ProductBoundary implements Serializable {
         this.currentPage = 1;
     }
 
-    public int getCurrentPage() {
-        return currentPage;
-    }
+    // Getters and Setters
 
+    public int getCurrentPage() { return currentPage; }
     public void setCurrentPage(int currentPage) {
         this.currentPage = Math.clamp(currentPage, 1, Math.max(totalPages(), 1));
     }
 
-    public int getPageSize() {
-        return pageSize;
-    }
+    public int getPageSize() { return pageSize; }
+    public void setPageSize(int pageSize) { this.pageSize = pageSize; }
 
-    public void setPageSize(int pageSize) {
-        this.pageSize = pageSize;
-    }
+    public Product getProduct() { return product; }
+    public void setProduct(Product product) { this.product = product; }
 
-    public Product getProduct() {
-        return product;
-    }
+    public Integer getBrandId() { return brandId; }
+    public void setBrandId(Integer brandId) { this.brandId = brandId; }
 
-    public void setProduct(Product product) {
-        this.product = product;
-    }
+    public Integer getCategoryId() { return categoryId; }
+    public void setCategoryId(Integer categoryId) { this.categoryId = categoryId; }
 
-    public Integer getBrandId() {
-        return brandId;
-    }
+    public Product getEditProduct() { return editProduct; }
 
-    public void setBrandId(Integer brandId) {
-        this.brandId = brandId;
-    }
+    public Integer getEditBrandId() { return editBrandId; }
+    public void setEditBrandId(Integer editBrandId) { this.editBrandId = editBrandId; }
 
-    public Integer getCategoryId() {
-        return categoryId;
-    }
+    public Integer getEditCategoryId() { return editCategoryId; }
+    public void setEditCategoryId(Integer editCategoryId) { this.editCategoryId = editCategoryId; }
 
-    public void setCategoryId(Integer categoryId) {
-        this.categoryId = categoryId;
-    }
-
-    public Product getEditProduct() {
-        return editProduct;
-    }
-
-    public void setEditProduct(Product editProduct) {
-        this.editProduct = editProduct;
-    }
-
-    public Integer getEditBrandId() {
-        return editBrandId;
-    }
-
-    public void setEditBrandId(Integer editBrandId) {
-        this.editBrandId = editBrandId;
-    }
-
-    public Integer getEditCategoryId() {
-        return editCategoryId;
-    }
-
-    public void setEditCategoryId(Integer editCategoryId) {
-        this.editCategoryId = editCategoryId;
-    }
-
-    public boolean isEditModalOpen() {
-        return editModalOpen;
-    }
-
-    public void setEditModalOpen(boolean editModalOpen) {
-        this.editModalOpen = editModalOpen;
-    }
+    public List<Brand> findBrands() { return productController.findBrands(); }
+    public List<Category> findCategories() { return productController.findCategories(); }
 }
