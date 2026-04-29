@@ -71,12 +71,17 @@ public class CustomerBoundary implements Serializable {
     }
 
     public void delete(Integer customerId) {
-        boolean success = customerController.delete(customerId);
-        if (success) {
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Erfolg", "Kunde erfolgreich gelöscht."));
-        }else{
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Fehler", "Kunde kann nicht gelöscht werden"));
+        try{
+            customerController.delete(customerId);
+            addMessage(FacesMessage.SEVERITY_INFO, "Erfolg", "Kunde erfolgreich gelöscht");
+        } catch (IllegalArgumentException e){
+            addMessage(FacesMessage.SEVERITY_ERROR, "Fehler", e.getMessage());
+        } catch (IllegalStateException e){
+            addMessage(FacesMessage.SEVERITY_WARN, "Warnung", e.getMessage());
         }
+    }
+    private void addMessage(FacesMessage.Severity severity, String summary, String detail) {
+        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(severity, summary, detail));
     }
 
     //Getter and Setter

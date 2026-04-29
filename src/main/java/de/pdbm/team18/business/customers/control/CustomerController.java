@@ -38,15 +38,15 @@ public class CustomerController {
         return customerRepository.update(customer) != null;
     }
     
-    public boolean delete(Integer customerId) {
+    public void delete(Integer customerId) {
         Customer customer = customerRepository.findById(customerId);
-        if (customer == null) {
-            return false;
+        if(customer == null){
+            throw new IllegalArgumentException("Kunde wurde nicht gefunden");
         }
-        if (customerRepository.hasOrders(customerId)) {
-            return false;
+        if(customerRepository.hasOrders(customerId)){
+            throw new IllegalStateException("Kunde kann aufgrund bestehender Bestellungen nicht gelöscht werden.");
         }
         customerRepository.delete(customerId);
-        return true;
     }
+
 }
