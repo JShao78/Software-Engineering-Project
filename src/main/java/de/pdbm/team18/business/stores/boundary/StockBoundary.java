@@ -2,6 +2,7 @@ package de.pdbm.team18.business.stores.boundary;
 import de.pdbm.team18.business.shared.repository.RepositoryQueryUtils;
 import de.pdbm.team18.business.stores.control.StockController;
 import de.pdbm.team18.business.stores.entity.Stock;
+import de.pdbm.team18.business.stores.entity.StockId;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
@@ -14,6 +15,7 @@ import java.util.List;
 public class StockBoundary implements Serializable {
     private int currentPage = 1;
     private int pageSize = RepositoryQueryUtils.DEFAULT_LIMIT;
+    private Stock editStock = new Stock();
     @Inject
     StockController stockController;
 
@@ -51,4 +53,30 @@ public class StockBoundary implements Serializable {
         this.pageSize = Math.clamp(pageSize, 1, RepositoryQueryUtils.MAX_LIMIT);
         this.currentPage = 1;
     }
+
+    public boolean prepareEdit(StockId stockId) {
+        Stock found = stockController.findById(stockId);
+        if (found == null) {
+            cancelEdit();
+            return false;
+        }
+        this.editStock = found;
+        return true;
+    }
+
+    public boolean saveEdit() {
+        if (editStock.getStockId() == null) return false;
+        boolean success = stockController.updateQuantity(
+            editStock.getStockId(), 
+            editStock.getQuantity()
+        );
+        if (success) cancelEdit();
+        return success;
+    }
+
+    public void cancelEdit() {
+        editStock = new Stock();
+    }
+
+    public Stock getEditStock() { return editStock; }
 }

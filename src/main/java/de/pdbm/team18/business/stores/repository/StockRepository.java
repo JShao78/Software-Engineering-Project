@@ -2,6 +2,7 @@ package de.pdbm.team18.business.stores.repository;
 
 import de.pdbm.team18.business.shared.repository.RepositoryQueryUtils;
 import de.pdbm.team18.business.stores.entity.Stock;
+import de.pdbm.team18.business.stores.entity.StockId;
 import jakarta.ejb.Stateless;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -42,5 +43,17 @@ public class StockRepository {
         em.persist(stock);
         em.flush();
         return stock;
+    }
+
+    public Stock updateQuantity(StockId stockId, int quantity) {
+        Stock managed = em.find(Stock.class, stockId);
+        if (managed == null) return null;
+        managed.setQuantity(quantity);
+        em.flush();
+        return managed;
+    }
+
+    public Stock findById(StockId stockId) {
+        return em.find(Stock.class, stockId);
     }
 }
