@@ -82,7 +82,7 @@ public class OrderRepository {
         return order;
     }
 
-    public OrderItem create(OrderItem orderItem) {
+    public OrderItem createItem(OrderItem orderItem) {
         em.persist(orderItem);
         em.flush();
         return orderItem;
