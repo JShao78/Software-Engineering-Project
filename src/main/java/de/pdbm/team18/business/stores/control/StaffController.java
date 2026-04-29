@@ -45,4 +45,12 @@ public class StaffController {
         staff.setActive(1);
         return staffRepository.create(staff);
     }
+
+    public Staff findById(Integer staffId) {
+        return staffRepository.findById(staffId);
+    }
+
+    public boolean edit(Staff staff) {
+        return staffRepository.update(staff) != null;
+    }
 }

@@ -22,6 +22,7 @@ public class StaffBoundary implements Serializable {
     StaffController staffController;
 
     private Staff staff = new Staff();
+    private Staff editStaff = new Staff();
 
     /**
      * Provides a List of Staff representing the selected page.
@@ -50,6 +51,32 @@ public class StaffBoundary implements Serializable {
         staff = new Staff();
     }
 
+    public boolean prepareEdit(Integer staffId) {
+        Staff foundStaff = staffController.findById(staffId);
+        if (foundStaff == null) {
+            cancelEdit();
+            return false;
+        }
+        this.editStaff = foundStaff;
+        return true;
+    }
+
+    public boolean saveEdit() {
+        if (editStaff.getStaffId() <= 0) {
+            return false;
+        }
+
+        boolean success = staffController.edit(editStaff);
+        if (success) {
+            cancelEdit();
+        }
+        return success;
+    }
+
+    public void cancelEdit() {
+        this.editStaff = new Staff();
+    }
+
     public int getCurrentPage() {
         return currentPage;
     }
@@ -73,5 +100,9 @@ public class StaffBoundary implements Serializable {
 
     public Staff getStaff() {
         return staff;
+    }
+
+    public Staff getEditStaff() {
+        return editStaff;
     }
 }
