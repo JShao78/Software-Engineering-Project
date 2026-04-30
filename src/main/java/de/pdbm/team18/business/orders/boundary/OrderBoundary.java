@@ -1,9 +1,11 @@
 package de.pdbm.team18.business.orders.boundary;
 
+import de.pdbm.team18.business.customers.entity.Customer;
 import de.pdbm.team18.business.orders.control.OrderController;
 import de.pdbm.team18.business.orders.entity.Order;
 import de.pdbm.team18.business.orders.entity.OrderItem;
 import de.pdbm.team18.business.shared.repository.RepositoryQueryUtils;
+import jakarta.annotation.PostConstruct;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
@@ -24,6 +26,10 @@ public class OrderBoundary implements Serializable {
     @Inject
     OrderController orderController;
 
+    private Order order;
+    private String searchName;
+    private List<Customer> customers;
+
     private int pageSize = RepositoryQueryUtils.DEFAULT_LIMIT;
     private int currentPage = 1;
     private Integer expandedOrderId;
@@ -37,6 +43,29 @@ public class OrderBoundary implements Serializable {
                 .toList();
         itemsCountByOrderId = orderController.countItemsByOrderIds(orderIds);
         return orders;
+    }
+
+    @PostConstruct
+    private void init() {
+        order = new Order();
+        findCustomers();
+    }
+
+    public void saveOrder() {
+        orderController.createOrder(order);
+        order = new Order();
+    }
+
+    public List<Customer> findCustomers() {
+        return orderController.findCustomersByName(searchName);
+    }
+
+    public void customerUpdate(AjaxBehaviorEvent event) {
+        System.out.println("Searching: " + searchName);
+        customers = findCustomers();
+        System.out.println("Customers found: " + customers.size());
+        customers.forEach((customer) ->
+                System.out.println(customer.getFirstName() + " " +  customer.getLastName()));
     }
 
     public int count() {
@@ -145,5 +174,21 @@ public class OrderBoundary implements Serializable {
     public void onPageSizeChange(AjaxBehaviorEvent event) {
         this.pageSize = Math.clamp(pageSize, 1, RepositoryQueryUtils.MAX_LIMIT);
         this.currentPage = 1;
+    }
+
+    public Order getOrder() {
+        return order;
+    }
+
+    public String getSearchName() {
+        return searchName;
+    }
+
+    public void setSearchName(String searchName) {
+        this.searchName = searchName;
+    }
+
+    public List<Customer> getCustomers() {
+        return customers;
     }
 }

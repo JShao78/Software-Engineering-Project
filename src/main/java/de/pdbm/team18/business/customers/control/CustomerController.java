@@ -18,6 +18,10 @@ public class CustomerController {
         return customerRepository.findPage(offset, pageSize);
     }
 
+    public List<Customer> findByName(String name) {
+        return customerRepository.findByName(name);
+    }
+
     public int totalPages(int pageSize) {
         return Math.ceilDivExact(customerRepository.count(), pageSize);
     }
