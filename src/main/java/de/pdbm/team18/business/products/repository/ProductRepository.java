@@ -32,6 +32,20 @@ public class ProductRepository {
                 .getResultList();
     }
 
+    public List<Product> findByName(String name) {
+        if (name == null || name.length() < 3) return List.of();
+        name = name.toLowerCase();
+        return em.createQuery("""
+                        SELECT p
+                        FROM Product p
+                        WHERE lower(p.productName) LIKE CONCAT('%', :name, '%')
+                        ORDER BY p.productName
+                        """, Product.class)
+                .setParameter("name", name)
+                .setMaxResults(RepositoryQueryUtils.SEARCH_QUERY_LIMIT)
+                .getResultList();
+    }
+
     public int count() {
         return Math.toIntExact(em.createQuery("SELECT COUNT(p) FROM Product p", Long.class).getSingleResult());
     }

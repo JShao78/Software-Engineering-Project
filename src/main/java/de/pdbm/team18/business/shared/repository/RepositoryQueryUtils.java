@@ -3,6 +3,7 @@ package de.pdbm.team18.business.shared.repository;
 public class RepositoryQueryUtils {
     public static final int DEFAULT_LIMIT = 50;
     public static final int MAX_LIMIT = 100;
+    public static final int SEARCH_QUERY_LIMIT = 10;
 
     private RepositoryQueryUtils() {
     }

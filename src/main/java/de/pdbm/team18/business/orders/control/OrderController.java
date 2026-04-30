@@ -5,6 +5,8 @@ import de.pdbm.team18.business.customers.entity.Customer;
 import de.pdbm.team18.business.orders.entity.Order;
 import de.pdbm.team18.business.orders.entity.OrderItem;
 import de.pdbm.team18.business.orders.repository.OrderRepository;
+import de.pdbm.team18.business.products.control.ProductController;
+import de.pdbm.team18.business.products.entity.Product;
 import jakarta.ejb.Stateless;
 import jakarta.inject.Inject;
 
@@ -18,6 +20,8 @@ public class OrderController {
 
     @Inject
     private CustomerController customerController;
+    @Inject
+    private ProductController productController;
 
     public List<Order> findPage(int currentPage, int pageSize) {
         int offset = (currentPage - 1) * pageSize;
@@ -26,6 +30,10 @@ public class OrderController {
 
     public List<Customer> findCustomersByName(String name) {
         return customerController.findByName(name);
+    }
+
+    public List<Product>  findProductsByName(String name) {
+        return productController.findByName(name);
     }
 
     public void createOrder(Order order) {

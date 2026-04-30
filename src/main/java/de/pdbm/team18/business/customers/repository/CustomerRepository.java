@@ -19,14 +19,15 @@ public class CustomerRepository {
 
     public List<Customer> findByName(String name) {
         if (name == null || name.length() < 3) return List.of();
+        name = name.toLowerCase();
         return em.createQuery("SELECT c FROM Customer c " +
-                        "WHERE c.lastName LIKE CONCAT('%', :name, '%') " +
-                        "OR c.firstName LIKE CONCAT('%', :name, '%') " +
+                        "WHERE LOWER(c.lastName) LIKE CONCAT('%', :name, '%') " +
+                        "OR LOWER(c.firstName) LIKE CONCAT('%', :name, '%') " +
                         "OR :name IS NULL " +
                         "ORDER BY c.lastName ASC, c.firstName ASC",
                 Customer.class)
                 .setParameter("name", name)
-                .setMaxResults(10)
+                .setMaxResults(RepositoryQueryUtils.SEARCH_QUERY_LIMIT)
                 .getResultList();
     }
 

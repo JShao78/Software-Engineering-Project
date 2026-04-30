@@ -4,6 +4,7 @@ import de.pdbm.team18.business.customers.entity.Customer;
 import de.pdbm.team18.business.orders.control.OrderController;
 import de.pdbm.team18.business.orders.entity.Order;
 import de.pdbm.team18.business.orders.entity.OrderItem;
+import de.pdbm.team18.business.products.entity.Product;
 import de.pdbm.team18.business.shared.repository.RepositoryQueryUtils;
 import jakarta.annotation.PostConstruct;
 import jakarta.faces.view.ViewScoped;
@@ -27,8 +28,8 @@ public class OrderBoundary implements Serializable {
     OrderController orderController;
 
     private Order order;
-    private String searchName;
-    private List<Customer> customers;
+    private String customerSearch;
+    private String productSearch;
 
     private int pageSize = RepositoryQueryUtils.DEFAULT_LIMIT;
     private int currentPage = 1;
@@ -48,7 +49,6 @@ public class OrderBoundary implements Serializable {
     @PostConstruct
     private void init() {
         order = new Order();
-        findCustomers();
     }
 
     public void saveOrder() {
@@ -57,15 +57,11 @@ public class OrderBoundary implements Serializable {
     }
 
     public List<Customer> findCustomers() {
-        return orderController.findCustomersByName(searchName);
+        return orderController.findCustomersByName(customerSearch);
     }
 
-    public void customerUpdate(AjaxBehaviorEvent event) {
-        System.out.println("Searching: " + searchName);
-        customers = findCustomers();
-        System.out.println("Customers found: " + customers.size());
-        customers.forEach((customer) ->
-                System.out.println(customer.getFirstName() + " " +  customer.getLastName()));
+    public List<Product> findProducts() {
+        return orderController.findProductsByName(productSearch);
     }
 
     public int count() {
@@ -180,15 +176,19 @@ public class OrderBoundary implements Serializable {
         return order;
     }
 
-    public String getSearchName() {
-        return searchName;
+    public String getCustomerSearch() {
+        return customerSearch;
     }
 
-    public void setSearchName(String searchName) {
-        this.searchName = searchName;
+    public void setCustomerSearch(String customerSearch) {
+        this.customerSearch = customerSearch;
     }
 
-    public List<Customer> getCustomers() {
-        return customers;
+    public String getProductSearch() {
+        return productSearch;
+    }
+
+    public void setProductSearch(String productSearch) {
+        this.productSearch = productSearch;
     }
 }
