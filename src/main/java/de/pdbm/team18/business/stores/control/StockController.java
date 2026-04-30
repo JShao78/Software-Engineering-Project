@@ -1,7 +1,9 @@
 package de.pdbm.team18.business.stores.control;
 
+import de.pdbm.team18.business.products.entity.Product;
 import de.pdbm.team18.business.stores.entity.Stock;
 import de.pdbm.team18.business.stores.entity.StockId;
+import de.pdbm.team18.business.stores.entity.Store;
 import de.pdbm.team18.business.stores.repository.StockRepository;
 import jakarta.ejb.Stateless;
 import jakarta.inject.Inject;
@@ -37,5 +39,9 @@ public class StockController {
 
     public Stock findById(StockId stockId) {
         return stockRepository.findById(stockId);
+    }
+
+    public Integer getQuantity(Store store, Product product) {
+        return stockRepository.getQuantity(store, product);
     }
 }

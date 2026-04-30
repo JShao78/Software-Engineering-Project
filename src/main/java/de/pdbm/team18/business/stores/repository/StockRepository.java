@@ -1,8 +1,10 @@
 package de.pdbm.team18.business.stores.repository;
 
+import de.pdbm.team18.business.products.entity.Product;
 import de.pdbm.team18.business.shared.repository.RepositoryQueryUtils;
 import de.pdbm.team18.business.stores.entity.Stock;
 import de.pdbm.team18.business.stores.entity.StockId;
+import de.pdbm.team18.business.stores.entity.Store;
 import jakarta.ejb.Stateless;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -55,5 +57,13 @@ public class StockRepository {
 
     public Stock findById(StockId stockId) {
         return em.find(Stock.class, stockId);
+    }
+
+    public Integer getQuantity(Store store, Product product) {
+        if (store == null || product == null) return null;
+        return em.createQuery("SELECT stock.quantity FROM Stock stock WHERE stock.store = :store AND stock.product = :product", Integer.class)
+                .setParameter("store", store)
+                .setParameter("product", product)
+                .getSingleResult();
     }
 }

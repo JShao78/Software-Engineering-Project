@@ -4,6 +4,8 @@ import de.pdbm.team18.business.orders.control.OrderController;
 import de.pdbm.team18.business.orders.entity.Order;
 import de.pdbm.team18.business.orders.entity.OrderItem;
 import de.pdbm.team18.business.shared.repository.RepositoryQueryUtils;
+import jakarta.faces.application.FacesMessage;
+import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
@@ -12,10 +14,7 @@ import jakarta.faces.event.AjaxBehaviorEvent;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 @Named
 @ViewScoped
@@ -28,6 +27,8 @@ public class OrderBoundary implements Serializable {
     private int currentPage = 1;
     private Integer expandedOrderId;
     private Map<Integer, Integer> itemsCountByOrderId = Collections.emptyMap();
+    private Order newOrder = new Order();
+    private List<OrderItem> newOrderItems = new ArrayList<>();
 
     public List<Order> findPage() {
         List<Order> orders = orderController.findPage(currentPage, pageSize);
@@ -126,6 +127,27 @@ public class OrderBoundary implements Serializable {
         return subtotal.setScale(2, RoundingMode.HALF_UP);
     }
 
+    public void save(){
+        if(newOrderItems.isEmpty()){
+            addMessage(FacesMessage.SEVERITY_WARN, "Warnung", "Bitte mindestens einen Artikel hinzufügen");
+            return;
+        }
+        try{
+            orderController.create(newOrder, newOrderItems);
+            addMessage(FacesMessage.SEVERITY_INFO, "Erfolg", "Bestellung erfolgreich erstellt");
+            newOrder = new Order();
+            newOrderItems = new ArrayList<>();
+        }catch(IllegalStateException e){
+            addMessage(FacesMessage.SEVERITY_ERROR, "Fehler", e.getMessage());
+        }
+
+    }
+    private void addMessage(FacesMessage.Severity severity, String summary, String detail) {
+        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(severity, summary, detail));
+    }
+
+
+    // Getter and Setter
     public int getCurrentPage() {
         return currentPage;
     }
@@ -138,12 +160,20 @@ public class OrderBoundary implements Serializable {
         return pageSize;
     }
 
-	public void setPageSize(int pageSize) {
-		this.pageSize = pageSize;
-	}
+    public void setPageSize(int pageSize) {
+        this.pageSize = pageSize;
+    }
 
     public void onPageSizeChange(AjaxBehaviorEvent event) {
         this.pageSize = Math.clamp(pageSize, 1, RepositoryQueryUtils.MAX_LIMIT);
         this.currentPage = 1;
+    }
+
+    public Order getNewOrder() {
+        return newOrder;
+    }
+
+    public List<OrderItem> getNewOrderItems() {
+        return newOrderItems;
     }
 }

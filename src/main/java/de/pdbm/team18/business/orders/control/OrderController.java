@@ -3,6 +3,7 @@ package de.pdbm.team18.business.orders.control;
 import de.pdbm.team18.business.orders.entity.Order;
 import de.pdbm.team18.business.orders.entity.OrderItem;
 import de.pdbm.team18.business.orders.repository.OrderRepository;
+import de.pdbm.team18.business.stores.control.StockController;
 import jakarta.ejb.Stateless;
 import jakarta.inject.Inject;
 
@@ -13,6 +14,8 @@ import java.util.Map;
 public class OrderController {
     @Inject
     private OrderRepository orderRepository;
+    @Inject
+    private StockController stockController;
 
     public List<Order> findPage(int currentPage, int pageSize) {
         int offset = (currentPage - 1) * pageSize;
@@ -34,5 +37,24 @@ public class OrderController {
 
     public Map<Integer, Integer> countItemsByOrderIds(List<Integer> orderIds) {
         return orderRepository.countItemsByOrderIds(orderIds);
+    }
+
+    public void create(Order order, List<OrderItem> orderItems) {
+        for (OrderItem orderItem : orderItems) {
+            Integer quantity = stockController.getQuantity(order.getStore(), orderItem.getProduct());
+            if (quantity == null || quantity < orderItem.getQuantity()) {
+                throw new IllegalStateException("Nicht genügend Lagerbestand für diese Bestellung");
+            }
+        }
+        order.setOrderDate(java.time.LocalDate.now());
+        order.setOrderStatus(1);
+        int orderItemId = 1;
+        orderRepository.create(order);
+        for (OrderItem orderItem : orderItems){
+            orderItem.setOrder(order);
+            orderItem.getId().setItemId(orderItemId++);
+            orderRepository.createItem(orderItem);
+        }
+
     }
 }
