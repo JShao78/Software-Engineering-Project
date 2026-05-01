@@ -8,49 +8,110 @@
 
     <ui:define name="content">
 
-        <!-- Hero -->
-        <div class="hero">
-            <div class="hero-text">
-                <h1 class="hero-title">Willkommen zurück 👋</h1>
-                <p class="hero-subtitle">Verwaltungssystem für den Bikes-Store</p>
+        <section class="home-dashboard">
+
+            <!-- HERO -->
+            <div class="home-hero-pro home-hero-simple">
+                <div class="home-hero-content">
+                    <div class="home-hero-badge">Bikes-Store Verwaltungssystem</div>
+
+                    <h1 class="home-hero-title">
+                        Willkommen zurück 👋
+                    </h1>
+
+                    <p class="home-hero-subtitle">
+                        Verwalten Sie Kunden, Produkte, Bestellungen und Lagerbestände zentral in einem übersichtlichen System.
+                    </p>
+                </div>
             </div>
-        </div>
 
-        <!-- Quick-nav cards -->
-        <div class="home-cards">
-            <a href="kunden.xhtml" class="home-card">
-                <div class="home-card-icon">👥</div>
-                <div class="home-card-label">Kunden</div>
-                <div class="home-card-desc">Kundenliste anzeigen und neue Kunden anlegen</div>
-                <div class="home-card-arrow">→</div>
-            </a>
-            <a href="produkte.xhtml" class="home-card">
-                <div class="home-card-icon">📦</div>
-                <div class="home-card-label">Produkte</div>
-                <div class="home-card-desc">Produktkatalog verwalten und Preise pflegen</div>
-                <div class="home-card-arrow">→</div>
-            </a>
-            <a href="bestellungen.xhtml" class="home-card">
-                <div class="home-card-icon">🧾</div>
-                <div class="home-card-label">Bestellungen</div>
-                <div class="home-card-desc">Bestellungen und Bestellpositionen einsehen</div>
-                <div class="home-card-arrow">→</div>
-            </a>
+            <!-- MODULE CARDS -->
+            <div class="home-section-header">
+                <div>
+                    <h2 class="home-section-title">Schnellzugriff</h2>
+                    <p class="home-section-subtitle">
+                        Wählen Sie einen Bereich aus, um direkt weiterzuarbeiten.
+                    </p>
+                </div>
+            </div>
 
-            <a href="stocks.xhtml" class="home-card">
-                <div class="home-card-icon">📊</div>
-                <div class="home-card-label">Lagerbestände</div>
-                <div class="home-card-desc">Bestände je Produkt und Niederlassung anzeigen</div>
-                <div class="home-card-arrow">→</div>
-            </a>
+            <div class="home-cards-pro">
 
-            <a href="stores.xhtml" class="home-card">
-                <div class="home-card-icon">🏬</div>
-                <div class="home-card-label">Niederlassungen</div>
-                <div class="home-card-desc">Standorte mit Adresse und Kontaktdaten anzeigen</div>
-                <div class="home-card-arrow">→</div>
-            </a>
-        </div>
+                <h:link outcome="kunden" styleClass="home-card-pro">
+                    <div class="home-card-top">
+                        <div class="home-card-icon-pro">👥</div>
+                        <div class="home-card-arrow-pro">→</div>
+                    </div>
+
+                    <div class="home-card-label-pro">Kunden</div>
+                    <div class="home-card-desc-pro">
+                        Kundenliste anzeigen und neue Kunden anlegen.
+                    </div>
+                </h:link>
+
+                <h:link outcome="produkte" styleClass="home-card-pro">
+                    <div class="home-card-top">
+                        <div class="home-card-icon-pro">🚲</div>
+                        <div class="home-card-arrow-pro">→</div>
+                    </div>
+
+                    <div class="home-card-label-pro">Produkte</div>
+                    <div class="home-card-desc-pro">
+                        Produktkatalog pflegen, Preise bearbeiten und neue Produkte hinzufügen.
+                    </div>
+                </h:link>
+
+                <h:link outcome="bestellungen" styleClass="home-card-pro">
+                    <div class="home-card-top">
+                        <div class="home-card-icon-pro">🧾</div>
+                        <div class="home-card-arrow-pro">→</div>
+                    </div>
+
+                    <div class="home-card-label-pro">Bestellungen</div>
+                    <div class="home-card-desc-pro">
+                        Bestellungen und Bestellpositionen anzeigen.
+                    </div>
+                </h:link>
+
+                <h:link outcome="stocks" styleClass="home-card-pro">
+                    <div class="home-card-top">
+                        <div class="home-card-icon-pro">📊</div>
+                        <div class="home-card-arrow-pro">→</div>
+                    </div>
+
+                    <div class="home-card-label-pro">Lagerbestände</div>
+                    <div class="home-card-desc-pro">
+                        Bestände je Produkt und Niederlassung anzeigen und Anzahl bearbeiten.
+                    </div>
+                </h:link>
+
+                <h:link outcome="stores" styleClass="home-card-pro">
+                    <div class="home-card-top">
+                        <div class="home-card-icon-pro">🏬</div>
+                        <div class="home-card-arrow-pro">→</div>
+                    </div>
+
+                    <div class="home-card-label-pro">Niederlassungen</div>
+                    <div class="home-card-desc-pro">
+                        Standorte, Adressen und Kontaktdaten anzeigen.
+                    </div>
+                </h:link>
+
+                <h:link outcome="staffs" styleClass="home-card-pro">
+                    <div class="home-card-top">
+                        <div class="home-card-icon-pro">🧑‍💼</div>
+                        <div class="home-card-arrow-pro">→</div>
+                    </div>
+
+                    <div class="home-card-label-pro">Mitarbeiter</div>
+                    <div class="home-card-desc-pro">
+                        Mitarbeiterdaten und Zuständigkeiten verwalten.
+                    </div>
+                </h:link>
+
+            </div>
+
+        </section>
 
     </ui:define>
 

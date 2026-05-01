@@ -3,6 +3,7 @@
       xmlns:h="jakarta.faces.html"
       xmlns:ui="jakarta.faces.facelets"
       xmlns:f="jakarta.faces.core"
+      xmlns:a="jakarta.faces.passthrough"
       xmlns:my="jakarta.faces.composite/components">
 
 <ui:composition template="templates/navbar.xhtml">
@@ -10,55 +11,162 @@
     <ui:define name="title">Lagerbestände – Vertriebsunterstützung</ui:define>
 
     <ui:define name="content">
-        <div class="orders-header">
-            <h1 class="page-title orders-title">Lagerbestände</h1>
-            <p class="orders-subtitle">Insgesamt #{stockBoundary.count()} Lagerbestände</p>
-        </div>
 
-        <my:pagination boundary="#{stockBoundary}" />
+        <h:panelGroup id="stocksPage" layout="block">
 
-        <div class="table-container" style="margin-top: 20px;">
-            <h:dataTable value="#{stockBoundary.findPage()}"
-                         var="stock"
-                         styleClass="data-table">
+            <div class="orders-header">
+                <h1 class="page-title orders-title">Lagerbestände</h1>
+                <p class="orders-subtitle">
+                    Insgesamt #{stockBoundary.count()} Lagerbestände
+                </p>
+            </div>
 
-                <h:column>
-                    <f:facet name="header">
-                        <span class="col-header">Store ID</span>
-                    </f:facet>
-                    <h:outputText value="#{stock.store.storeId}" styleClass="uuid-text" />
-                </h:column>
+            <my:pagination boundary="#{stockBoundary}" />
 
-                <h:column>
-                    <f:facet name="header">
-                        <span class="col-header">Niederlassung</span>
-                    </f:facet>
-                    <h:outputText value="#{stock.store.storeName}" />
-                </h:column>
+            <h:form id="stocksTableForm">
+                <div class="table-container" style="margin-top: 20px;">
 
-                <h:column>
-                    <f:facet name="header">
-                        <span class="col-header">Produkt ID</span>
-                    </f:facet>
-                    <h:outputText value="#{stock.product.productId}" styleClass="uuid-text" />
-                </h:column>
+                    <h:dataTable value="#{stockBoundary.findPage()}"
+                                 var="stock"
+                                 styleClass="data-table">
 
-                <h:column>
-                    <f:facet name="header">
-                        <span class="col-header">Produktname</span>
-                    </f:facet>
-                    <h:outputText value="#{stock.product.productName}" />
-                </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <span class="col-header">Store ID</span>
+                            </f:facet>
+                            <h:outputText value="#{stock.store.storeId}" styleClass="uuid-text"/>
+                        </h:column>
 
-                <h:column>
-                    <f:facet name="header">
-                        <span class="col-header">Bestand</span>
-                    </f:facet>
-                    <h:outputText value="#{stock.quantity}" styleClass="text-accent" />
-                </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <span class="col-header">Niederlassung</span>
+                            </f:facet>
+                            <h:outputText value="#{stock.store.storeName}"/>
+                        </h:column>
 
-            </h:dataTable>
-        </div>
+                        <h:column>
+                            <f:facet name="header">
+                                <span class="col-header">Produkt ID</span>
+                            </f:facet>
+                            <h:outputText value="#{stock.product.productId}" styleClass="uuid-text"/>
+                        </h:column>
+
+                        <h:column>
+                            <f:facet name="header">
+                                <span class="col-header">Produktname</span>
+                            </f:facet>
+                            <h:outputText value="#{stock.product.productName}"/>
+                        </h:column>
+
+                        <h:column>
+                            <f:facet name="header">
+                                <span class="col-header">Bestand</span>
+                            </f:facet>
+                            <h:outputText value="#{stock.quantity}" styleClass="text-accent"/>
+                        </h:column>
+
+                        <h:column>
+                            <f:facet name="header">
+                                <span class="col-header">Aktionen</span>
+                            </f:facet>
+
+                            <h:commandButton value="Bearbeiten"
+                                             actionListener="#{stockBoundary.prepareEdit(stock.stockId)}"
+                                             styleClass="btn-table btn-table-edit">
+                                <f:ajax execute="@this" render=":stocksPage"/>
+                            </h:commandButton>
+                        </h:column>
+
+                    </h:dataTable>
+
+                </div>
+            </h:form>
+
+            <h:panelGroup id="editStockModalPanel"
+                          layout="block"
+                          styleClass="#{not empty stockBoundary.editStock.stockId ? 'product-modal-overlay product-modal-overlay-open' : 'product-modal-overlay'}">
+
+                <div class="product-modal">
+
+                    <div class="product-modal-topbar"></div>
+
+                    <div class="product-modal-header">
+                        <div class="product-modal-title-wrap">
+                            <div class="product-modal-icon-badge">📦</div>
+
+                            <div>
+                                <h2 class="product-modal-title">Bestand bearbeiten</h2>
+                                <p class="product-modal-subtitle">
+                                    Nur die Anzahl des Lagerbestands ändern
+                                </p>
+                            </div>
+                        </div>
+
+                        <h:form>
+                            <h:commandLink action="#{stockBoundary.cancelEdit}"
+                                           immediate="true"
+                                           styleClass="product-modal-close"
+                                           title="Schließen">
+                                ×
+                                <f:ajax execute="@this" render=":stocksPage"/>
+                            </h:commandLink>
+                        </h:form>
+                    </div>
+
+                    <h:form id="editStockForm" styleClass="product-form-frontend">
+
+                        <div class="product-modal-body">
+
+                            <div class="product-form-section">
+                                <div class="product-section-title">Lagerbestand</div>
+
+                                <div class="product-form-group">
+                                    <label class="product-label product-label-required">
+                                        Anzahl
+                                    </label>
+
+                                    <h:inputText id="quantity"
+                                                 value="#{stockBoundary.editStock.quantity}"
+                                                 required="true"
+                                                 requiredMessage="Bitte geben Sie eine Anzahl ein."
+                                                 validatorMessage="Die Anzahl darf nicht negativ sein."
+                                                 styleClass="product-input"
+                                                 a:type="number"
+                                                 a:min="0"
+                                                 a:step="1"
+                                                 a:placeholder="z. B. 25">
+                                        <f:validateLongRange minimum="0"/>
+                                    </h:inputText>
+
+                                    <h:message for="quantity" styleClass="product-validation-hint"/>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="product-modal-footer">
+                            <h:commandButton value="Abbrechen"
+                                             action="#{stockBoundary.cancelEdit}"
+                                             immediate="true"
+                                             styleClass="product-btn product-btn-secondary">
+                                <f:ajax execute="@this" render=":stocksPage"/>
+                            </h:commandButton>
+
+                            <h:commandButton value="Speichern"
+                                             actionListener="#{stockBoundary.saveEdit}"
+                                             styleClass="product-btn product-btn-primary">
+                                <f:ajax execute="@form" render=":stocksPage"/>
+                            </h:commandButton>
+                        </div>
+
+                    </h:form>
+
+                </div>
+
+            </h:panelGroup>
+
+        </h:panelGroup>
+
     </ui:define>
 
 </ui:composition>
