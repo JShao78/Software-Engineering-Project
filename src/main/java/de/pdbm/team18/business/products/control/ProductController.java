@@ -9,12 +9,14 @@ import de.pdbm.team18.business.stores.control.StoreController;
 import de.pdbm.team18.business.stores.entity.Stock;
 import de.pdbm.team18.business.stores.entity.StockId;
 import de.pdbm.team18.business.stores.entity.Store;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.ejb.Stateless;
 import jakarta.inject.Inject;
 
 import java.util.List;
 
 @Stateless
+@RolesAllowed({"ADMIN", "USER1", "USER2"})
 public class ProductController {
 
     @Inject
@@ -44,7 +46,7 @@ public class ProductController {
     public int count() {
         return productRepository.count();
     }
-
+    @RolesAllowed("ADMIN")
     public Product create(Product product) {
         productRepository.create(product);
         for (Store store : storeController.findAll()) {
@@ -62,6 +64,7 @@ public class ProductController {
         return productRepository.findById(productId);
     }
 
+    @RolesAllowed({"ADMIN", "USER1"})
     public boolean edit(Product product) {
         return productRepository.update(product) != null;
     }

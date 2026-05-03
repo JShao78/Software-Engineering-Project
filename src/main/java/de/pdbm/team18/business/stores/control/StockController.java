@@ -5,12 +5,14 @@ import de.pdbm.team18.business.stores.entity.Stock;
 import de.pdbm.team18.business.stores.entity.StockId;
 import de.pdbm.team18.business.stores.entity.Store;
 import de.pdbm.team18.business.stores.repository.StockRepository;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.ejb.Stateless;
 import jakarta.inject.Inject;
 
 import java.util.List;
 
 @Stateless
+@RolesAllowed({"ADMIN", "USER1", "USER2"})
 public class StockController {
 
     @Inject
@@ -29,10 +31,12 @@ public class StockController {
         return stockRepository.count();
     }
 
+    @RolesAllowed("ADMIN")
     public Stock create(Stock stock) {
         return stockRepository.create(stock);
     }
 
+    @RolesAllowed({"ADMIN", "USER1"})
     public boolean updateQuantity(StockId stockId, int quantity) {
         return stockRepository.updateQuantity(stockId, quantity) != null;
     }

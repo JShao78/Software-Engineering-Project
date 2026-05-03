@@ -2,12 +2,15 @@ package de.pdbm.team18.business.customers.control;
 
 import de.pdbm.team18.business.customers.repository.CustomerRepository;
 import de.pdbm.team18.business.customers.entity.Customer;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.ejb.Stateless;
 import jakarta.inject.Inject;
 
 import java.util.List;
 
+
 @Stateless
+@RolesAllowed({"ADMIN", "USER1", "USER2"})
 public class CustomerController {
 
     @Inject
@@ -37,11 +40,12 @@ public class CustomerController {
     public Customer findById(Integer customerId) {
         return customerRepository.findById(customerId);
     }
-
+    @RolesAllowed({"ADMIN", "USER1"})
     public boolean edit(Customer customer) {
         return customerRepository.update(customer) != null;
     }
-    
+
+    @RolesAllowed("ADMIN")
     public void delete(Integer customerId) {
         Customer customer = customerRepository.findById(customerId);
         if(customer == null){
