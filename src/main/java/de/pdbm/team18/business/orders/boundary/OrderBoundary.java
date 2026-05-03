@@ -27,7 +27,6 @@ public class OrderBoundary implements Serializable {
     @Inject
     OrderController orderController;
 
-    private Order order;
     private String customerSearch;
     private String productSearch;
 
@@ -48,12 +47,8 @@ public class OrderBoundary implements Serializable {
 
     @PostConstruct
     private void init() {
-        order = new Order();
-    }
-
-    public void saveOrder() {
-        orderController.createOrder(order);
-        order = new Order();
+        customerSearch = "";
+        productSearch = "";
     }
 
     public List<Customer> findCustomers() {
@@ -170,10 +165,6 @@ public class OrderBoundary implements Serializable {
     public void onPageSizeChange(AjaxBehaviorEvent event) {
         this.pageSize = Math.clamp(pageSize, 1, RepositoryQueryUtils.MAX_LIMIT);
         this.currentPage = 1;
-    }
-
-    public Order getOrder() {
-        return order;
     }
 
     public String getCustomerSearch() {

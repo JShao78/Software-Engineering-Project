@@ -33,38 +33,6 @@
 
         <my:pagination boundary="#{orderBoundary}" />
 
-        <h:form>
-            <h:inputText value="#{orderBoundary.customerSearch}" id="testInput">
-                <f:ajax event="keyup"
-                        render="@form"
-                        delay="1000" />
-            </h:inputText>
-            <br/>
-            <h:outputText value="#{orderBoundary.customerSearch}"/>
-
-            <h:dataTable value="#{orderBoundary.findCustomers()}" var="c">
-                <h:column name="Vorname">#{c.firstName}</h:column>
-                <h:column name="Nachname">#{c.lastName}</h:column>
-            </h:dataTable>
-
-        </h:form>
-
-        <h:form>
-            <h:inputText value="#{orderBoundary.productSearch}" id="testInput">
-                <f:ajax event="keyup"
-                        render="@form"
-                        delay="1000" />
-            </h:inputText>
-            <br/>
-            <h:outputText value="#{orderBoundary.productSearch}"/>
-
-            <h:dataTable value="#{orderBoundary.findProducts()}" var="p">
-                <h:column name="Produktname">#{p.productName}</h:column>
-            </h:dataTable>
-
-        </h:form>
-
-
         <h:form id="ordersForm">
             <div class="orders-card">
                 <table class="data-table orders-table">
