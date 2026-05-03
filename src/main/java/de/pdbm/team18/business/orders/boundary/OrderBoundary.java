@@ -208,7 +208,6 @@ public class OrderBoundary implements Serializable {
     public void setProductSearch(String productSearch) {
         this.productSearch = productSearch;
     }
-}
 
     public List<OrderItem> getNewOrderItems() {
         return newOrderItems;
