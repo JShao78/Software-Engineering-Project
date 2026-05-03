@@ -1,9 +1,12 @@
 package de.pdbm.team18.business.orders.boundary;
 
+import de.pdbm.team18.business.customers.entity.Customer;
 import de.pdbm.team18.business.orders.control.OrderController;
 import de.pdbm.team18.business.orders.entity.Order;
 import de.pdbm.team18.business.orders.entity.OrderItem;
+import de.pdbm.team18.business.products.entity.Product;
 import de.pdbm.team18.business.shared.repository.RepositoryQueryUtils;
+import jakarta.annotation.PostConstruct;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.ViewScoped;
@@ -23,6 +26,9 @@ public class OrderBoundary implements Serializable {
     @Inject
     OrderController orderController;
 
+    private String customerSearch;
+    private String productSearch;
+
     private int pageSize = RepositoryQueryUtils.DEFAULT_LIMIT;
     private int currentPage = 1;
     private Integer expandedOrderId;
@@ -38,6 +44,20 @@ public class OrderBoundary implements Serializable {
                 .toList();
         itemsCountByOrderId = orderController.countItemsByOrderIds(orderIds);
         return orders;
+    }
+
+    @PostConstruct
+    private void init() {
+        customerSearch = "";
+        productSearch = "";
+    }
+
+    public List<Customer> findCustomers() {
+        return orderController.findCustomersByName(customerSearch);
+    }
+
+    public List<Product> findProducts() {
+        return orderController.findProductsByName(productSearch);
     }
 
     public int count() {
@@ -172,6 +192,23 @@ public class OrderBoundary implements Serializable {
     public Order getNewOrder() {
         return newOrder;
     }
+
+    public String getCustomerSearch() {
+        return customerSearch;
+    }
+
+    public void setCustomerSearch(String customerSearch) {
+        this.customerSearch = customerSearch;
+    }
+
+    public String getProductSearch() {
+        return productSearch;
+    }
+
+    public void setProductSearch(String productSearch) {
+        this.productSearch = productSearch;
+    }
+}
 
     public List<OrderItem> getNewOrderItems() {
         return newOrderItems;

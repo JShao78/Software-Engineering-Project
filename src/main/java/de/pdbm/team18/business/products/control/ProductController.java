@@ -31,6 +31,10 @@ public class ProductController {
         return productRepository.findPage(offset, pageSize);
     }
 
+    public List<Product> findByName(String name) {
+        return productRepository.findByName(name);
+    }
+
     public int totalPages(int pageSize) {
         int count = productRepository.count();
         if (count == 0) return 1;

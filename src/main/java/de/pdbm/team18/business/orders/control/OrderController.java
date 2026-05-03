@@ -1,9 +1,13 @@
 package de.pdbm.team18.business.orders.control;
 
+import de.pdbm.team18.business.customers.control.CustomerController;
+import de.pdbm.team18.business.customers.entity.Customer;
 import de.pdbm.team18.business.orders.entity.Order;
 import de.pdbm.team18.business.orders.entity.OrderItem;
 import de.pdbm.team18.business.orders.repository.OrderRepository;
 import de.pdbm.team18.business.stores.control.StockController;
+import de.pdbm.team18.business.products.control.ProductController;
+import de.pdbm.team18.business.products.entity.Product;
 import jakarta.ejb.Stateless;
 import jakarta.inject.Inject;
 
@@ -17,9 +21,26 @@ public class OrderController {
     @Inject
     private StockController stockController;
 
+    @Inject
+    private CustomerController customerController;
+    @Inject
+    private ProductController productController;
+
     public List<Order> findPage(int currentPage, int pageSize) {
         int offset = (currentPage - 1) * pageSize;
         return orderRepository.findPage(offset, pageSize);
+    }
+
+    public List<Customer> findCustomersByName(String name) {
+        return customerController.findByName(name);
+    }
+
+    public List<Product>  findProductsByName(String name) {
+        return productController.findByName(name);
+    }
+
+    public void createOrder(Order order) {
+        orderRepository.create(order);
     }
 
     public int totalPages(int pageSize) {
