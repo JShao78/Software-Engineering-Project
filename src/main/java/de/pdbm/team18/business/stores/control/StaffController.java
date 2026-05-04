@@ -2,12 +2,14 @@ package de.pdbm.team18.business.stores.control;
 
 import de.pdbm.team18.business.stores.entity.Staff;
 import de.pdbm.team18.business.stores.repository.StaffRepository;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.ejb.Stateless;
 import jakarta.inject.Inject;
 
 import java.util.List;
 
 @Stateless
+@RolesAllowed({"ADMIN", "USER1", "USER2"})
 public class StaffController {
 
     @Inject
@@ -41,6 +43,7 @@ public class StaffController {
         return staffRepository.count();
     }
 
+    @RolesAllowed( "ADMIN")
     public Staff create(Staff staff) {
         staff.setActive(1);
         return staffRepository.create(staff);
@@ -49,7 +52,7 @@ public class StaffController {
     public Staff findById(Integer staffId) {
         return staffRepository.findById(staffId);
     }
-
+    @RolesAllowed({"ADMIN", "USER1"})
     public boolean edit(Staff staff) {
         return staffRepository.update(staff) != null;
     }

@@ -8,6 +8,7 @@ import de.pdbm.team18.business.orders.repository.OrderRepository;
 import de.pdbm.team18.business.stores.control.StockController;
 import de.pdbm.team18.business.products.control.ProductController;
 import de.pdbm.team18.business.products.entity.Product;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.ejb.Stateless;
 import jakarta.inject.Inject;
 
@@ -15,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 
 @Stateless
+@RolesAllowed({"ADMIN", "USER1", "USER2"})
 public class OrderController {
     @Inject
     private OrderRepository orderRepository;
@@ -81,7 +83,7 @@ public class OrderController {
     public Map<Integer, Integer> countItemsByOrderIds(List<Integer> orderIds) {
         return orderRepository.countItemsByOrderIds(orderIds);
     }
-
+    @RolesAllowed("ADMIN")
     public void create(Order order, List<OrderItem> orderItems) {
         for (OrderItem orderItem : orderItems) {
             Integer quantity = stockController.getQuantity(order.getStore(), orderItem.getProduct());
