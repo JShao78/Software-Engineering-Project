@@ -97,7 +97,7 @@
                     </div>
                 </h:link>
 
-                <h:link outcome="staffs" styleClass="home-card-pro">
+                <h:link outcome="staffs" styleClass="home-card-pro" rendered="#{request.isUserInRole('ADMIN')}">
                     <div class="home-card-top">
                         <div class="home-card-icon-pro">🧑‍💼</div>
                         <div class="home-card-arrow-pro">→</div>

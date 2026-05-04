@@ -19,7 +19,7 @@
             <h:link outcome="bestellungen" styleClass="#{facesContext.viewRoot.viewId == '/bestellungen.xhtml' ? 'nav-link active' : 'nav-link'}">Bestellungen</h:link>
             <h:link outcome="stocks"       styleClass="#{facesContext.viewRoot.viewId == '/stocks.xhtml'       ? 'nav-link active' : 'nav-link'}">Lagerbestände</h:link>
             <h:link outcome="stores"       styleClass="#{facesContext.viewRoot.viewId == '/stores.xhtml'       ? 'nav-link active' : 'nav-link'}">Niederlassungen</h:link>
-            <h:link outcome="staffs" styleClass="#{facesContext.viewRoot.viewId == '/staffs.xhtml' ? 'nav-link active' : 'nav-link'}">Mitarbeiter</h:link>
+            <h:link outcome="staffs" styleClass="#{facesContext.viewRoot.viewId == '/staffs.xhtml' ? 'nav-link active' : 'nav-link'}" rendered="#{request.isUserInRole('ADMIN')}">Mitarbeiter</h:link>
 
         </div>
     </nav>

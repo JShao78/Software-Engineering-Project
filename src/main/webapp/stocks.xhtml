@@ -65,7 +65,7 @@
                             <h:outputText value="#{stock.quantity}" styleClass="text-accent"/>
                         </h:column>
 
-                        <h:column>
+                        <h:column rendered="#{request.isUserInRole('ADMIN') or request.isUserInRole('USER1')}">
                             <f:facet name="header">
                                 <span class="col-header">Aktionen</span>
                             </f:facet>

@@ -76,7 +76,7 @@
                             </h:outputText>
                         </h:column>
 
-                        <h:column>
+                        <h:column rendered="#{request.isUserInRole('ADMIN') or request.isUserInRole('USER1')}">
                             <f:facet name="header">Aktionen</f:facet>
 
                             <h:commandButton value="Bearbeiten"
