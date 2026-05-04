@@ -5,10 +5,6 @@ import de.pdbm.team18.business.shared.repository.RepositoryQueryUtils;
 import jakarta.ejb.Stateless;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
-import jakarta.persistence.criteria.CriteriaBuilder;
-
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 @Stateless

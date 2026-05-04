@@ -54,11 +54,16 @@ public class OrderBoundary implements Serializable {
                 productSearch
         );
 
-        List<Integer> orderIds = orders.stream()
-                .map(Order::getOrderId)
-                .filter(Objects::nonNull)
-                .toList();
-        itemsCountByOrderId = orderController.countItemsByOrderIds(orderIds);
+        if (canViewOrderPositions()) {
+            List<Integer> orderIds = orders.stream()
+                    .map(Order::getOrderId)
+                    .filter(Objects::nonNull)
+                    .toList();
+            itemsCountByOrderId = orderController.countItemsByOrderIds(orderIds);
+        } else {
+            itemsCountByOrderId = Collections.emptyMap();
+            expandedOrderId = null;
+        }
         return orders;
     }
 
@@ -113,6 +118,16 @@ public class OrderBoundary implements Serializable {
             return 0;
         }
         return itemsCountByOrderId.getOrDefault(orderId, 0);
+    }
+
+    public boolean canViewOrderPositions() {
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        if (facesContext == null) {
+            return false;
+        }
+
+        return facesContext.getExternalContext().isUserInRole("ADMIN")
+                || facesContext.getExternalContext().isUserInRole("USER1");
     }
 
     public String statusLabel(Integer status) {

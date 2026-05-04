@@ -106,7 +106,9 @@
                         <th><span class="col-header">Versanddatum</span></th>
                         <th><span class="col-header">Niederlassung</span></th>
                         <th><span class="col-header">Status</span></th>
-                        <th><span class="col-header">Positionen</span></th>
+                        <ui:fragment rendered="#{orderBoundary.canViewOrderPositions()}">
+                            <th><span class="col-header">Positionen</span></th>
+                        </ui:fragment>
                     </tr>
                     </thead>
 
@@ -151,25 +153,27 @@
                                 </span>
                             </td>
 
-                            <td class="items-cell">
-                                <h:commandLink action="#{orderBoundary.toggleItems(order.orderId)}"
-                                               styleClass="items-toggle"
-                                               onclick="saveScrollPosition()">
-                                    <f:ajax execute="@this" render="@form" onevent="restoreScrollPosition"/>
+                            <ui:fragment rendered="#{orderBoundary.canViewOrderPositions()}">
+                                <td class="items-cell">
+                                    <h:commandLink action="#{orderBoundary.toggleItems(order.orderId)}"
+                                                   styleClass="items-toggle"
+                                                   onclick="saveScrollPosition()">
+                                        <f:ajax execute="@this" render="@form" onevent="restoreScrollPosition"/>
 
-                                    <span class="items-toggle-icon">
-                                        <h:outputText value="#{orderBoundary.expanded(order.orderId) ? '⌄' : '›'}" />
-                                    </span>
+                                        <span class="items-toggle-icon">
+                                            <h:outputText value="#{orderBoundary.expanded(order.orderId) ? '⌄' : '›'}" />
+                                        </span>
 
-                                    <h:outputText value="Ausblenden"
-                                                  rendered="#{orderBoundary.expanded(order.orderId)}" />
-                                    <h:outputText value="Anzeigen (#{orderBoundary.itemsCount(order.orderId)})"
-                                                  rendered="#{not orderBoundary.expanded(order.orderId)}" />
-                                </h:commandLink>
-                            </td>
+                                        <h:outputText value="Ausblenden"
+                                                      rendered="#{orderBoundary.expanded(order.orderId)}" />
+                                        <h:outputText value="Anzeigen (#{orderBoundary.itemsCount(order.orderId)})"
+                                                      rendered="#{not orderBoundary.expanded(order.orderId)}" />
+                                    </h:commandLink>
+                                </td>
+                            </ui:fragment>
                         </tr>
 
-                        <ui:fragment rendered="#{orderBoundary.expanded(order.orderId)}">
+                        <ui:fragment rendered="#{orderBoundary.canViewOrderPositions() and orderBoundary.expanded(order.orderId)}">
                             <tr class="order-items-row">
                                 <td colspan="8">
                                     <div class="order-items-panel">

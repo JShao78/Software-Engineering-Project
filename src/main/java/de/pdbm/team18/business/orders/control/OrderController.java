@@ -76,10 +76,12 @@ public class OrderController {
         orderRepository.create(order);
     }
 
+    @RolesAllowed({"ADMIN", "USER1"})
     public List<OrderItem> findItems(Integer orderId) {
         return orderRepository.findItemsByOrderId(orderId);
     }
 
+    @RolesAllowed({"ADMIN", "USER1"})
     public Map<Integer, Integer> countItemsByOrderIds(List<Integer> orderIds) {
         return orderRepository.countItemsByOrderIds(orderIds);
     }

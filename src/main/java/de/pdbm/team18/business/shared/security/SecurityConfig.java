@@ -17,14 +17,11 @@ import jakarta.security.enterprise.identitystore.PasswordHash;
 @DatabaseIdentityStoreDefinition(
         dataSourceLookup = "java:jboss/datasources/bikes18",
         callerQuery = "SELECT TRIM(SPLIT_PART(phone, ')',2)) FROM staffs WHERE email = ?",
-        // Intentionally no hashing for now (YAGNI/demo); replace with PBKDF2 before production.
         hashAlgorithm = SecurityConfig.PlainTextPasswordHash.class,
         groupsQuery = "SELECT CASE WHEN manager_id IS NULL THEN 'ADMIN' " +
                 "WHEN manager_id = 1 THEN 'USER1' " +
                 "ELSE 'USER2' " +
                 "END FROM staffs WHERE email = ?"
-
-
 )
 
 @ApplicationScoped
