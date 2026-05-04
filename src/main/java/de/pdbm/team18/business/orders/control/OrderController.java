@@ -27,8 +27,39 @@ public class OrderController {
     private ProductController productController;
 
     public List<Order> findPage(int currentPage, int pageSize) {
+        return findPage(currentPage, pageSize, "", "");
+    }
+
+    public List<Order> findPage(
+            int currentPage,
+            int pageSize,
+            String customerSearch,
+            String productSearch
+    ) {
         int offset = (currentPage - 1) * pageSize;
-        return orderRepository.findPage(offset, pageSize);
+        return orderRepository.findPage(offset, pageSize, customerSearch, productSearch);
+    }
+
+    public int totalPages(int pageSize) {
+        return totalPages(pageSize, "", "");
+    }
+
+    public int totalPages(int pageSize, String customerSearch, String productSearch) {
+        int count = orderRepository.count(customerSearch, productSearch);
+
+        if (count == 0) {
+            return 1;
+        }
+
+        return (int) Math.ceil((double) count / pageSize);
+    }
+
+    public int count() {
+        return count("", "");
+    }
+
+    public int count(String customerSearch, String productSearch) {
+        return orderRepository.count(customerSearch, productSearch);
     }
 
     public List<Customer> findCustomersByName(String name) {
@@ -41,15 +72,6 @@ public class OrderController {
 
     public void createOrder(Order order) {
         orderRepository.create(order);
-    }
-
-    public int totalPages(int pageSize) {
-        int count = orderRepository.count();
-        return (int) Math.ceil((double) count / pageSize);
-    }
-
-    public int count() {
-        return orderRepository.count();
     }
 
     public List<OrderItem> findItems(Integer orderId) {

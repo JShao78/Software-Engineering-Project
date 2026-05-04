@@ -3,6 +3,7 @@
       xmlns:h="jakarta.faces.html"
       xmlns:ui="jakarta.faces.facelets"
       xmlns:f="jakarta.faces.core"
+      xmlns:pt="jakarta.faces.passthrough"
       xmlns:my="jakarta.faces.composite/components">
 
 <ui:composition template="templates/navbar.xhtml">
@@ -30,6 +31,66 @@
             <h1 class="page-title orders-title">Bestellungen</h1>
             <p class="orders-subtitle">Insgesamt #{orderBoundary.count()} Bestellungen</p>
         </div>
+
+        <!-- SEARCH AREA -->
+        <h:form id="ordersSearchForm">
+            <div class="orders-search-card">
+
+                <div class="orders-search-top">
+                    <div>
+                        <h2 class="orders-search-title">Bestellungen durchsuchen</h2>
+                        <p class="orders-search-subtitle">
+                            Suche nach Kundendaten oder Produktdetails über alle Seiten.
+                        </p>
+                    </div>
+
+                    <span class="orders-search-count">
+                        #{orderBoundary.count()} Treffer insgesamt
+                    </span>
+                </div>
+
+                <div class="orders-search-grid">
+
+                    <label class="orders-search-field">
+                        <span>Kunde / Kundendetails</span>
+
+                        <h:inputText id="customerSearch"
+                                     value="#{orderBoundary.customerSearch}"
+                                     styleClass="orders-search-input"
+                                     pt:autocomplete="off"
+                                     pt:placeholder="z. B. Name, Kunde, Niederlassung, Status oder Bestell-ID" />
+                    </label>
+
+                    <label class="orders-search-field">
+                        <span>Produkt / Produktdetails</span>
+
+                        <h:inputText id="productSearch"
+                                     value="#{orderBoundary.productSearch}"
+                                     styleClass="orders-search-input"
+                                     pt:autocomplete="off"
+                                     pt:placeholder="z. B. Produktname, Modelljahr, Menge oder Preis" />
+                    </label>
+
+                    <div class="orders-search-actions">
+                        <h:commandButton value="Suchen"
+                                         action="#{orderBoundary.applySearch}"
+                                         styleClass="orders-search-submit" />
+
+                        <h:commandButton value="Zurücksetzen"
+                                         action="#{orderBoundary.resetSearch}"
+                                         styleClass="orders-search-reset" />
+                    </div>
+
+                </div>
+
+                <h:panelGroup rendered="#{orderBoundary.count() == 0}">
+                    <div class="orders-search-empty">
+                        Keine passenden Bestellungen gefunden.
+                    </div>
+                </h:panelGroup>
+
+            </div>
+        </h:form>
 
         <my:pagination boundary="#{orderBoundary}" />
 

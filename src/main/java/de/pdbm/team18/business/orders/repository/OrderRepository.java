@@ -6,7 +6,9 @@ import de.pdbm.team18.business.shared.repository.RepositoryQueryUtils;
 import jakarta.ejb.Stateless;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.TypedQuery;
 
+import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -18,26 +20,206 @@ public class OrderRepository {
     EntityManager em;
 
     public List<Order> findPage(int offset, int limit) {
+        return findPage(offset, limit, "", "");
+    }
+
+    public List<Order> findPage(
+            int offset,
+            int limit,
+            String customerSearch,
+            String productSearch
+    ) {
         offset = RepositoryQueryUtils.sanitizeOffset(offset);
         limit = RepositoryQueryUtils.sanitizeLimit(limit);
 
-        return em.createQuery("""
+        Integer customerSearchNumber = parseInteger(customerSearch);
+        Integer productSearchNumber = parseInteger(productSearch);
+        BigDecimal productSearchDecimal = parseBigDecimal(productSearch);
+
+        StringBuilder jpql = new StringBuilder();
+
+        jpql.append("""
                 SELECT o
                 FROM Order o
                 LEFT JOIN FETCH o.customer
                 LEFT JOIN FETCH o.store
+                WHERE 1 = 1
+                """);
+
+        if (hasText(customerSearch)) {
+            jpql.append("""
+                    AND (
+                        LOWER(o.customer.firstName) LIKE :customerSearch
+                        OR LOWER(o.customer.lastName) LIKE :customerSearch
+                        OR LOWER(CONCAT(CONCAT(o.customer.firstName, ' '), o.customer.lastName)) LIKE :customerSearch
+                        OR LOWER(o.store.storeName) LIKE :customerSearch
+                        OR LOWER(
+                            CASE o.orderStatus
+                                WHEN 1 THEN 'pending offen'
+                                WHEN 2 THEN 'processing in bearbeitung'
+                                WHEN 3 THEN 'rejected abgelehnt'
+                                WHEN 4 THEN 'completed abgeschlossen'
+                                ELSE 'unknown unbekannt'
+                            END
+                        ) LIKE :customerSearch
+                    """);
+
+            if (customerSearchNumber != null) {
+                jpql.append("""
+                        OR o.orderId = :customerSearchNumber
+                        OR o.orderStatus = :customerSearchNumber
+                        """);
+            }
+
+            jpql.append("""
+                    )
+                    """);
+        }
+
+        if (hasText(productSearch)) {
+            jpql.append("""
+                    AND EXISTS (
+                        SELECT oi
+                        FROM OrderItem oi
+                        JOIN oi.product p
+                        WHERE oi.order = o
+                        AND (
+                            LOWER(p.productName) LIKE :productSearch
+                    """);
+
+            if (productSearchNumber != null) {
+                jpql.append("""
+                            OR p.modelYear = :productSearchNumber
+                            OR oi.id.itemId = :productSearchNumber
+                            OR oi.quantity = :productSearchNumber
+                        """);
+            }
+
+            if (productSearchDecimal != null) {
+                jpql.append("""
+                            OR oi.listPrice = :productSearchDecimal
+                            OR oi.discount = :productSearchDecimal
+                        """);
+            }
+
+            jpql.append("""
+                        )
+                    )
+                    """);
+        }
+
+        jpql.append("""
                 ORDER BY o.orderId
-                """, Order.class)
+                """);
+
+        TypedQuery<Order> query = em.createQuery(jpql.toString(), Order.class);
+
+        setSearchParameters(
+                query,
+                customerSearch,
+                productSearch,
+                customerSearchNumber,
+                productSearchNumber,
+                productSearchDecimal
+        );
+
+        return query
                 .setFirstResult(offset)
                 .setMaxResults(limit)
                 .getResultList();
     }
 
     public int count() {
-        return Math.toIntExact(
-                em.createQuery("SELECT COUNT(o) FROM Order o", Long.class)
-                        .getSingleResult()
+        return count("", "");
+    }
+
+    public int count(String customerSearch, String productSearch) {
+        Integer customerSearchNumber = parseInteger(customerSearch);
+        Integer productSearchNumber = parseInteger(productSearch);
+        BigDecimal productSearchDecimal = parseBigDecimal(productSearch);
+
+        StringBuilder jpql = new StringBuilder();
+
+        jpql.append("""
+                SELECT COUNT(o)
+                FROM Order o
+                WHERE 1 = 1
+                """);
+
+        if (hasText(customerSearch)) {
+            jpql.append("""
+                    AND (
+                        LOWER(o.customer.firstName) LIKE :customerSearch
+                        OR LOWER(o.customer.lastName) LIKE :customerSearch
+                        OR LOWER(CONCAT(CONCAT(o.customer.firstName, ' '), o.customer.lastName)) LIKE :customerSearch
+                        OR LOWER(o.store.storeName) LIKE :customerSearch
+                        OR LOWER(
+                            CASE o.orderStatus
+                                WHEN 1 THEN 'pending offen'
+                                WHEN 2 THEN 'processing in bearbeitung'
+                                WHEN 3 THEN 'rejected abgelehnt'
+                                WHEN 4 THEN 'completed abgeschlossen'
+                                ELSE 'unknown unbekannt'
+                            END
+                        ) LIKE :customerSearch
+                    """);
+
+            if (customerSearchNumber != null) {
+                jpql.append("""
+                        OR o.orderId = :customerSearchNumber
+                        OR o.orderStatus = :customerSearchNumber
+                        """);
+            }
+
+            jpql.append("""
+                    )
+                    """);
+        }
+
+        if (hasText(productSearch)) {
+            jpql.append("""
+                    AND EXISTS (
+                        SELECT oi
+                        FROM OrderItem oi
+                        JOIN oi.product p
+                        WHERE oi.order = o
+                        AND (
+                            LOWER(p.productName) LIKE :productSearch
+                    """);
+
+            if (productSearchNumber != null) {
+                jpql.append("""
+                            OR p.modelYear = :productSearchNumber
+                            OR oi.id.itemId = :productSearchNumber
+                            OR oi.quantity = :productSearchNumber
+                        """);
+            }
+
+            if (productSearchDecimal != null) {
+                jpql.append("""
+                            OR oi.listPrice = :productSearchDecimal
+                            OR oi.discount = :productSearchDecimal
+                        """);
+            }
+
+            jpql.append("""
+                        )
+                    )
+                    """);
+        }
+
+        TypedQuery<Long> query = em.createQuery(jpql.toString(), Long.class);
+
+        setSearchParameters(
+                query,
+                customerSearch,
+                productSearch,
+                customerSearchNumber,
+                productSearchNumber,
+                productSearchDecimal
         );
+
+        return Math.toIntExact(query.getSingleResult());
     }
 
     public List<OrderItem> findItemsByOrderId(Integer orderId) {
@@ -86,5 +268,68 @@ public class OrderRepository {
         em.persist(orderItem);
         em.flush();
         return orderItem;
+    }
+
+    private boolean hasText(String value) {
+        return value != null && !value.trim().isEmpty();
+    }
+
+    private Integer parseInteger(String value) {
+        if (!hasText(value)) {
+            return null;
+        }
+
+        try {
+            return Integer.valueOf(value.trim());
+        } catch (NumberFormatException e) {
+            return null;
+        }
+    }
+
+    private BigDecimal parseBigDecimal(String value) {
+        if (!hasText(value)) {
+            return null;
+        }
+
+        try {
+            return new BigDecimal(value.trim().replace(",", "."));
+        } catch (NumberFormatException e) {
+            return null;
+        }
+    }
+
+    private void setSearchParameters(
+            TypedQuery<?> query,
+            String customerSearch,
+            String productSearch,
+            Integer customerSearchNumber,
+            Integer productSearchNumber,
+            BigDecimal productSearchDecimal
+    ) {
+        if (hasText(customerSearch)) {
+            query.setParameter(
+                    "customerSearch",
+                    "%" + customerSearch.trim().toLowerCase() + "%"
+            );
+
+            if (customerSearchNumber != null) {
+                query.setParameter("customerSearchNumber", customerSearchNumber);
+            }
+        }
+
+        if (hasText(productSearch)) {
+            query.setParameter(
+                    "productSearch",
+                    "%" + productSearch.trim().toLowerCase() + "%"
+            );
+
+            if (productSearchNumber != null) {
+                query.setParameter("productSearchNumber", productSearchNumber);
+            }
+
+            if (productSearchDecimal != null) {
+                query.setParameter("productSearchDecimal", productSearchDecimal);
+            }
+        }
     }
 }

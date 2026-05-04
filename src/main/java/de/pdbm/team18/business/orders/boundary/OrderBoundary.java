@@ -9,15 +9,19 @@ import de.pdbm.team18.business.shared.repository.RepositoryQueryUtils;
 import jakarta.annotation.PostConstruct;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
+import jakarta.faces.event.AjaxBehaviorEvent;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
-import jakarta.faces.event.AjaxBehaviorEvent;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 @Named
 @ViewScoped
@@ -36,8 +40,20 @@ public class OrderBoundary implements Serializable {
     private Order newOrder = new Order();
     private List<OrderItem> newOrderItems = new ArrayList<>();
 
+    @PostConstruct
+    private void init() {
+        customerSearch = "";
+        productSearch = "";
+    }
+
     public List<Order> findPage() {
-        List<Order> orders = orderController.findPage(currentPage, pageSize);
+        List<Order> orders = orderController.findPage(
+                currentPage,
+                pageSize,
+                customerSearch,
+                productSearch
+        );
+
         List<Integer> orderIds = orders.stream()
                 .map(Order::getOrderId)
                 .filter(Objects::nonNull)
@@ -46,10 +62,26 @@ public class OrderBoundary implements Serializable {
         return orders;
     }
 
-    @PostConstruct
-    private void init() {
+    public int count() {
+        return orderController.count(customerSearch, productSearch);
+    }
+
+    public int totalPages() {
+        return orderController.totalPages(pageSize, customerSearch, productSearch);
+    }
+
+    public String applySearch() {
+        currentPage = 1;
+        expandedOrderId = null;
+        return null;
+    }
+
+    public String resetSearch() {
         customerSearch = "";
         productSearch = "";
+        currentPage = 1;
+        expandedOrderId = null;
+        return null;
     }
 
     public List<Customer> findCustomers() {
@@ -58,14 +90,6 @@ public class OrderBoundary implements Serializable {
 
     public List<Product> findProducts() {
         return orderController.findProductsByName(productSearch);
-    }
-
-    public int count() {
-        return orderController.count();
-    }
-
-    public int totalPages() {
-        return orderController.totalPages(pageSize);
     }
 
     public void toggleItems(Integer orderId) {
@@ -166,6 +190,9 @@ public class OrderBoundary implements Serializable {
         FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(severity, summary, detail));
     }
 
+    private int clamp(int value, int min, int max) {
+        return Math.max(min, Math.min(value, max));
+    }
 
     // Getter and Setter
     public int getCurrentPage() {
@@ -173,7 +200,7 @@ public class OrderBoundary implements Serializable {
     }
 
     public void setCurrentPage(int currentPage) {
-        this.currentPage = Math.clamp(currentPage, 1, Math.max(totalPages(), 1));
+        this.currentPage = clamp(currentPage, 1, Math.max(totalPages(), 1));
     }
 
     public int getPageSize() {
@@ -185,12 +212,25 @@ public class OrderBoundary implements Serializable {
     }
 
     public void onPageSizeChange(AjaxBehaviorEvent event) {
-        this.pageSize = Math.clamp(pageSize, 1, RepositoryQueryUtils.MAX_LIMIT);
+        this.pageSize = clamp(pageSize, 1, RepositoryQueryUtils.MAX_LIMIT);
         this.currentPage = 1;
+        this.expandedOrderId = null;
     }
 
     public Order getNewOrder() {
         return newOrder;
+    }
+
+    public void setNewOrder(Order newOrder) {
+        this.newOrder = newOrder;
+    }
+
+    public List<OrderItem> getNewOrderItems() {
+        return newOrderItems;
+    }
+
+    public void setNewOrderItems(List<OrderItem> newOrderItems) {
+        this.newOrderItems = newOrderItems;
     }
 
     public String getCustomerSearch() {
@@ -207,9 +247,5 @@ public class OrderBoundary implements Serializable {
 
     public void setProductSearch(String productSearch) {
         this.productSearch = productSearch;
-    }
-
-    public List<OrderItem> getNewOrderItems() {
-        return newOrderItems;
     }
 }
