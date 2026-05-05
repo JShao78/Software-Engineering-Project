@@ -21,9 +21,11 @@
                     </p>
                 </div>
 
-                <a href="#add-product-modal" class="add-modal-btn">
-                    + Produkt hinzufügen
-                </a>
+                <ui:fragment rendered="#{request.isUserInRole('ADMIN') or request.isUserInRole('USER1')}">
+                    <a href="#add-product-modal" class="add-modal-btn">
+                        + Produkt hinzufügen
+                    </a>
+                </ui:fragment>
             </div>
 
             <h:messages globalOnly="true"
@@ -92,8 +94,9 @@
             </h:form>
 
             <!-- ADD PRODUCT MODAL -->
-            <div id="add-product-modal" class="product-modal-overlay">
-                <div class="product-modal">
+            <ui:fragment rendered="#{request.isUserInRole('ADMIN') or request.isUserInRole('USER1')}">
+                <div id="add-product-modal" class="product-modal-overlay">
+                    <div class="product-modal">
 
                     <div class="product-modal-header">
                         <div class="product-modal-title-wrap">
@@ -110,7 +113,7 @@
                         <a href="#" class="product-modal-close" aria-label="Schließen">×</a>
                     </div>
 
-                    <h:form id="addProductForm" styleClass="product-form-frontend">
+                        <h:form id="addProductForm" styleClass="product-form-frontend">
 
                         <div class="product-modal-body">
 
@@ -239,10 +242,11 @@
                             </h:commandButton>
                         </div>
 
-                    </h:form>
+                        </h:form>
 
+                    </div>
                 </div>
-            </div>
+            </ui:fragment>
 
             <!-- EDIT PRODUCT MODAL -->
             <h:panelGroup id="editProductModalPanel"

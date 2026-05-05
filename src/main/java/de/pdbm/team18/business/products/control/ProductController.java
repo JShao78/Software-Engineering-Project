@@ -46,7 +46,7 @@ public class ProductController {
     public int count() {
         return productRepository.count();
     }
-    @RolesAllowed("ADMIN")
+    @RolesAllowed({"ADMIN", "USER1"})
     public Product create(Product product) {
         productRepository.create(product);
         for (Store store : storeController.findAll()) {
