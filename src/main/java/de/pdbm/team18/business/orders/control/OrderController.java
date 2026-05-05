@@ -8,10 +8,13 @@ import de.pdbm.team18.business.orders.repository.OrderRepository;
 import de.pdbm.team18.business.stores.control.StockController;
 import de.pdbm.team18.business.products.control.ProductController;
 import de.pdbm.team18.business.products.entity.Product;
+import de.pdbm.team18.business.stores.entity.StockId;
+import de.pdbm.team18.business.stores.entity.Store;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.ejb.Stateless;
 import jakarta.inject.Inject;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
@@ -85,6 +88,7 @@ public class OrderController {
     public Map<Integer, Integer> countItemsByOrderIds(List<Integer> orderIds) {
         return orderRepository.countItemsByOrderIds(orderIds);
     }
+
     @RolesAllowed("ADMIN")
     public void create(Order order, List<OrderItem> orderItems) {
         for (OrderItem orderItem : orderItems) {
@@ -102,6 +106,42 @@ public class OrderController {
             orderItem.getId().setItemId(orderItemId++);
             orderRepository.createItem(orderItem);
         }
-
     }
+
+    @RolesAllowed({"ADMIN","USER1"})
+    public void updateStatus(Order order){
+        Order managedOrder = orderRepository.findById(order.getOrderId());
+        if (managedOrder == null) {
+            throw new IllegalArgumentException("Order must not be null");
+        }
+        Integer oldStatus = managedOrder.getOrderStatus();
+        Integer newStatus = order.getOrderStatus();
+        if (oldStatus != 4 && newStatus == 4){
+            List<OrderItem> orderItems = orderRepository.findItemsByOrderId(managedOrder.getOrderId());
+            for (OrderItem orderItem : orderItems) {
+                Integer quantity = stockController.getQuantity(managedOrder.getStore(), orderItem.getProduct());
+                if (quantity == null || quantity < orderItem.getQuantity()) {
+                    throw new IllegalStateException("Nicht genügend Lagerbestand für diese Bestellung");
+                }
+            }
+            for (OrderItem orderItem : orderItems){
+                Integer quantity = stockController.getQuantity(managedOrder.getStore(), orderItem.getProduct());
+                StockId stockId = new StockId(managedOrder.getStore().getStoreId(), orderItem.getProduct().getProductId());
+                stockController.updateQuantity(stockId, quantity - orderItem.getQuantity());
+            }
+            order.setShippedDate(LocalDate.now());
+        } else if (oldStatus == 4 && newStatus != 4) {
+            List<OrderItem> orderItems = orderRepository.findItemsByOrderId(managedOrder.getOrderId());
+            for (OrderItem orderItem : orderItems) {
+                StockId stockId = new StockId(managedOrder.getStore().getStoreId(), orderItem.getProduct().getProductId());
+                Integer quantity = stockController.getQuantity(managedOrder.getStore(), orderItem.getProduct());
+                stockController.updateQuantity(stockId, quantity + orderItem.getQuantity());
+            }
+            order.setShippedDate(null);
+        }
+
+        orderRepository.update(order);
+        }
+
+
 }

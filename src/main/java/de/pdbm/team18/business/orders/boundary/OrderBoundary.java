@@ -7,7 +7,6 @@ import de.pdbm.team18.business.orders.entity.OrderItem;
 import de.pdbm.team18.business.products.entity.Product;
 import de.pdbm.team18.business.shared.repository.RepositoryQueryUtils;
 import jakarta.annotation.PostConstruct;
-import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.event.AjaxBehaviorEvent;
 import jakarta.faces.view.ViewScoped;
@@ -186,23 +185,18 @@ public class OrderBoundary implements Serializable {
         return subtotal.setScale(2, RoundingMode.HALF_UP);
     }
 
-    public void save(){
-        if(newOrderItems.isEmpty()){
-            addMessage(FacesMessage.SEVERITY_WARN, "Warnung", "Bitte mindestens einen Artikel hinzufügen");
+    public void save() {
+        if (newOrderItems.isEmpty()) {
             return;
         }
-        try{
-            orderController.create(newOrder, newOrderItems);
-            addMessage(FacesMessage.SEVERITY_INFO, "Erfolg", "Bestellung erfolgreich erstellt");
-            newOrder = new Order();
-            newOrderItems = new ArrayList<>();
-        }catch(IllegalStateException e){
-            addMessage(FacesMessage.SEVERITY_ERROR, "Fehler", e.getMessage());
-        }
+        orderController.create(newOrder, newOrderItems);
 
+        newOrder = new Order();
+        newOrderItems = new ArrayList<>();
     }
-    private void addMessage(FacesMessage.Severity severity, String summary, String detail) {
-        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(severity, summary, detail));
+
+    public void updateStatus(Order order) {
+        orderController.updateStatus(order);
     }
 
     private int clamp(int value, int min, int max) {

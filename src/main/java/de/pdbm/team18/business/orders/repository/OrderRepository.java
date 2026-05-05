@@ -234,6 +234,19 @@ public class OrderRepository {
                 .getResultList();
     }
 
+    public Order findById(Integer orderId) {
+        return em.find(Order.class, orderId);
+    }
+
+    public Order update(Order order) {
+        if (order == null) {
+            throw new IllegalArgumentException("Order must not be null");
+        }
+        Order managedOrder = em.merge(order);
+        em.flush();
+        return managedOrder;
+    }
+
     public Map<Integer, Integer> countItemsByOrderIds(List<Integer> orderIds) {
         if (orderIds == null || orderIds.isEmpty()) {
             return Collections.emptyMap();

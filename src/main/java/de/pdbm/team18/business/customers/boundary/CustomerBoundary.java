@@ -4,8 +4,6 @@ import de.pdbm.team18.business.customers.control.CustomerController;
 import de.pdbm.team18.business.customers.repository.CustomerRepository;
 import de.pdbm.team18.business.customers.entity.Customer;
 import de.pdbm.team18.business.shared.repository.RepositoryQueryUtils;
-import jakarta.faces.application.FacesMessage;
-import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
@@ -103,17 +101,7 @@ public class CustomerBoundary implements Serializable {
     }
 
     public void delete(Integer customerId) {
-        try{
-            customerController.delete(customerId);
-            addMessage(FacesMessage.SEVERITY_INFO, "Erfolg", "Kunde erfolgreich gelöscht");
-        } catch (IllegalArgumentException e){
-            addMessage(FacesMessage.SEVERITY_ERROR, "Fehler", e.getMessage());
-        } catch (IllegalStateException e){
-            addMessage(FacesMessage.SEVERITY_WARN, "Warnung", e.getMessage());
-        }
-    }
-    private void addMessage(FacesMessage.Severity severity, String summary, String detail) {
-        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(severity, summary, detail));
+        customerController.delete(customerId);
     }
 
 	public void addCustomer() {
