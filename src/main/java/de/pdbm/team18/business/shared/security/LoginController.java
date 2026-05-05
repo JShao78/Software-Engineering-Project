@@ -28,6 +28,16 @@ public class LoginController {
     private FacesContext facesContext;
 
     public void login() throws IOException {
+
+        try {
+            if (((HttpServletRequest)facesContext.getExternalContext().getRequest()).getUserPrincipal() != null) {
+                ((HttpServletRequest)facesContext.getExternalContext().getRequest()).logout();
+                facesContext.getExternalContext().invalidateSession();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         AuthenticationStatus status = securityContext.authenticate(
                 (HttpServletRequest) facesContext.getExternalContext().getRequest(),
                 (HttpServletResponse) facesContext.getExternalContext().getResponse(),
