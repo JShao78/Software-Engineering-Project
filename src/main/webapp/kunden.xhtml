@@ -14,7 +14,7 @@
 				<h1 class="page-title orders-title">Kunden</h1>
 				<p class="orders-subtitle">Insgesamt #{customerBoundary.count()} Kunden</p>
 			</div>
-			<a class="add-modal-btn" onclick="document.getElementById('kundenModal').style.display='flex'">
+			<a href="kundenModal" class="add-modal-btn" onclick="document.getElementById('kundenModal').style.display='flex'">
 				+ Kunde hinzufügen
 			</a>
         </div>
@@ -86,8 +86,7 @@
                             <h:inputText id="phone"
                                          value="#{customerBoundary.phone}"
                                          styleClass="form-input"
-                                         placeholder=" "
-                                         required="true">
+                                         placeholder=" ">
                                 <f:validateRegex pattern="[\+\d\s\-\(\)]*"/>
                             </h:inputText>
                             <label for="kundenForm:phone" class="floating-label">Telefon</label>
