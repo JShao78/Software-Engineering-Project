@@ -1,6 +1,7 @@
 package de.pdbm.team18.business.stores.boundary;
 
 import de.pdbm.team18.business.shared.repository.RepositoryQueryUtils;
+import de.pdbm.team18.business.stores.repository.StaffRepository;
 import de.pdbm.team18.business.stores.control.StaffController;
 import de.pdbm.team18.business.stores.entity.Staff;
 import jakarta.faces.event.AjaxBehaviorEvent;
@@ -14,12 +15,35 @@ import java.util.List;
 @Named
 @ViewScoped
 public class StaffBoundary implements Serializable {
+	private String firstName;
+    private String lastName;
+    private String email;
+    private String phone;
+    private int status;
+
+    //Getters and Setters for properties
+    public String getFirstName() { return firstName; }
+    public void setFirstName(String v) { this.firstName = v; }
+
+    public String getLastName() { return lastName; }
+    public void setLastName(String v) { this.lastName = v; }
+
+    public String getEmail() { return email; }
+    public void setEmail(String email) {this.email = email; }
+
+    public String getPhone() { return phone; }
+    public void setPhone(String phone) { this.phone = phone; }
+
+    public int getStatus() { return status; }
+    public void setStatus(int status) { this.status = status; }
 
     private int currentPage = 1;
     private int pageSize = RepositoryQueryUtils.DEFAULT_LIMIT;
 
     @Inject
     StaffController staffController;
+    @Inject
+    StaffRepository staffRepository;
 
     private Staff staff = new Staff();
     private Staff editStaff = new Staff();
@@ -75,6 +99,22 @@ public class StaffBoundary implements Serializable {
 
     public void cancelEdit() {
         this.editStaff = new Staff();
+    }
+
+    public void addStaff() {
+        Staff staff = new Staff();
+        staff.setFirstName(firstName);
+        staff.setLastName(lastName);
+        staff.setEmail(email);
+        staff.setPhone(phone);
+        staff.setActive(status);
+
+        staffRepository.create(staff);
+
+        this.firstName = null;
+        this.lastName = null;
+        this.email = null;
+        this.phone = null;
     }
 
     public int getCurrentPage() {

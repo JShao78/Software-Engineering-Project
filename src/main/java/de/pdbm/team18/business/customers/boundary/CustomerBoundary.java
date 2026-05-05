@@ -1,6 +1,7 @@
 package de.pdbm.team18.business.customers.boundary;
 
 import de.pdbm.team18.business.customers.control.CustomerController;
+import de.pdbm.team18.business.customers.repository.CustomerRepository;
 import de.pdbm.team18.business.customers.entity.Customer;
 import de.pdbm.team18.business.shared.repository.RepositoryQueryUtils;
 import jakarta.faces.application.FacesMessage;
@@ -16,12 +17,43 @@ import java.util.List;
 @Named
 @ViewScoped
 public class CustomerBoundary implements Serializable {
+	private String firstName;
+    private String lastName;
+    private String email;
+    private String phone;
+    private String state;
+    private String zipCode;
+    private String street;
+
+    //Getters and Setters for properties
+    public String getFirstName() { return firstName; }
+    public void setFirstName(String v) { this.firstName = v; }
+
+    public String getLastName() { return lastName; }
+    public void setLastName(String v) { this.lastName = v; }
+
+    public String getEmail() { return email; }
+    public void setEmail(String email) {this.email = email; }
+
+    public String getPhone() { return phone; }
+    public void setPhone(String phone) { this.phone = phone; }
+
+    public String getState() { return state; }
+    public void setState(String state) { this.state = state; }
+
+    public String getZipCode() { return zipCode; }
+    public void setZipCode(String zipCode) { this.zipCode = zipCode; }
+
+    public String getStreet() { return street; }
+    public void setStreet(String street) { this.street = street; }
 
     private int currentPage = 1;
     private int pageSize = RepositoryQueryUtils.DEFAULT_LIMIT;
 
     @Inject
     CustomerController customerController;
+    @Inject
+    CustomerRepository customerRepository;
 
     private Customer customer = new Customer();
     private Customer editCustomer = new Customer();
@@ -82,6 +114,27 @@ public class CustomerBoundary implements Serializable {
     }
     private void addMessage(FacesMessage.Severity severity, String summary, String detail) {
         FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(severity, summary, detail));
+    }
+
+	public void addCustomer() {
+        Customer customer = new Customer();
+        customer.setFirstName(firstName);
+        customer.setLastName(lastName);
+        customer.setEmail(email);
+        customer.setPhone(phone);
+        customer.setState(state);
+        customer.setZipCode(zipCode);
+        customer.setStreet(street);
+
+        customerRepository.create(customer);
+
+        this.firstName = null;
+        this.lastName = null;
+        this.email = null;
+        this.phone = null;
+        this.state = null;
+        this.zipCode = null;
+        this.street = null;
     }
 
     //Getter and Setter
