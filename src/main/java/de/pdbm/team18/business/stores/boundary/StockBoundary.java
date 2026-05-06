@@ -65,7 +65,7 @@ public class StockBoundary implements Serializable {
 
     public boolean saveEdit() {
         if (editStock.getStockId() == null) return false;
-        boolean success = stockController.updateQuantity(
+        boolean success = stockController.edit(
             editStock.getStockId(), 
             editStock.getQuantity()
         );

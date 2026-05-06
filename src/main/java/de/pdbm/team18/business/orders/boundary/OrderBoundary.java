@@ -37,6 +37,7 @@ public class OrderBoundary implements Serializable {
     private Integer expandedOrderId;
     private Map<Integer, Integer> itemsCountByOrderId = Collections.emptyMap();
     private Order newOrder = new Order();
+    private Order editOrder = new Order();
     private List<OrderItem> newOrderItems = new ArrayList<>();
 
     @PostConstruct
@@ -185,7 +186,7 @@ public class OrderBoundary implements Serializable {
         return subtotal.setScale(2, RoundingMode.HALF_UP);
     }
 
-    public void save() {
+    public void create() {
         if (newOrderItems.isEmpty()) {
             return;
         }
@@ -195,8 +196,28 @@ public class OrderBoundary implements Serializable {
         newOrderItems = new ArrayList<>();
     }
 
-    public void updateStatus(Order order) {
-        orderController.updateStatus(order);
+    public boolean prepareEdit(Order orderToEdit) {
+        if (orderToEdit == null || orderToEdit.getOrderId() == null) {
+            cancelEdit();
+            return false;
+        }
+
+        this.editOrder = orderToEdit;
+        return true;
+    }
+
+    public boolean saveEdit() {
+        if (editOrder.getOrderId() == null) {
+            return false;
+        }
+
+        orderController.edit(editOrder);
+        cancelEdit();
+        return true;
+    }
+
+    public void cancelEdit() {
+        this.editOrder = new Order();
     }
 
     private int clamp(int value, int min, int max) {
@@ -236,6 +257,10 @@ public class OrderBoundary implements Serializable {
 
     public List<OrderItem> getNewOrderItems() {
         return newOrderItems;
+    }
+
+    public Order getEditOrder() {
+        return editOrder;
     }
 
     public void setNewOrderItems(List<OrderItem> newOrderItems) {

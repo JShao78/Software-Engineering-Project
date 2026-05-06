@@ -47,7 +47,7 @@ public class StockRepository {
         return stock;
     }
 
-    public Stock updateQuantity(StockId stockId, int quantity) {
+    public Stock update(StockId stockId, int quantity) {
         Stock managed = em.find(Stock.class, stockId);
         if (managed == null) return null;
         managed.setQuantity(quantity);

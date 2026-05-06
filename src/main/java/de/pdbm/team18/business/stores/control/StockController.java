@@ -37,8 +37,8 @@ public class StockController {
     }
 
     @RolesAllowed({"ADMIN", "USER1"})
-    public boolean updateQuantity(StockId stockId, int quantity) {
-        return stockRepository.updateQuantity(stockId, quantity) != null;
+    public boolean edit(StockId stockId, int quantity) {
+        return stockRepository.update(stockId, quantity) != null;
     }
 
     public Integer getQuantity(Store store, Product product) {

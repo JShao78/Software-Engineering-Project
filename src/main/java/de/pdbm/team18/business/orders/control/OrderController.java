@@ -30,10 +30,6 @@ public class OrderController {
     @Inject
     private ProductController productController;
 
-    public List<Order> findPage(int currentPage, int pageSize) {
-        return findPage(currentPage, pageSize, "", "");
-    }
-
     public List<Order> findPage(
             int currentPage,
             int pageSize,
@@ -44,10 +40,6 @@ public class OrderController {
         return orderRepository.findPage(offset, pageSize, customerSearch, productSearch);
     }
 
-    public int totalPages(int pageSize) {
-        return totalPages(pageSize, "", "");
-    }
-
     public int totalPages(int pageSize, String customerSearch, String productSearch) {
         int count = orderRepository.count(customerSearch, productSearch);
 
@@ -56,10 +48,6 @@ public class OrderController {
         }
 
         return (int) Math.ceil((double) count / pageSize);
-    }
-
-    public int count() {
-        return count("", "");
     }
 
     public int count(String customerSearch, String productSearch) {
@@ -74,10 +62,6 @@ public class OrderController {
         return productController.findByName(name);
     }
 
-    public void createOrder(Order order) {
-        orderRepository.create(order);
-    }
-
     @RolesAllowed({"ADMIN", "USER1"})
     public List<OrderItem> findItems(Integer orderId) {
         return orderRepository.findItemsByOrderId(orderId);
@@ -88,7 +72,7 @@ public class OrderController {
         return orderRepository.countItemsByOrderIds(orderIds);
     }
 
-    @RolesAllowed("ADMIN")
+    @RolesAllowed({"ADMIN", "USER1"})
     public void create(Order order, List<OrderItem> orderItems) {
         for (OrderItem orderItem : orderItems) {
             Integer quantity = stockController.getQuantity(order.getStore(), orderItem.getProduct());
@@ -108,7 +92,7 @@ public class OrderController {
     }
 
     @RolesAllowed({"ADMIN","USER1"})
-    public void updateStatus(Order order){
+    public void edit(Order order){
         Order managedOrder = orderRepository.findById(order.getOrderId());
         if (managedOrder == null) {
             throw new IllegalArgumentException("Order must not be null");
@@ -126,7 +110,7 @@ public class OrderController {
             for (OrderItem orderItem : orderItems){
                 Integer quantity = stockController.getQuantity(managedOrder.getStore(), orderItem.getProduct());
                 StockId stockId = new StockId(managedOrder.getStore().getStoreId(), orderItem.getProduct().getProductId());
-                stockController.updateQuantity(stockId, quantity - orderItem.getQuantity());
+                stockController.edit(stockId, quantity - orderItem.getQuantity());
             }
             order.setShippedDate(LocalDate.now());
         }

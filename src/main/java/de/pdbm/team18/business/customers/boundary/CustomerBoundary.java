@@ -39,7 +39,7 @@ public class CustomerBoundary implements Serializable {
         return customerController.count();
     }
 
-    public void save() {
+    public void create() {
         customerController.create(customer);
         this.customer = new Customer();
     }

@@ -43,7 +43,7 @@ public class ProductBoundary implements Serializable {
         return productController.count();
     }
 
-    public void save() {
+    public void create() {
         product.setBrand(productController.findBrands()
                 .stream().filter(b -> b.getBrandId().equals(brandId))
                 .findFirst().orElse(null));
