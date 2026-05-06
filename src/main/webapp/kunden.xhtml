@@ -52,7 +52,7 @@
                         <div class="field-row">
                             <div class="form-group floating">
                                 <h:inputText id="vorname"
-                                             value="#{customerBoundary.firstName}"
+                                             value="#{customerBoundary.customer.firstName}"
                                              styleClass="form-input"
                                              placeholder=" "
                                              required="true"/>
@@ -62,7 +62,7 @@
                             </div>
                             <div class="form-group floating">
                                 <h:inputText id="nachname"
-                                             value="#{customerBoundary.lastName}"
+                                             value="#{customerBoundary.customer.lastName}"
                                              styleClass="form-input"
                                              placeholder=" "
                                              required="true"/>
@@ -75,7 +75,7 @@
                         <div class="modal-section-label">Kontaktdaten</div>
                         <div class="form-group floating">
                             <h:inputText id="email"
-                                         value="#{customerBoundary.email}"
+                                         value="#{customerBoundary.customer.email}"
                                          styleClass="form-input"
                                          placeholder=" "/>
                             <label for="kundenForm:email" class="floating-label">E-Mail</label>
@@ -84,7 +84,7 @@
                         </div>
                         <div class="form-group floating">
                             <h:inputText id="phone"
-                                         value="#{customerBoundary.phone}"
+                                         value="#{customerBoundary.customer.phone}"
                                          styleClass="form-input"
                                          placeholder=" ">
                                 <f:validateRegex pattern="[\+\d\s\-\(\)]*"/>
@@ -95,7 +95,7 @@
                         </div>
                         <div class="form-group floating">
                             <h:inputText id="state"
-                                         value="#{customerBoundary.state}"
+                                         value="#{customerBoundary.customer.state}"
                                          styleClass="form-input"
                                          placeholder=" ">
                             </h:inputText>
@@ -105,7 +105,7 @@
                         </div>
                         <div class="form-group floating">
                             <h:inputText id="zipCode"
-                                         value="#{customerBoundary.zipCode}"
+                                         value="#{customerBoundary.customer.zipCode}"
                                          styleClass="form-input"
                                          placeholder=" ">
                             </h:inputText>
@@ -115,7 +115,7 @@
                         </div>
                         <div class="form-group floating">
                             <h:inputText id="street"
-										 value="#{customerBoundary.street}"
+                                         value="#{customerBoundary.customer.street}"
                                          styleClass="form-input"
                                          placeholder=" ">
                             </h:inputText>
@@ -132,7 +132,7 @@
                             Abbrechen
                         </button>
                         <h:commandButton value="Speichern"
-                                         action="#{customerBoundary.addCustomer()}"
+                                         action="#{customerBoundary.save}"
                                          styleClass="btn-primary btn-save"/>
                     </div>
                 </h:form>

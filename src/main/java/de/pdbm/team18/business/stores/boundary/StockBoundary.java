@@ -2,7 +2,6 @@ package de.pdbm.team18.business.stores.boundary;
 import de.pdbm.team18.business.shared.repository.RepositoryQueryUtils;
 import de.pdbm.team18.business.stores.control.StockController;
 import de.pdbm.team18.business.stores.entity.Stock;
-import de.pdbm.team18.business.stores.entity.StockId;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
@@ -54,13 +53,13 @@ public class StockBoundary implements Serializable {
         this.currentPage = 1;
     }
 
-    public boolean prepareEdit(StockId stockId) {
-        Stock found = stockController.findById(stockId);
-        if (found == null) {
+    public boolean prepareEdit(Stock stockToEdit) {
+        if (stockToEdit == null || stockToEdit.getStockId() == null) {
             cancelEdit();
             return false;
         }
-        this.editStock = found;
+
+        this.editStock = stockToEdit;
         return true;
     }
 

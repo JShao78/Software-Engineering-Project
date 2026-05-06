@@ -58,10 +58,6 @@ public class StaffRepository {
         return staff;
     }
 
-    public Staff findById(Integer staffId) {
-        return em.find(Staff.class, staffId);
-    }
-
     public Staff update(Staff staff) {
         if (staff == null) {
             throw new IllegalArgumentException("Staff must not be null");

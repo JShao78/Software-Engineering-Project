@@ -9,7 +9,6 @@ import de.pdbm.team18.business.stores.control.StockController;
 import de.pdbm.team18.business.products.control.ProductController;
 import de.pdbm.team18.business.products.entity.Product;
 import de.pdbm.team18.business.stores.entity.StockId;
-import de.pdbm.team18.business.stores.entity.Store;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.ejb.Stateless;
 import jakarta.inject.Inject;
@@ -130,18 +129,10 @@ public class OrderController {
                 stockController.updateQuantity(stockId, quantity - orderItem.getQuantity());
             }
             order.setShippedDate(LocalDate.now());
-        } else if (oldStatus == 4 && newStatus != 4) {
-            List<OrderItem> orderItems = orderRepository.findItemsByOrderId(managedOrder.getOrderId());
-            for (OrderItem orderItem : orderItems) {
-                StockId stockId = new StockId(managedOrder.getStore().getStoreId(), orderItem.getProduct().getProductId());
-                Integer quantity = stockController.getQuantity(managedOrder.getStore(), orderItem.getProduct());
-                stockController.updateQuantity(stockId, quantity + orderItem.getQuantity());
-            }
-            order.setShippedDate(null);
         }
-
+        if (oldStatus == 4 && newStatus != 4) {
+            throw new IllegalStateException("Versendete Bestellungen dürfen nicht verändert werden");
+        }
         orderRepository.update(order);
-        }
-
-
+    }
 }

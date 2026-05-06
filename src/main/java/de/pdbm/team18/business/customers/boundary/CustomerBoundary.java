@@ -15,35 +15,6 @@ import java.util.List;
 @Named
 @ViewScoped
 public class CustomerBoundary implements Serializable {
-	private String firstName;
-    private String lastName;
-    private String email;
-    private String phone;
-    private String state;
-    private String zipCode;
-    private String street;
-
-    //Getters and Setters for properties
-    public String getFirstName() { return firstName; }
-    public void setFirstName(String v) { this.firstName = v; }
-
-    public String getLastName() { return lastName; }
-    public void setLastName(String v) { this.lastName = v; }
-
-    public String getEmail() { return email; }
-    public void setEmail(String email) {this.email = email; }
-
-    public String getPhone() { return phone; }
-    public void setPhone(String phone) { this.phone = phone; }
-
-    public String getState() { return state; }
-    public void setState(String state) { this.state = state; }
-
-    public String getZipCode() { return zipCode; }
-    public void setZipCode(String zipCode) { this.zipCode = zipCode; }
-
-    public String getStreet() { return street; }
-    public void setStreet(String street) { this.street = street; }
 
     private int currentPage = 1;
     private int pageSize = RepositoryQueryUtils.DEFAULT_LIMIT;
@@ -73,13 +44,13 @@ public class CustomerBoundary implements Serializable {
         this.customer = new Customer();
     }
 
-    public boolean prepareEdit(Integer customerId) {
-        Customer foundCustomer = customerController.findById(customerId);
-        if (foundCustomer == null) {
+    public boolean prepareEdit(Customer customerToEdit) {
+        if (customerToEdit == null || customerToEdit.getCustomerId() == null) {
             cancelEdit();
             return false;
         }
-        this.editCustomer = foundCustomer;
+
+        this.editCustomer = customerToEdit;
         return true;
     }
 
@@ -102,27 +73,6 @@ public class CustomerBoundary implements Serializable {
 
     public void delete(Integer customerId) {
         customerController.delete(customerId);
-    }
-
-	public void addCustomer() {
-        Customer customer = new Customer();
-        customer.setFirstName(firstName);
-        customer.setLastName(lastName);
-        customer.setEmail(email);
-        customer.setPhone(phone);
-        customer.setState(state);
-        customer.setZipCode(zipCode);
-        customer.setStreet(street);
-
-        customerRepository.create(customer);
-
-        this.firstName = null;
-        this.lastName = null;
-        this.email = null;
-        this.phone = null;
-        this.state = null;
-        this.zipCode = null;
-        this.street = null;
     }
 
     //Getter and Setter

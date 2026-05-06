@@ -55,10 +55,6 @@ public class StockRepository {
         return managed;
     }
 
-    public Stock findById(StockId stockId) {
-        return em.find(Stock.class, stockId);
-    }
-
     public Integer getQuantity(Store store, Product product) {
         if (store == null || product == null) return null;
         return em.createQuery("SELECT stock.quantity FROM Stock stock WHERE stock.store = :store AND stock.product = :product", Integer.class)

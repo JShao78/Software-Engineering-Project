@@ -57,10 +57,6 @@ public class ProductRepository {
         return product;
     }
 
-    public Product findById(Integer productId) {
-        return em.find(Product.class, productId);
-    }
-
     public Product update(Product product) {
         if (product == null) throw new IllegalArgumentException("Product must not be null");
         Product managed = em.merge(product);

@@ -56,15 +56,15 @@ public class ProductBoundary implements Serializable {
         categoryId = null;
     }
 
-    public boolean prepareEdit(Integer productId) {
-        Product found = productController.findById(productId);
-        if (found == null) {
+    public boolean prepareEdit(Product productToEdit) {
+        if (productToEdit == null || productToEdit.getProductId() == null) {
             cancelEdit();
             return false;
         }
-        this.editProduct = found;
-        this.editBrandId = found.getBrand() != null ? found.getBrand().getBrandId() : null;
-        this.editCategoryId = found.getCategory() != null ? found.getCategory().getCategoryId() : null;
+
+        this.editProduct = productToEdit;
+        this.editBrandId = productToEdit.getBrand() != null ? productToEdit.getBrand().getBrandId() : null;
+        this.editCategoryId = productToEdit.getCategory() != null ? productToEdit.getCategory().getCategoryId() : null;
         return true;
     }
 

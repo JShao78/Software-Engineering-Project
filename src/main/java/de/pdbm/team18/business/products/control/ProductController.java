@@ -60,10 +60,6 @@ public class ProductController {
         return product;
     }
 
-    public Product findById(Integer productId) {
-        return productRepository.findById(productId);
-    }
-
     @RolesAllowed({"ADMIN", "USER1"})
     public boolean edit(Product product) {
         return productRepository.update(product) != null;

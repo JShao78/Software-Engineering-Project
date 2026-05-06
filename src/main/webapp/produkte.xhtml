@@ -82,7 +82,7 @@
                             <f:facet name="header">Aktionen</f:facet>
 
                             <h:commandButton value="Bearbeiten"
-                                             actionListener="#{productBoundary.prepareEdit(product.productId)}"
+                                             actionListener="#{productBoundary.prepareEdit(product)}"
                                              styleClass="btn-table btn-table-edit">
                                 <f:ajax execute="@this" render=":productPage"/>
                             </h:commandButton>

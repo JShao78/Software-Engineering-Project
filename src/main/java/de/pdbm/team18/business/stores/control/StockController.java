@@ -41,10 +41,6 @@ public class StockController {
         return stockRepository.updateQuantity(stockId, quantity) != null;
     }
 
-    public Stock findById(StockId stockId) {
-        return stockRepository.findById(stockId);
-    }
-
     public Integer getQuantity(Store store, Product product) {
         return stockRepository.getQuantity(store, product);
     }

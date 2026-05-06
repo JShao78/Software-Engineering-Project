@@ -75,13 +75,13 @@ public class StaffBoundary implements Serializable {
         staff = new Staff();
     }
 
-    public boolean prepareEdit(Integer staffId) {
-        Staff foundStaff = staffController.findById(staffId);
-        if (foundStaff == null) {
+    public boolean prepareEdit(Staff staffToEdit) {
+        if (staffToEdit == null || staffToEdit.getStaffId() <= 0) {
             cancelEdit();
             return false;
         }
-        this.editStaff = foundStaff;
+
+        this.editStaff = staffToEdit;
         return true;
     }
 

@@ -37,9 +37,6 @@ public class CustomerController {
         customerRepository.create(customer);
     }
 
-    public Customer findById(Integer customerId) {
-        return customerRepository.findById(customerId);
-    }
     @RolesAllowed({"ADMIN", "USER1"})
     public boolean edit(Customer customer) {
         return customerRepository.update(customer) != null;
