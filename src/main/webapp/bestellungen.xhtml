@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:ui="jakarta.faces.facelets"
+      xmlns:f="jakarta.faces.core"
+      xmlns:pt="jakarta.faces.passthrough"
+      xmlns:my="jakarta.faces.composite/components">
+
+<ui:composition template="templates/navbar.xhtml">
+
+    <ui:define name="title">Bestellungen – Vertriebsunterstützung</ui:define>
+
+    <ui:define name="content">
+
+        <h:outputScript target="body">
+            //<![CDATA[
+            function saveScrollPosition() {
+                sessionStorage.setItem('ordersScrollY', String(window.scrollY));
+            }
+
+            function restoreScrollPosition(data) {
+                if (data.status === 'success') {
+                    const y = sessionStorage.getItem('ordersScrollY');
+                    if (y !== null) {
+                        window.scrollTo(0, parseInt(y, 10));
+                    }
+                }
+            }
+
+            function openCreateOrderModal() {
+                document.getElementById('createOrderModal').style.display = 'flex';
+            }
+
+            function closeCreateOrderModal() {
+                document.getElementById('createOrderModal').style.display = 'none';
+            }
+
+            function resetCreateOrderModal() {
+                document.getElementById('createCustomerInput').value = '';
+                document.getElementById('createStoreInput').value = '';
+                document.getElementById('createStaffInput').value = '';
+                document.getElementById('createRequiredDateInput').value = '';
+                document.getElementById('createProductInput').value = '';
+                document.getElementById('createQuantityInput').value = '1';
+                document.getElementById('createDiscountInput').value = '0';
+            }
+
+            function frontendSaveOrderInfo() {
+                const customer = document.getElementById('createCustomerInput').value.trim();
+                const store = document.getElementById('createStoreInput').value.trim();
+                const staff = document.getElementById('createStaffInput').value.trim();
+                const requiredDate = document.getElementById('createRequiredDateInput').value.trim();
+                const product = document.getElementById('createProductInput').value.trim();
+                const quantity = document.getElementById('createQuantityInput').value.trim();
+
+                if (!customer || !store || !staff || !requiredDate || !product || !quantity || Number(quantity) <= 0) {
+                    alert('Bitte alle Pflichtfelder korrekt ausfüllen.');
+                    return;
+                }
+
+                alert('Frontend ist fertig. Backend-Anbindung muss noch ergänzt werden.');
+            }
+            //]]>
+        </h:outputScript>
+
+        <div class="orders-header">
+            <h1 class="page-title orders-title">Bestellungen</h1>
+            <p class="orders-subtitle">Insgesamt #{orderBoundary.count()} Bestellungen</p>
+        </div>
+
+        <h:form id="ordersSearchForm">
+            <div class="orders-search-card">
+
+                <div class="orders-search-top">
+                    <div>
+                        <h2 class="orders-search-title">Bestellungen durchsuchen</h2>
+                        <p class="orders-search-subtitle">
+                            Suche nach Kundendaten oder Produktdetails.
+                        </p>
+                    </div>
+
+                    <span class="orders-search-count">
+                        #{orderBoundary.count()} Treffer
+                    </span>
+                </div>
+
+                <div class="orders-search-grid">
+
+                    <label class="orders-search-field">
+                        <span>Kunde / Kundendetails</span>
+                        <h:inputText id="customerSearch"
+                                     value="#{orderBoundary.customerSearch}"
+                                     styleClass="orders-search-input"
+                                     pt:autocomplete="off"
+                                     pt:placeholder="z. B. Name, Niederlassung, Status oder Bestell-ID" />
+                    </label>
+
+                    <label class="orders-search-field">
+                        <span>Produkt / Produktdetails</span>
+                        <h:inputText id="productSearch"
+                                     value="#{orderBoundary.productSearch}"
+                                     styleClass="orders-search-input"
+                                     pt:autocomplete="off"
+                                     pt:placeholder="z. B. Produktname, Modelljahr, Menge oder Preis" />
+                    </label>
+
+                    <div class="orders-search-actions">
+                        <h:commandButton value="Suchen"
+                                         action="#{orderBoundary.applySearch}"
+                                         styleClass="orders-search-submit" />
+
+                        <h:commandButton value="Zurücksetzen"
+                                         action="#{orderBoundary.resetSearch}"
+                                         styleClass="orders-search-reset" />
+                    </div>
+
+                </div>
+
+                <h:panelGroup rendered="#{orderBoundary.count() == 0}">
+                    <div class="orders-search-empty">
+                        Keine passenden Bestellungen gefunden.
+                    </div>
+                </h:panelGroup>
+
+            </div>
+        </h:form>
+
+        <my:pagination boundary="#{orderBoundary}" />
+
+        <h:form id="ordersForm">
+
+            <h:messages globalOnly="true"
+                        showDetail="true"
+                        layout="list"
+                        errorClass="product-message-box product-message-error"
+                        infoClass="product-message-box product-message-success"/>
+
+            <ui:fragment rendered="#{orderBoundary.canViewOrderPositions()}">
+                <div class="orders-create-toolbar">
+                    <button type="button"
+                            class="orders-create-btn"
+                            onclick="openCreateOrderModal()">
+                        + Neue Bestellung hinzufügen
+                    </button>
+                </div>
+            </ui:fragment>
+
+            <ui:fragment rendered="#{orderBoundary.canViewOrderPositions()}">
+                <div id="createOrderModal"
+                     class="orders-modal-overlay"
+                     style="display:none;">
+
+                    <div class="orders-create-modal">
+
+                        <div class="orders-create-modal-header">
+                            <div>
+                                <h2 class="orders-create-modal-title">Neue Bestellung hinzufügen</h2>
+                                <p class="orders-create-modal-subtitle">
+                                    Kunde und Produkt können geschrieben werden. Backend-Anbindung folgt später.
+                                </p>
+                            </div>
+
+                            <button type="button"
+                                    class="orders-create-modal-close"
+                                    onclick="closeCreateOrderModal()">
+                                ×
+                            </button>
+                        </div>
+
+                        <div class="orders-create-modal-body">
+
+                            <div class="orders-create-section-title">BESTELLDATEN</div>
+
+                            <div class="orders-create-grid">
+
+                                <label class="orders-create-field">
+                                    <span>Kunde <strong>*</strong></span>
+                                    <input id="createCustomerInput"
+                                           name="createCustomer"
+                                           type="text"
+                                           class="orders-create-input"
+                                           placeholder="Kunde schreiben"
+                                           autocomplete="off" />
+                                </label>
+
+                                <label class="orders-create-field">
+                                    <span>Niederlassung <strong>*</strong></span>
+                                    <input id="createStoreInput"
+                                           name="createStore"
+                                           type="text"
+                                           class="orders-create-input"
+                                           placeholder="Niederlassung schreiben"
+                                           autocomplete="off" />
+                                </label>
+
+                                <label class="orders-create-field">
+                                    <span>Mitarbeiter <strong>*</strong></span>
+                                    <input id="createStaffInput"
+                                           name="createStaff"
+                                           type="text"
+                                           class="orders-create-input"
+                                           placeholder="Mitarbeiter schreiben"
+                                           autocomplete="off" />
+                                </label>
+
+                                <label class="orders-create-field">
+                                    <span>Lieferdatum <strong>*</strong></span>
+                                    <input id="createRequiredDateInput"
+                                           name="createRequiredDate"
+                                           type="date"
+                                           class="orders-create-input" />
+                                </label>
+
+                            </div>
+
+                            <div class="orders-create-section-title orders-create-section-spacing">
+                                PRODUKT
+                            </div>
+
+                            <div class="orders-create-product-row">
+
+                                <label class="orders-create-field">
+                                    <span>Produkt <strong>*</strong></span>
+                                    <input id="createProductInput"
+                                           name="createProduct"
+                                           type="text"
+                                           class="orders-create-input"
+                                           placeholder="Produkt schreiben"
+                                           autocomplete="off" />
+                                </label>
+
+                                <label class="orders-create-field">
+                                    <span>Menge <strong>*</strong></span>
+                                    <input id="createQuantityInput"
+                                           name="createQuantity"
+                                           type="number"
+                                           class="orders-create-input"
+                                           value="1"
+                                           min="1" />
+                                </label>
+
+                                <label class="orders-create-field">
+                                    <span>Rabatt</span>
+                                    <input id="createDiscountInput"
+                                           name="createDiscount"
+                                           type="number"
+                                           class="orders-create-input"
+                                           value="0"
+                                           min="0"
+                                           max="1"
+                                           step="0.01" />
+                                </label>
+
+                            </div>
+
+                        </div>
+
+                        <div class="orders-create-modal-footer">
+                            <button type="button"
+                                    class="orders-create-reset-btn"
+                                    onclick="resetCreateOrderModal()">
+                                Zurücksetzen
+                            </button>
+
+                            <button type="button"
+                                    class="orders-create-save-btn"
+                                    onclick="frontendSaveOrderInfo()">
+                                Bestellung speichern
+                            </button>
+                        </div>
+
+                    </div>
+                </div>
+            </ui:fragment>
+
+            <h:panelGroup id="editOrderPanel"
+                          layout="block"
+                          rendered="#{not empty orderBoundary.editOrder.orderId}">
+
+                <div class="orders-edit-overlay">
+                    <div class="orders-edit-modal">
+
+                        <div class="orders-edit-header">
+                            <div>
+                                <h2 class="orders-edit-title">Bestellung bearbeiten</h2>
+                                <div class="orders-edit-subtitle">
+                                    Status der Bestellung ändern.
+                                </div>
+                            </div>
+
+                            <h:commandButton value="×"
+                                             actionListener="#{orderBoundary.cancelEdit}"
+                                             immediate="true"
+                                             styleClass="orders-edit-close"
+                                             title="Schließen">
+                                <f:ajax execute="@this" render="@form" />
+                            </h:commandButton>
+                        </div>
+
+                        <div class="orders-edit-body">
+                            <div class="orders-edit-info">
+                                <div class="orders-edit-info-card">
+                                    <div class="orders-edit-info-label">Bestell-ID</div>
+                                    <div class="orders-edit-info-value">
+                                        #{orderBoundary.editOrder.orderId}
+                                    </div>
+                                </div>
+
+                                <div class="orders-edit-info-card">
+                                    <div class="orders-edit-info-label">Aktueller Status</div>
+                                    <div class="orders-edit-info-value">
+                                        #{orderBoundary.statusLabel(orderBoundary.editOrder.orderStatus)}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <label class="orders-create-field">
+                                <span>Status ändern <strong>*</strong></span>
+
+                                <h:selectOneMenu value="#{orderBoundary.editOrder.orderStatus}"
+                                                 styleClass="orders-create-input">
+                                    <f:selectItem itemLabel="Pending" itemValue="1" />
+                                    <f:selectItem itemLabel="Processing" itemValue="2" />
+                                    <f:selectItem itemLabel="Rejected" itemValue="3" />
+                                    <f:selectItem itemLabel="Completed" itemValue="4" />
+                                </h:selectOneMenu>
+                            </label>
+
+                        </div>
+
+                        <div class="orders-edit-footer">
+
+                            <h:commandButton value="Abbrechen"
+                                             actionListener="#{orderBoundary.cancelEdit}"
+                                             immediate="true"
+                                             styleClass="orders-edit-cancel-btn">
+                                <f:ajax execute="@this" render="@form" />
+                            </h:commandButton>
+
+                            <h:commandButton value="Speichern"
+                                             actionListener="#{orderBoundary.saveEdit}"
+                                             styleClass="orders-edit-save-btn">
+                                <f:ajax execute="@form" render="@form" />
+                            </h:commandButton>
+
+                        </div>
+
+                    </div>
+                </div>
+
+            </h:panelGroup>
+
+            <div class="orders-card">
+                <table class="data-table orders-table">
+                    <thead>
+                    <tr>
+                        <th><span class="col-header">Bestell-ID</span></th>
+                        <th><span class="col-header">Kunde</span></th>
+                        <th><span class="col-header">Bestelldatum</span></th>
+                        <th><span class="col-header">Lieferdatum</span></th>
+                        <th><span class="col-header">Versanddatum</span></th>
+                        <th><span class="col-header">Niederlassung</span></th>
+                        <th><span class="col-header">Status</span></th>
+                        <ui:fragment rendered="#{orderBoundary.canViewOrderPositions()}">
+                            <th><span class="col-header">Positionen</span></th>
+                            <th><span class="col-header">Aktionen</span></th>
+                        </ui:fragment>
+                    </tr>
+                    </thead>
+
+                    <tbody>
+                    <ui:repeat value="#{orderBoundary.findPage()}" var="order">
+
+                        <tr>
+                            <td>
+                                <h:outputText value="#{order.orderId}" styleClass="uuid-text" />
+                            </td>
+
+                            <td>
+                                <h:outputText value="#{order.customer.firstName} #{order.customer.lastName}"
+                                              rendered="#{not empty order.customer}" />
+                                <h:outputText value="—"
+                                              rendered="#{empty order.customer}" />
+                            </td>
+
+                            <td>
+                                <h:outputText value="#{order.orderDate}"
+                                              rendered="#{not empty order.orderDate}">
+                                    <f:convertDateTime type="localDate" pattern="dd.MM.yyyy" />
+                                </h:outputText>
+                                <h:outputText value="—"
+                                              rendered="#{empty order.orderDate}" />
+                            </td>
+
+                            <td>
+                                <h:outputText value="#{order.requiredDate}"
+                                              rendered="#{not empty order.requiredDate}">
+                                    <f:convertDateTime type="localDate" pattern="dd.MM.yyyy" />
+                                </h:outputText>
+                                <h:outputText value="—"
+                                              rendered="#{empty order.requiredDate}" />
+                            </td>
+
+                            <td>
+                                <h:outputText value="#{order.shippedDate}"
+                                              rendered="#{not empty order.shippedDate}">
+                                    <f:convertDateTime type="localDate" pattern="dd.MM.yyyy" />
+                                </h:outputText>
+                                <h:outputText value="—"
+                                              rendered="#{empty order.shippedDate}" />
+                            </td>
+
+                            <td>
+                                <h:outputText value="#{order.store.storeName}"
+                                              rendered="#{not empty order.store}" />
+                                <h:outputText value="—"
+                                              rendered="#{empty order.store}" />
+                            </td>
+
+                            <td>
+                                <span class="status-pill #{orderBoundary.statusClass(order.orderStatus)}">
+                                    <h:outputText value="#{orderBoundary.statusLabel(order.orderStatus)}" />
+                                </span>
+                            </td>
+
+                            <ui:fragment rendered="#{orderBoundary.canViewOrderPositions()}">
+                                <td class="items-cell">
+                                    <h:commandLink actionListener="#{orderBoundary.toggleItems(order.orderId)}"
+                                                   styleClass="items-toggle"
+                                                   onclick="saveScrollPosition()">
+                                        <f:ajax execute="@this"
+                                                render="@form"
+                                                onevent="restoreScrollPosition" />
+
+                                        <span class="items-toggle-icon">
+                                            <h:outputText value="#{orderBoundary.expanded(order.orderId) ? '⌄' : '›'}" />
+                                        </span>
+
+                                        <h:outputText value="Ausblenden"
+                                                      rendered="#{orderBoundary.expanded(order.orderId)}" />
+                                        <h:outputText value="Anzeigen (#{orderBoundary.itemsCount(order.orderId)})"
+                                                      rendered="#{not orderBoundary.expanded(order.orderId)}" />
+                                    </h:commandLink>
+                                </td>
+
+                                <td>
+                                    <h:commandLink value="Bearbeiten"
+                                                   actionListener="#{orderBoundary.prepareEdit(order)}"
+                                                   styleClass="btn-table btn-table-edit">
+                                        <f:ajax execute="@this" render="@form" />
+                                    </h:commandLink>
+                                </td>
+                            </ui:fragment>
+                        </tr>
+
+                        <ui:fragment rendered="#{orderBoundary.canViewOrderPositions() and orderBoundary.expanded(order.orderId)}">
+                            <tr class="order-items-row">
+                                <td colspan="9">
+                                    <div class="order-items-panel">
+                                        <div class="order-items-label">BESTELLPOSITIONEN</div>
+
+                                        <table class="items-table">
+                                            <thead>
+                                            <tr>
+                                                <th><span class="col-header">Positions-ID</span></th>
+                                                <th><span class="col-header">Produkt</span></th>
+                                                <th><span class="col-header">Menge</span></th>
+                                                <th><span class="col-header">Listenpreis</span></th>
+                                                <th><span class="col-header">Rabatt</span></th>
+                                                <th><span class="col-header">Gesamt</span></th>
+                                            </tr>
+                                            </thead>
+
+                                            <tbody>
+                                            <ui:repeat value="#{orderBoundary.findItems(order.orderId)}" var="item">
+                                                <tr>
+                                                    <td>
+                                                        <h:outputText value="#{item.id.itemId}" />
+                                                    </td>
+
+                                                    <td>
+                                                        <h:outputText value="#{item.product.productName}"
+                                                                      rendered="#{not empty item.product}" />
+
+                                                        <h:outputText value=" - #{item.product.modelYear}"
+                                                                      rendered="#{not empty item.product and not empty item.product.modelYear}" />
+
+                                                        <h:outputText value="—"
+                                                                      rendered="#{empty item.product}" />
+                                                    </td>
+
+                                                    <td>
+                                                        <h:outputText value="#{item.quantity}" />
+                                                    </td>
+
+                                                    <td>
+                                                        <h:outputText value="#{item.listPrice}"
+                                                                      rendered="#{not empty item.listPrice}">
+                                                            <f:convertNumber minFractionDigits="2"
+                                                                             maxFractionDigits="2"
+                                                                             locale="de" />
+                                                        </h:outputText>
+
+                                                        <h:outputText value=" €"
+                                                                      rendered="#{not empty item.listPrice}" />
+
+                                                        <h:outputText value="—"
+                                                                      rendered="#{empty item.listPrice}" />
+                                                    </td>
+
+                                                    <td>
+                                                        <h:panelGroup rendered="#{orderBoundary.hasDiscount(item)}">
+                                                            <span class="discount-pill">
+                                                                <h:outputText value="#{orderBoundary.discountLabel(item)}" />
+                                                            </span>
+                                                        </h:panelGroup>
+
+                                                        <h:outputText value="—"
+                                                                      rendered="#{not orderBoundary.hasDiscount(item)}" />
+                                                    </td>
+
+                                                    <td>
+                                                        <h:outputText value="#{orderBoundary.itemTotal(item)}">
+                                                            <f:convertNumber minFractionDigits="2"
+                                                                             maxFractionDigits="2"
+                                                                             locale="de" />
+                                                        </h:outputText>
+                                                        <h:outputText value=" €" />
+                                                    </td>
+                                                </tr>
+                                            </ui:repeat>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </td>
+                            </tr>
+                        </ui:fragment>
+
+                    </ui:repeat>
+                    </tbody>
+                </table>
+            </div>
+        </h:form>
+
+    </ui:define>
+
+</ui:composition>
+</html>
