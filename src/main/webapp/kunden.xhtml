@@ -14,9 +14,11 @@
 				<h1 class="page-title orders-title">Kunden</h1>
 				<p class="orders-subtitle">Insgesamt #{customerBoundary.count()} Kunden</p>
 			</div>
-			<a href="#kundenModal" class="add-modal-btn" onclick="document.getElementById('kundenModal').style.display='flex'">
-				+ Kunde hinzufügen
-			</a>
+			<ui:fragment rendered="#{request.isUserInRole('ADMIN') or request.isUserInRole('USER1')}">
+				<a href="#kundenModal" class="add-modal-btn" onclick="document.getElementById('kundenModal').style.display='flex'">
+					+ Kunde hinzufügen
+				</a>
+			</ui:fragment>
         </div>
 
 

@@ -15,9 +15,11 @@
 				<h1 class="page-title orders-title">Mitarbeiter</h1>
 				<p class="orders-subtitle">Insgesamt #{staffBoundary.count()} Mitarbeiter</p>
 			</div>
-			<a href="#staffModal" class="add-modal-btn" onclick="document.getElementById('staffModal').style.display='flex'">
-				+ Mitarbeiter hinzufügen
-			</a>
+			<ui:fragment rendered="#{request.isUserInRole('ADMIN')}">
+				<a href="#staffModal" class="add-modal-btn" onclick="document.getElementById('staffModal').style.display='flex'">
+					+ Mitarbeiter hinzufügen
+				</a>
+			</ui:fragment>
         </div>
 
 
