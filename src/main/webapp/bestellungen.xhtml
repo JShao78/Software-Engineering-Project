@@ -130,8 +130,10 @@
         <h:form id="ordersForm">
 
             <h:messages globalOnly="true"
+                        showDetail="true"
                         layout="list"
-                        styleClass="product-message-box product-message-error" />
+                        errorClass="product-message-box product-message-error"
+                        infoClass="product-message-box product-message-success"/>
 
             <ui:fragment rendered="#{orderBoundary.canViewOrderPositions()}">
                 <div class="orders-create-toolbar">
@@ -296,7 +298,6 @@
                         </div>
 
                         <div class="orders-edit-body">
-
                             <div class="orders-edit-info">
                                 <div class="orders-edit-info-card">
                                     <div class="orders-edit-info-label">Bestell-ID</div>
