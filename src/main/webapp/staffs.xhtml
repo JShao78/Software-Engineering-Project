@@ -33,84 +33,86 @@
         </h:panelGroup>
 
         <!--  Modal  -->
-        <div id="staffModal" class="modal-overlay"
-             onclick="if(event.target===this)this.style.display='none'">
-            <div class="modal">
+		<ui:fragment rendered="#{request.isUserInRole('ADMIN') or request.isUserInRole('USER1')}">
+			<div id="staffModal" class="modal-overlay"
+				 onclick="if(event.target===this)this.style.display='none'">
+				<div class="modal">
 
-                <div class="modal-header">
-                    <div class="modal-header-left">
-                        <span class="modal-icon">👤</span>
-                        <span class="modal-title">Neuen Mitarbeiter anlegen</span>
-                    </div>
-                    <button type="button" class="modal-close"
-                            onclick="document.getElementById('staffModal').style.display='none'">✕</button>
-                </div>
+					<div class="modal-header">
+						<div class="modal-header-left">
+							<span class="modal-icon">👤</span>
+							<span class="modal-title">Neuen Mitarbeiter anlegen</span>
+						</div>
+						<button type="button" class="modal-close"
+								onclick="document.getElementById('staffModal').style.display='none'">✕</button>
+					</div>
 
-                <h:form id="staffForm">
-                    <div class="modal-body">
+					<h:form id="staffForm">
+						<div class="modal-body">
 
-                        <h:messages globalOnly="true" styleClass="field-error" errorClass="field-error"/>
+							<h:messages globalOnly="true" styleClass="field-error" errorClass="field-error"/>
 
-                        <div class="modal-section-label">Persönliche Daten</div>
-                        <div class="field-row">
-                            <div class="form-group floating">
-                                <h:inputText id="vorname"
-                                             value="#{staffBoundary.staff.firstName}"
-                                             styleClass="form-input"
-                                             placeholder=" "
-                                             required="true"/>
-                                <label for="staffForm:vorname" class="floating-label">Vorname *</label>
-                                <span class="field-hint">z. B. Max</span>
-                                <h:message for="vorname" styleClass="field-error"/>
-                            </div>
-                            <div class="form-group floating">
-                                <h:inputText id="nachname"
-                                             value="#{staffBoundary.staff.lastName}"
-                                             styleClass="form-input"
-                                             placeholder=" "
-                                             required="true"/>
-                                <label for="staffForm:nachname" class="floating-label">Nachname *</label>
-                                <span class="field-hint">z. B. Mustermann</span>
-                                <h:message for="nachname" styleClass="field-error"/>
-                            </div>
-                        </div>
+							<div class="modal-section-label">Persönliche Daten</div>
+							<div class="field-row">
+								<div class="form-group floating">
+									<h:inputText id="vorname"
+												 value="#{staffBoundary.staff.firstName}"
+												 styleClass="form-input"
+												 placeholder=" "
+												 required="true"/>
+									<label for="staffForm:vorname" class="floating-label">Vorname *</label>
+									<span class="field-hint">z. B. Max</span>
+									<h:message for="vorname" styleClass="field-error"/>
+								</div>
+								<div class="form-group floating">
+									<h:inputText id="nachname"
+												 value="#{staffBoundary.staff.lastName}"
+												 styleClass="form-input"
+												 placeholder=" "
+												 required="true"/>
+									<label for="staffForm:nachname" class="floating-label">Nachname *</label>
+									<span class="field-hint">z. B. Mustermann</span>
+									<h:message for="nachname" styleClass="field-error"/>
+								</div>
+							</div>
 
-                        <div class="modal-section-label">Kontaktdaten</div>
-                        <div class="form-group floating">
-                            <h:inputText id="email"
-                                         value="#{staffBoundary.staff.email}"
-                                         styleClass="form-input"
-                                         placeholder=" "/>
-                            <label for="staffForm:email" class="floating-label">E-Mail</label>
-                            <span class="field-hint">z. B. max.mustermann@gmail.com</span>
-                            <h:message for="email" styleClass="field-error"/>
-                        </div>
-                        <div class="form-group floating">
-                            <h:inputText id="phone"
-                                         value="#{staffBoundary.staff.phone}"
-                                         styleClass="form-input"
-                                         placeholder=" "
-                                         required="true">
-                                <f:validateRegex pattern="[\+\d\s\-\(\)]*"/>
-                            </h:inputText>
-                            <label for="staffForm:phone" class="floating-label">Telefon</label>
-                            <span class="field-hint">z. B. +49 30 123456</span>
-                            <h:message for="phone" styleClass="field-error"/>
-                        </div>
-                    </div>
+							<div class="modal-section-label">Kontaktdaten</div>
+							<div class="form-group floating">
+								<h:inputText id="email"
+											 value="#{staffBoundary.staff.email}"
+											 styleClass="form-input"
+											 placeholder=" "/>
+								<label for="staffForm:email" class="floating-label">E-Mail</label>
+								<span class="field-hint">z. B. max.mustermann@gmail.com</span>
+								<h:message for="email" styleClass="field-error"/>
+							</div>
+							<div class="form-group floating">
+								<h:inputText id="phone"
+											 value="#{staffBoundary.staff.phone}"
+											 styleClass="form-input"
+											 placeholder=" "
+											 required="true">
+									<f:validateRegex pattern="[\+\d\s\-\(\)]*"/>
+								</h:inputText>
+								<label for="staffForm:phone" class="floating-label">Telefon</label>
+								<span class="field-hint">z. B. +49 30 123456</span>
+								<h:message for="phone" styleClass="field-error"/>
+							</div>
+						</div>
 
-                    <div class="modal-footer">
-                        <button type="button" class="btn-secondary"
-                                onclick="document.getElementById('staffModal').style.display='none'">
-                            Abbrechen
-                        </button>
-                        <h:commandButton value="Speichern"
-                                         action="#{staffBoundary.create()}"
-                                         styleClass="btn-primary btn-save"/>
-                    </div>
-                </h:form>
-            </div>
-        </div>
+						<div class="modal-footer">
+							<button type="button" class="btn-secondary"
+									onclick="document.getElementById('staffModal').style.display='none'">
+								Abbrechen
+							</button>
+							<h:commandButton value="Speichern"
+											 action="#{staffBoundary.create()}"
+											 styleClass="btn-primary btn-save"/>
+						</div>
+					</h:form>
+				</div>
+			</div>
+		</ui:fragment>
 
         <div class="table-container" style="margin-top: 20px;">
             <h:dataTable value="#{staffBoundary.findPage()}"
