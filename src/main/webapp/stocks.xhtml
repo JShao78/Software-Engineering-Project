@@ -32,42 +32,42 @@
                                  var="stock"
                                  styleClass="data-table">
 
-                        <h:column>
+                        <h:column styleClass="storeId">
                             <f:facet name="header">
                                 <span class="col-header">Store ID</span>
                             </f:facet>
                             <h:outputText value="#{stock.store.storeId}" styleClass="uuid-text"/>
                         </h:column>
 
-                        <h:column>
+                        <h:column styleClass="storeName">
                             <f:facet name="header">
                                 <span class="col-header">Niederlassung</span>
                             </f:facet>
                             <h:outputText value="#{stock.store.storeName}"/>
                         </h:column>
 
-                        <h:column>
+                        <h:column styleClass="productId">
                             <f:facet name="header">
                                 <span class="col-header">Produkt ID</span>
                             </f:facet>
                             <h:outputText value="#{stock.product.productId}" styleClass="uuid-text"/>
                         </h:column>
 
-                        <h:column>
+                        <h:column styleClass="productName">
                             <f:facet name="header">
                                 <span class="col-header">Produktname</span>
                             </f:facet>
                             <h:outputText value="#{stock.product.productName}"/>
                         </h:column>
 
-                        <h:column>
+                        <h:column styleClass="stock">
                             <f:facet name="header">
                                 <span class="col-header">Bestand</span>
                             </f:facet>
                             <h:outputText value="#{stock.quantity}" styleClass="text-accent"/>
                         </h:column>
 
-                        <h:column rendered="#{request.isUserInRole('ADMIN') or request.isUserInRole('USER1')}">
+                        <h:column styleClass="edit" rendered="#{request.isUserInRole('ADMIN') or request.isUserInRole('USER1')}">
                             <f:facet name="header">
                                 <span class="col-header">Aktionen</span>
                             </f:facet>

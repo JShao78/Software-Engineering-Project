@@ -321,40 +321,40 @@
         </h:panelGroup>
 
         <!-- TABLE -->
+		<h:form id="staffTableForm">
         <div class="table-container" style="margin-top: 20px;">
 
-            <h:form id="staffTableForm">
 
                 <h:dataTable value="#{staffBoundary.findAll()}"
                              var="staff"
                              styleClass="data-table">
 
-                    <h:column>
+                    <h:column styleClass="tableId">
                         <f:facet name="header"><span class="col-header">ID</span></f:facet>
                         <h:outputText value="#{staff.staffId}" styleClass="uuid-text"/>
                     </h:column>
 
-                    <h:column>
+                    <h:column styleClass="firstName">
                         <f:facet name="header"><span class="col-header">Vorname</span></f:facet>
                         <h:outputText value="#{staff.firstName}"/>
                     </h:column>
 
-                    <h:column>
+                    <h:column styleClass="lastName">
                         <f:facet name="header"><span class="col-header">Nachname</span></f:facet>
                         <h:outputText value="#{staff.lastName}"/>
                     </h:column>
 
-                    <h:column>
+                    <h:column styleClass="email">
                         <f:facet name="header"><span class="col-header">E-Mail</span></f:facet>
                         <h:outputText value="#{staff.email}"/>
                     </h:column>
 
-                    <h:column>
+                    <h:column styleClass="phone">
                         <f:facet name="header"><span class="col-header">Telefon</span></f:facet>
                         <h:outputText value="#{staff.phone}"/>
                     </h:column>
 
-                    <h:column>
+                    <h:column styleClass="storeName">
                         <f:facet name="header"><span class="col-header">Filiale</span></f:facet>
                         <h:outputText value="#{staff.storeId.storeName}"
                                       rendered="#{staff.storeId != null}"/>
@@ -362,7 +362,7 @@
                                       rendered="#{staff.storeId == null}"/>
                     </h:column>
 
-                    <h:column>
+                    <h:column styleClass="status">
                         <f:facet name="header"><span class="col-header">Status</span></f:facet>
 
                         <h:panelGroup rendered="#{staff.active == 1}">
@@ -374,7 +374,7 @@
                         </h:panelGroup>
                     </h:column>
 
-                    <h:column>
+                    <h:column styleClass="edit">
                         <f:facet name="header"><span class="col-header">Aktionen</span></f:facet>
 
                         <h:commandLink value="Bearbeiten"
@@ -388,9 +388,9 @@
 
                 </h:dataTable>
 
-            </h:form>
 
         </div>
+		</h:form>
     </ui:define>
 
 </ui:composition>

@@ -76,6 +76,7 @@
 	td.phone { grid-area: phone; }
 	td.email { grid-area: email; }
 	td.state { grid-area: state; }
+	td.city { grid-area: city; }
 	td.zip { grid-area: zip; }
 	td.street { grid-area: street; }
 
@@ -111,6 +112,15 @@
 	td.requiredDate:before { content: "Versand: "; }
 	td.shippedDate:before { content: "Lieferung: "; }
 
+	/* stock */
+	td.storeId { grid-area: storeId; }
+	td.productId { grid-area: productId; }
+	td.stock { grid-area: stock; }
+
+	td.storeId:before { content: "Store #"; }
+	td.productId:before { content: "Produkt #"; }
+	td.stock:before { content: "Bestand: "; }
+
 	/* store */
 	td.storeName { grid-area: storeName; }
 
@@ -138,6 +148,26 @@
 		'orderDate . requiredDate . shippedDate';
 	}
 
+	#stocksTableForm tr {
+		grid-template-areas: 
+		'storeId productId . . .'
+		'productName productName productName productName edit'
+		'storeName . . . stock';
+	}
+	
+	#storeTable tr {
+		grid-template-areas: 
+		'id storeName storeName storeName edit'
+		'zip city state street street'
+		'email . . . phone';
+	}
+	
+	#staffTableForm tr {
+		grid-template-areas: 
+		'id firstName lastName . edit'
+		'storeName . . . status'
+		'phone phone . email email';
+	}
 
 	.edit > .btn-table {
 		width: 100%;
