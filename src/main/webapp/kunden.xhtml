@@ -3,16 +3,18 @@
       xmlns:h="jakarta.faces.html"
       xmlns:ui="jakarta.faces.facelets"
       xmlns:f="jakarta.faces.core"
+      xmlns:a="jakarta.faces.passthrough"
       xmlns:my="jakarta.faces.composite/components">
 <ui:composition template="templates/navbar.xhtml">
 
     <ui:define name="title">Kunden – Vertriebsunterstützung</ui:define>
 
     <ui:define name="content">
+		<h:panelGroup id="customerPage" layout="block">
         <div class="page-header">
 			<div>
-				<h1 class="page-title orders-title">Kunden</h1>
-				<p class="orders-subtitle">Insgesamt #{customerBoundary.count()} Kunden</p>
+				<h1 class="page-title">Kunden</h1>
+				<p class="page-subtitle">Insgesamt #{customerBoundary.count()} Kunden</p>
 			</div>
 			<ui:fragment rendered="#{request.isUserInRole('ADMIN') or request.isUserInRole('USER1')}">
 				<a href="#kundenModal" class="add-modal-btn" onclick="document.getElementById('kundenModal').style.display='flex'">
@@ -21,17 +23,7 @@
 			</ui:fragment>
         </div>
 
-
 		<ui:fragment rendered="#{request.isUserInRole('ADMIN') or request.isUserInRole('USER1')}">
-			<!-- Auto-reopen modal if there was a validation error -->
-			<h:panelGroup rendered="#{facesContext.maximumSeverity != null}">
-				<script>
-					window.onload = function() {
-						document.getElementById('kundenModal').style.display = 'flex';
-					};
-				</script>
-			</h:panelGroup>
-
 			<!--  Modal  -->
 			<div id="kundenModal" class="modal-overlay"
 				 onclick="if(event.target===this)this.style.display='none'">
@@ -51,82 +43,87 @@
 
 							<h:messages globalOnly="true" styleClass="field-error" errorClass="field-error"/>
 
-							<div class="modal-section-label">Persönliche Daten</div>
-							<div class="field-row">
-								<div class="form-group floating">
+							<div class="form-section-title">Persönliche Daten</div>
+							<div class="form-grid">
+								<div class="form-group">
+									<label for="kundenForm:vorname" class="form-label form-label-required">Vorname</label>
 									<h:inputText id="vorname"
 												 value="#{customerBoundary.customer.firstName}"
 												 styleClass="form-input"
 												 placeholder=" "
 												 required="true"/>
-									<label for="kundenForm:vorname" class="floating-label">Vorname *</label>
 									<span class="field-hint">z. B. Max</span>
 									<h:message for="vorname" styleClass="field-error"/>
 								</div>
-								<div class="form-group floating">
+								<div class="form-group">
+									<label for="kundenForm:nachname" class="form-label form-label-required">Nachname</label>
 									<h:inputText id="nachname"
 												 value="#{customerBoundary.customer.lastName}"
 												 styleClass="form-input"
 												 placeholder=" "
 												 required="true"/>
-									<label for="kundenForm:nachname" class="floating-label">Nachname *</label>
 									<span class="field-hint">z. B. Mustermann</span>
 									<h:message for="nachname" styleClass="field-error"/>
 								</div>
 							</div>
 
-							<div class="modal-section-label">Kontaktdaten</div>
-							<div class="form-group floating">
+							<div class="form-section-title">Kontaktdaten</div>
+							<div class="form-grid">
+							<div class="form-group">
+								<label for="kundenForm:email" class="form-label">E-Mail</label>
 								<h:inputText id="email"
 											 value="#{customerBoundary.customer.email}"
 											 styleClass="form-input"
 											 placeholder=" "/>
-								<label for="kundenForm:email" class="floating-label">E-Mail</label>
 								<span class="field-hint">z. B. max.mustermann@gmail.com</span>
 								<h:message for="email" styleClass="field-error"/>
 							</div>
-							<div class="form-group floating">
+							<div class="form-group">
+								<label for="kundenForm:phone" class="form-label">Telefon</label>
 								<h:inputText id="phone"
 											 value="#{customerBoundary.customer.phone}"
 											 styleClass="form-input"
 											 placeholder=" ">
 									<f:validateRegex pattern="[\+\d\s\-\(\)]*"/>
 								</h:inputText>
-								<label for="kundenForm:phone" class="floating-label">Telefon</label>
-								<span class="field-hint">z. B. +49 30 123456</span>
+								<span class="field-hint">z. B. (916) 381-6003</span>
 								<h:message for="phone" styleClass="field-error"/>
 							</div>
-							<div class="form-group floating">
+							</div>
+
+							<div class="form-section-title">Adresse</div>
+							<div class="form-grid">
+							<div class="form-group">
+								<label for="kundenForm:state" class="form-label">Bundesstaat</label>
 								<h:inputText id="state"
 											 value="#{customerBoundary.customer.state}"
 											 styleClass="form-input"
 											 placeholder=" ">
 								</h:inputText>
-								<label for="kundenForm:state" class="floating-label">Bundesstaat</label>
 								<span class="field-hint">z. B. Niedersachsen</span>
 								<h:message for="state" styleClass="field-error"/>
 							</div>
-							<div class="form-group floating">
+							<div class="form-group">
+								<label for="kundenForm:zipCode" class="form-label">Postleitzahl</label>
 								<h:inputText id="zipCode"
 											 value="#{customerBoundary.customer.zipCode}"
 											 styleClass="form-input"
 											 placeholder=" ">
 								</h:inputText>
-								<label for="kundenForm:zipCode" class="floating-label">Postleitzahl</label>
 								<span class="field-hint">z. B. 38228</span>
 								<h:message for="zipCode" styleClass="field-error"/>
 							</div>
-							<div class="form-group floating">
+							<div class="form-group">
+								<label for="kundenForm:street" class="form-label">Straße</label>
 								<h:inputText id="street"
 											 value="#{customerBoundary.customer.street}"
 											 styleClass="form-input"
 											 placeholder=" ">
 								</h:inputText>
-								<label for="kundenForm:street" class="floating-label">Straße</label>
 								<span class="field-hint">z. B. Am Exer 2</span>
 								<h:message for="street" styleClass="field-error"/>
 							</div>
-
+							</div>
 						</div>
 
 						<div class="modal-footer">
@@ -141,49 +138,215 @@
 					</h:form>
 				</div>
 			</div>
+
+		<h:panelGroup id="editCustomerModalPanel"
+						layout="block"
+						styleClass="#{not empty customerBoundary.editCustomer.customerId ? 'modal-overlay modal-overlay-open' : 'modal-overlay'}">
+			<div class="modal">
+				<div class="modal-header">
+                        <div class="modal-title-wrap">
+                            <div class="modal-icon-badge">✏️</div>
+
+                            <div>
+                                <h2 class="modal-title">Kunden bearbeiten</h2>
+                                <p class="modal-subtitle">
+                                    Kundendaten ändern und speichern
+                                </p>
+                            </div>
+                        </div>
+
+                        <h:form>
+                            <h:commandLink action="#{customerBoundary.cancelEdit}"
+                                           immediate="true"
+                                           styleClass="modal-close"
+                                           title="Schließen">
+                                ×
+                                <f:ajax execute="@this" render=":customerPage"/>
+                            </h:commandLink>
+                        </h:form>
+                    </div>
+
+                    <h:form id="editCustomerForm" styleClass="form-frontend">
+
+                        <div class="modal-body">
+
+                            <div class="form-section">
+                                <div class="form-section-title">Personendaten</div>
+
+                                <div class="form-group">
+									<div class="form-grid">
+										<div class="form-group">
+										<label class="label label-required">Vorname</label>
+										<h:inputText id="editFirstName"
+                                                 value="#{customerBoundary.editCustomer.firstName}"
+                                                 required="true"
+                                                 requiredMessage="Bitte geben Sie den Vornamen ein."
+                                                 styleClass="form-input"
+                                                 a:placeholder="z. B. Max">
+											<f:validateLength minimum="3" maximum="100"/>
+										</h:inputText>
+										<h:message for="editFirstName" styleClass="validation-hint"/>
+									</div>
+
+
+									<div class="form-group">
+										<label class="label label-required">Nachname</label>
+										<h:inputText id="editLastName"
+                                                 value="#{customerBoundary.editCustomer.lastName}"
+                                                 required="true"
+                                                 requiredMessage="Bitte geben Sie den Nachnamen ein."
+                                                 styleClass="form-input"
+                                                 a:placeholder="z. B. Mustermann">
+											<f:validateLength minimum="3" maximum="100"/>
+										</h:inputText>
+										<h:message for="editLastName" styleClass="validation-hint"/>
+									</div>
+									</div>
+                                </div>
+
+                                <div class="form-section-title">Kontaktdaten</div>
+                                <div class="form-grid">
+									<div class="form-group">
+										<label class="label">E-Mail</label>
+                                    <h:inputText id="editEmail"
+                                                 value="#{customerBoundary.editCustomer.email}"
+                                                 styleClass="form-input"
+                                                 a:placeholder="z. B. max.mustermann@example.com">
+                                        <f:validateLength minimum="3" maximum="100"/>
+                                    </h:inputText>
+                                    <h:message for="editEmail" styleClass="validation-hint"/>
+									</div>
+
+									<div class="form-group">
+										<label class="label">Telefonnummer</label>
+                                    <h:inputText id="editPhone"
+                                                 value="#{customerBoundary.editCustomer.phone}"
+                                                 styleClass="form-input"
+                                                 a:placeholder="z. B. (916) 381-6003">
+                                        <f:validateLength minimum="14" maximum="100"/>
+                                    </h:inputText>
+                                    <h:message for="editPhone" styleClass="validation-hint"/>
+									</div>
+                                </div>
+
+                                <div class="form-section-title">Adresse</div>
+                                <div class="form-grid">
+									<div class="form-group">
+										<label class="label">Bundesstaat</label>
+                                    <h:inputText id="editState"
+                                                 value="#{customerBoundary.editCustomer.state}"
+                                                 styleClass="form-input"
+                                                 a:placeholder="z. B. NY">
+                                        <f:validateLength minimum="2" maximum="100"/>
+                                    </h:inputText>
+                                    <h:message for="editState" styleClass="validation-hint"/>
+									</div>
+
+									<div class="form-group">
+										<label class="label">Postleitzahl</label>
+                                    <h:inputText id="editZip"
+                                                 value="#{customerBoundary.editCustomer.zipCode}"
+                                                 styleClass="form-input"
+                                                 a:placeholder="z. B. 38228">
+                                        <f:validateLength minimum="5" maximum="100"/>
+                                    </h:inputText>
+                                    <h:message for="editZip" styleClass="validation-hint"/>
+									</div>
+
+									<div class="form-group">
+										<label class="label">Straße</label>
+                                    <h:inputText id="editStreet"
+                                                 value="#{customerBoundary.editCustomer.street}"
+                                                 styleClass="form-input"
+                                                 a:placeholder="z. B. Am Exer 2">
+                                        <f:validateLength minimum="3" maximum="100"/>
+                                    </h:inputText>
+                                    <h:message for="editStreet" styleClass="validation-hint"/>
+									</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="modal-footer">
+                            <h:commandButton value="Abbrechen"
+                                             action="#{customerBoundary.cancelEdit}"
+                                             immediate="true"
+                                             styleClass="btn-secondary">
+                                <f:ajax execute="@this" render=":customerPage"/>
+                            </h:commandButton>
+
+                            <h:commandButton value="Änderungen speichern"
+                                             actionListener="#{customerBoundary.saveEdit}"
+                                             styleClass="btn-primary">
+                                <f:ajax execute="@form" render=":customerPage"/>
+                            </h:commandButton>
+                        </div>
+
+                    </h:form>
+			</div>
+		</h:panelGroup>
 		</ui:fragment>
 
         <my:pagination boundary="#{customerBoundary}" />
 
+        <h:form id="customerTableForm">
         <div class="table-container" style="margin-top: 20px;">
             <h:dataTable value="#{customerBoundary.findPage()}"
                          var="kunde"
                          styleClass="data-table">
-                <h:column>
+                <h:column styleClass="tableId">
                     <f:facet name="header"><span class="col-header">ID</span></f:facet>
                     <h:outputText value="#{kunde.customerId}" styleClass="uuid-text"/>
                 </h:column>
-                <h:column>
+                <h:column styleClass="firstName">
                     <f:facet name="header"><span class="col-header">Vorname</span></f:facet>
                     <h:outputText value="#{kunde.firstName}"/>
                 </h:column>
-                <h:column>
+                <h:column styleClass="lastName">
                     <f:facet name="header"><span class="col-header">Nachname</span></f:facet>
                     <h:outputText value="#{kunde.lastName}" />
                 </h:column>
-                <h:column>
+                <h:column styleClass="email">
                     <f:facet name="header"><span class="col-header">E-Mail</span></f:facet>
                     <h:outputText value="#{kunde.email}"/>
                 </h:column>
-                <h:column>
+                <h:column styleClass="phone">
                     <f:facet name="header"><span class="col-header">Telefon</span></f:facet>
                     <h:outputText value="#{kunde.phone}"/>
                 </h:column>
-                <h:column>
+                <h:column styleClass="state">
                     <f:facet name="header"><span class="col-header">Bundesstaat</span></f:facet>
                     <h:outputText value="#{kunde.state}"/>
                 </h:column>
-                <h:column>
+                <h:column styleClass="zip">
                     <f:facet name="header"><span class="col-header">Postleitzahl</span></f:facet>
                     <h:outputText value="#{kunde.zipCode}"/>
                 </h:column>
-                <h:column>
+                <h:column styleClass="street">
                     <f:facet name="header"><span class="col-header">Straße</span></f:facet>
                     <h:outputText value="#{kunde.street}"/>
                 </h:column>
+                <h:column styleClass="edit" rendered="#{request.isUserInRole('ADMIN') or request.isUserInRole('USER1')}">
+					<f:facet name="header">Bearbeiten</f:facet>
+					<h:commandButton value="Bearbeiten"
+						actionListener="#{customerBoundary.prepareEdit(kunde)}"
+						styleClass="btn-table btn-table-edit">
+						<f:ajax execute="@this" render=":customerPage"/>
+					</h:commandButton>
+				</h:column>
+				<h:column styleClass="delete" rendered="#{request.isUserInRole('ADMIN') or request.isUserInRole('USER1')}">
+					<f:facet name="header">Löschen</f:facet>
+					<h:commandButton value="×"
+					actionListener="#{customerBoundary.delete(kunde.customerId)}"
+					styleClass="btn-table btn-table-edit">
+						<f:ajax execute="@this" render=":customerPage"/>
+					</h:commandButton>
+				</h:column>
             </h:dataTable>
         </div>
+		</h:form>
 
+        </h:panelGroup>
     </ui:define>
 
 </ui:composition>

@@ -7,6 +7,7 @@ import de.pdbm.team18.business.orders.entity.OrderItem;
 import de.pdbm.team18.business.products.entity.Product;
 import de.pdbm.team18.business.shared.repository.RepositoryQueryUtils;
 import jakarta.annotation.PostConstruct;
+import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.event.AjaxBehaviorEvent;
 import jakarta.faces.view.ViewScoped;
@@ -210,10 +211,28 @@ public class OrderBoundary implements Serializable {
         if (editOrder.getOrderId() == null) {
             return false;
         }
+        try {
+            orderController.edit(editOrder);
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_INFO, "Erfolg: ", "Bestellung erfolgreich aktualisiert."));
+            cancelEdit();
+            return true;
 
-        orderController.edit(editOrder);
-        cancelEdit();
-        return true;
+        } catch (Exception e) {
+            Throwable rootCause = e;
+            while (rootCause.getCause() != null) {
+                rootCause = rootCause.getCause();
+            }
+            if (rootCause instanceof IllegalStateException || rootCause instanceof IllegalArgumentException) {
+                FacesContext.getCurrentInstance().addMessage(null,
+                        new FacesMessage(FacesMessage.SEVERITY_ERROR, "Fehler: ", rootCause.getMessage()));
+            } else {
+                FacesContext.getCurrentInstance().addMessage(null,
+                        new FacesMessage(FacesMessage.SEVERITY_ERROR, "Systemfehler: ", "Ein unerwarteter Fehler ist aufgetreten."));
+                e.printStackTrace();
+            }
+            return false;
+        }
     }
 
     public void cancelEdit() {

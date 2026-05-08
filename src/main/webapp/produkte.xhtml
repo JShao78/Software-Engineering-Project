@@ -15,8 +15,8 @@
 
             <div class="page-header">
                 <div>
-                    <h1 class="page-title products-title">Produkte</h1>
-                    <p class="products-subtitle">
+                    <h1 class="page-title">Produkte</h1>
+                    <p class="page-subtitle">
                         Insgesamt #{productBoundary.count()} Produkte
                     </p>
                 </div>
@@ -30,9 +30,9 @@
 
             <h:messages globalOnly="true"
                         layout="list"
-                        styleClass="product-message-box"
-                        errorClass="product-message-error"
-                        infoClass="product-message-success"/>
+                        styleClass="message-box"
+                        errorClass="message-error"
+                        infoClass="message-success"/>
 
             <my:pagination boundary="#{productBoundary}" />
 
@@ -133,7 +133,7 @@
                                         <f:validateLength minimum="3" maximum="100"/>
                                     </h:inputText>
 
-                                    <h:message for="productName" styleClass="product-validation-hint"/>
+                                    <h:message for="productName" styleClass="form-validation-hint"/>
                                 </div>
 
                                 <div class="product-form-grid">
@@ -152,7 +152,7 @@
                                             <f:validateLongRange minimum="1900" maximum="2100"/>
                                         </h:inputText>
 
-                                        <h:message for="modelYear" styleClass="product-validation-hint"/>
+                                        <h:message for="modelYear" styleClass="form-validation-hint"/>
                                     </div>
 
                                     <div class="product-form-group">
@@ -170,7 +170,7 @@
                                             <f:validateDoubleRange minimum="0.01"/>
                                         </h:inputText>
 
-                                        <h:message for="listPrice" styleClass="product-validation-hint"/>
+                                        <h:message for="listPrice" styleClass="form-validation-hint"/>
                                     </div>
 
                                 </div>
@@ -200,7 +200,7 @@
                                                            itemLabel="#{brand.brandName}"/>
                                         </h:selectOneMenu>
 
-                                        <h:message for="brandId" styleClass="product-validation-hint"/>
+                                        <h:message for="brandId" styleClass="form-validation-hint"/>
                                     </div>
 
                                     <div class="product-form-group">
@@ -222,7 +222,7 @@
                                                            itemLabel="#{category.categoryName}"/>
                                         </h:selectOneMenu>
 
-                                        <h:message for="categoryId" styleClass="product-validation-hint"/>
+                                        <h:message for="categoryId" styleClass="form-validation-hint"/>
                                     </div>
 
                                 </div>
@@ -298,7 +298,7 @@
                                         <f:validateLength minimum="3" maximum="100"/>
                                     </h:inputText>
 
-                                    <h:message for="editProductName" styleClass="product-validation-hint"/>
+                                    <h:message for="editProductName" styleClass="form-validation-hint"/>
                                 </div>
 
                                 <div class="product-form-grid">
@@ -317,7 +317,7 @@
                                             <f:validateLongRange minimum="1900" maximum="2100"/>
                                         </h:inputText>
 
-                                        <h:message for="editModelYear" styleClass="product-validation-hint"/>
+                                        <h:message for="editModelYear" styleClass="form-validation-hint"/>
                                     </div>
 
                                     <div class="product-form-group">
@@ -335,7 +335,7 @@
                                             <f:validateDoubleRange minimum="0.01"/>
                                         </h:inputText>
 
-                                        <h:message for="editListPrice" styleClass="product-validation-hint"/>
+                                        <h:message for="editListPrice" styleClass="form-validation-hint"/>
                                     </div>
 
                                 </div>
@@ -365,7 +365,7 @@
                                                            itemLabel="#{brand.brandName}"/>
                                         </h:selectOneMenu>
 
-                                        <h:message for="editBrandId" styleClass="product-validation-hint"/>
+                                        <h:message for="editBrandId" styleClass="form-validation-hint"/>
                                     </div>
 
                                     <div class="product-form-group">
@@ -387,7 +387,7 @@
                                                            itemLabel="#{category.categoryName}"/>
                                         </h:selectOneMenu>
 
-                                        <h:message for="editCategoryId" styleClass="product-validation-hint"/>
+                                        <h:message for="editCategoryId" styleClass="form-validation-hint"/>
                                     </div>
 
                                 </div>
