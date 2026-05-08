@@ -20,6 +20,11 @@
 		background: #ffffff;
 	}
 
+	.data-table td,
+	.items-table td {
+		border-bottom: 1px solid #e9ecef;
+	}
+
 	.btn-page {
 		min-width: 42px;
 	}
@@ -127,7 +132,7 @@
 		grid-template-areas: 
 		'id firstName lastName . . edit'
 		'phone phone phone email email email'
-		'street zip state . . .';
+		'street zip state . . delete';
 	}
 
 	#productsTableForm tr {
@@ -140,16 +145,15 @@
 
 	.orders-card tr {
 		grid-template-areas: 
-		'orderNumber status . items edit'
-		'customerName customerName customerName customerName customerName'
-		'storeName storeName storeName storeName storeName'
-		'orderDate . requiredDate . shippedDate';
+		'orderNumber customerName edit'
+		'orderDate requiredDate shippedDate'
+		'storeName status items';
 	}
 
 	#stocksTableForm tr {
 		grid-template-areas: 
-		'storeId productId . . .'
-		'productName productName productName productName edit'
+		'storeId productId . . edit'
+		'productName productName productName productName productName'
 		'storeName . . . stock';
 	}
 	
@@ -394,8 +398,7 @@ body {
 
 .data-table td,
 .items-table td {
-    padding: 14px 18px;
-    border-bottom: 1px solid #e9ecef;
+    padding: 1.4vw;
     color: #334155;
     vertical-align: middle;
 }
