@@ -45,8 +45,6 @@
             </ui:fragment>
         </div>
 
-
-        <!-- Auto-reopen modal if there was a validation error -->
         <h:panelGroup rendered="#{facesContext.maximumSeverity != null}">
             <script>
                 window.onload = function () {
@@ -59,22 +57,22 @@
         <ui:fragment rendered="#{request.isUserInRole('ADMIN') or request.isUserInRole('USER1')}">
 
             <div id="staffModal"
-                 class="orders-modal-overlay"
+                 class="modal-overlay"
                  style="display:none;"
                  onclick="if(event.target===this)closeStaffModal();">
 
-                <div class="orders-create-modal">
+                <div class="create-modal">
 
-                    <div class="orders-create-modal-header">
+                    <div class="create-modal-header">
                         <div>
-                            <h2 class="orders-create-modal-title">Neuen Mitarbeiter hinzufügen</h2>
-                            <p class="orders-create-modal-subtitle">
+                            <h2 class="create-modal-title">Neuen Mitarbeiter hinzufügen</h2>
+                            <p class="create-modal-subtitle">
                                 Mitarbeiterdaten eintragen und speichern.
                             </p>
                         </div>
 
                         <button type="button"
-                                class="orders-create-modal-close"
+                                class="create-modal-close"
                                 onclick="closeStaffModal();">
                             ×
                         </button>
@@ -82,31 +80,31 @@
 
                     <h:form id="staffForm">
 
-                        <div class="orders-create-modal-body">
+                        <div class="create-modal-body">
 
                             <h:messages globalOnly="true"
                                         styleClass="field-error"
                                         errorClass="field-error"/>
 
-                            <div class="orders-create-section-title">PERSÖNLICHE DATEN</div>
+                            <div class="create-section-title">PERSÖNLICHE DATEN</div>
 
-                            <div class="orders-create-grid">
+                            <div class="create-grid">
 
-                                <label class="orders-create-field">
+                                <label class="create-field">
                                     <span>Vorname <strong>*</strong></span>
                                     <h:inputText id="vorname"
                                                  value="#{staffBoundary.staff.firstName}"
-                                                 styleClass="orders-create-input"
+                                                 styleClass="create-input"
                                                  required="true"
                                                  requiredMessage="Vorname ist erforderlich"/>
                                     <h:message for="vorname" styleClass="field-error"/>
                                 </label>
 
-                                <label class="orders-create-field">
+                                <label class="create-field">
                                     <span>Nachname <strong>*</strong></span>
                                     <h:inputText id="nachname"
                                                  value="#{staffBoundary.staff.lastName}"
-                                                 styleClass="orders-create-input"
+                                                 styleClass="create-input"
                                                  required="true"
                                                  requiredMessage="Nachname ist erforderlich"/>
                                     <h:message for="nachname" styleClass="field-error"/>
@@ -114,23 +112,23 @@
 
                             </div>
 
-                            <div class="orders-create-section-title orders-create-section-spacing">KONTAKTDATEN</div>
+                            <div class="create-section-title create-section-spacing">KONTAKTDATEN</div>
 
-                            <div class="orders-create-grid">
+                            <div class="create-grid">
 
-                                <label class="orders-create-field">
+                                <label class="create-field">
                                     <span>E-Mail</span>
                                     <h:inputText id="email"
                                                  value="#{staffBoundary.staff.email}"
-                                                 styleClass="orders-create-input"/>
+                                                 styleClass="create-input"/>
                                     <h:message for="email" styleClass="field-error"/>
                                 </label>
 
-                                <label class="orders-create-field">
+                                <label class="create-field">
                                     <span>Telefon <strong>*</strong></span>
                                     <h:inputText id="phone"
                                                  value="#{staffBoundary.staff.phone}"
-                                                 styleClass="orders-create-input"
+                                                 styleClass="create-input"
                                                  required="true"
                                                  requiredMessage="Telefon ist erforderlich">
                                         <f:validateRegex pattern="[\+\d\s\-\(\)]*"/>
@@ -139,45 +137,50 @@
                                 </label>
 
                             </div>
+
                         </div>
 
-                        <div class="orders-create-modal-footer">
+                        <div class="create-modal-footer">
 
                             <button type="button"
-                                    class="orders-create-reset-btn"
+                                    class="create-reset-btn"
                                     onclick="closeStaffModal();">
                                 Abbrechen
                             </button>
+
                             <h:commandButton value="Mitarbeiter speichern"
                                              action="#{staffBoundary.create()}"
-                                             styleClass="orders-create-save-btn"/>
+                                             styleClass="create-save-btn"/>
 
                         </div>
+
                     </h:form>
+
                 </div>
             </div>
+
         </ui:fragment>
 
         <!-- EDIT MODAL -->
         <h:panelGroup id="editStaffModalPanel" layout="block">
 
             <div id="editStaffModal"
-                 class="orders-modal-overlay"
+                 class="modal-overlay"
                  style="display:none;"
                  onclick="if(event.target===this)closeEditStaffModal();">
 
-                <div class="orders-create-modal">
+                <div class="create-modal">
 
-                    <div class="orders-create-modal-header">
+                    <div class="create-modal-header">
                         <div>
-                            <h2 class="orders-create-modal-title">Mitarbeiter bearbeiten</h2>
-                            <p class="orders-create-modal-subtitle">
+                            <h2 class="create-modal-title">Mitarbeiter bearbeiten</h2>
+                            <p class="create-modal-subtitle">
                                 Mitarbeiterdaten können geändert werden. Die ID bleibt unveränderbar.
                             </p>
                         </div>
 
                         <button type="button"
-                                class="orders-create-modal-close"
+                                class="create-modal-close"
                                 onclick="closeEditStaffModal();">
                             ×
                         </button>
@@ -185,45 +188,45 @@
 
                     <h:form id="editStaffForm">
 
-                        <div class="orders-create-modal-body">
+                        <div class="create-modal-body">
 
                             <h:messages globalOnly="true"
                                         styleClass="field-error"
                                         errorClass="field-error"/>
 
-                            <div class="orders-create-section-title">NICHT BEARBEITBAR</div>
+                            <div class="create-section-title">NICHT BEARBEITBAR</div>
 
-                            <div class="orders-create-grid">
+                            <div class="create-grid">
 
-                                <label class="orders-create-field">
+                                <label class="create-field">
                                     <span>ID</span>
                                     <h:inputText id="editId"
                                                  value="#{staffBoundary.editStaff.staffId}"
-                                                 styleClass="orders-create-input"
+                                                 styleClass="create-input"
                                                  disabled="true"/>
                                 </label>
 
                             </div>
 
-                            <div class="orders-create-section-title orders-create-section-spacing">PERSÖNLICHE DATEN</div>
+                            <div class="create-section-title create-section-spacing">PERSÖNLICHE DATEN</div>
 
-                            <div class="orders-create-grid">
+                            <div class="create-grid">
 
-                                <label class="orders-create-field">
+                                <label class="create-field">
                                     <span>Vorname <strong>*</strong></span>
                                     <h:inputText id="editVorname"
                                                  value="#{staffBoundary.editStaff.firstName}"
-                                                 styleClass="orders-create-input"
+                                                 styleClass="create-input"
                                                  required="true"
                                                  requiredMessage="Vorname ist erforderlich"/>
                                     <h:message for="editVorname" styleClass="field-error"/>
                                 </label>
 
-                                <label class="orders-create-field">
+                                <label class="create-field">
                                     <span>Nachname <strong>*</strong></span>
                                     <h:inputText id="editNachname"
                                                  value="#{staffBoundary.editStaff.lastName}"
-                                                 styleClass="orders-create-input"
+                                                 styleClass="create-input"
                                                  required="true"
                                                  requiredMessage="Nachname ist erforderlich"/>
                                     <h:message for="editNachname" styleClass="field-error"/>
@@ -231,23 +234,23 @@
 
                             </div>
 
-                            <div class="orders-create-section-title orders-create-section-spacing">KONTAKTDATEN</div>
+                            <div class="create-section-title create-section-spacing">KONTAKTDATEN</div>
 
-                            <div class="orders-create-grid">
+                            <div class="create-grid">
 
-                                <label class="orders-create-field">
+                                <label class="create-field">
                                     <span>E-Mail</span>
                                     <h:inputText id="editEmail"
                                                  value="#{staffBoundary.editStaff.email}"
-                                                 styleClass="orders-create-input"/>
+                                                 styleClass="create-input"/>
                                     <h:message for="editEmail" styleClass="field-error"/>
                                 </label>
 
-                                <label class="orders-create-field">
+                                <label class="create-field">
                                     <span>Telefon <strong>*</strong></span>
                                     <h:inputText id="editPhone"
                                                  value="#{staffBoundary.editStaff.phone}"
-                                                 styleClass="orders-create-input"
+                                                 styleClass="create-input"
                                                  required="true"
                                                  requiredMessage="Telefon ist erforderlich">
                                         <f:validateRegex pattern="[\+\d\s\-\(\)]*"/>
@@ -257,26 +260,26 @@
 
                             </div>
 
-                            <div class="orders-create-section-title orders-create-section-spacing">STATUS UND FILIALE</div>
+                            <div class="create-section-title create-section-spacing">STATUS UND FILIALE</div>
 
-                            <div class="orders-create-grid">
+                            <div class="create-grid">
 
-                                <label class="orders-create-field">
+                                <label class="create-field">
                                     <span>Status</span>
                                     <h:selectOneMenu id="editActive"
                                                      value="#{staffBoundary.editStaff.active}"
-                                                     styleClass="orders-create-input">
+                                                     styleClass="create-input">
                                         <f:selectItem itemValue="1" itemLabel="Aktiv"/>
                                         <f:selectItem itemValue="0" itemLabel="Inaktiv"/>
                                     </h:selectOneMenu>
                                     <h:message for="editActive" styleClass="field-error"/>
                                 </label>
 
-                                <label class="orders-create-field">
+                                <label class="create-field">
                                     <span>Filiale <strong>*</strong></span>
                                     <h:selectOneMenu id="editStore"
                                                      value="#{staffBoundary.editStaff.storeId.storeId}"
-                                                     styleClass="orders-create-input"
+                                                     styleClass="create-input"
                                                      required="true"
                                                      requiredMessage="Filiale ist erforderlich">
                                         <f:selectItem itemValue="1" itemLabel="Santa Cruz Bikes"/>
@@ -290,11 +293,11 @@
 
                         </div>
 
-                        <div class="orders-create-modal-footer">
+                        <div class="create-modal-footer">
 
                             <h:commandButton value="Abbrechen"
                                              actionListener="#{staffBoundary.cancelEdit()}"
-                                             styleClass="orders-create-reset-btn"
+                                             styleClass="create-reset-btn"
                                              immediate="true"
                                              onclick="closeEditStaffModal();">
                                 <f:ajax execute="@this" render=":editStaffModalPanel"/>
@@ -302,7 +305,7 @@
 
                             <h:commandButton value="Änderungen speichern"
                                              actionListener="#{staffBoundary.saveEdit()}"
-                                             styleClass="orders-create-save-btn">
+                                             styleClass="create-save-btn">
                                 <f:ajax execute="@form"
                                         render=":staffTableForm :editStaffModalPanel"/>
                             </h:commandButton>
@@ -326,44 +329,32 @@
                              styleClass="data-table">
 
                     <h:column>
-                        <f:facet name="header">
-                            <span class="col-header">ID</span>
-                        </f:facet>
+                        <f:facet name="header"><span class="col-header">ID</span></f:facet>
                         <h:outputText value="#{staff.staffId}" styleClass="uuid-text"/>
                     </h:column>
 
                     <h:column>
-                        <f:facet name="header">
-                            <span class="col-header">Vorname</span>
-                        </f:facet>
+                        <f:facet name="header"><span class="col-header">Vorname</span></f:facet>
                         <h:outputText value="#{staff.firstName}"/>
                     </h:column>
 
                     <h:column>
-                        <f:facet name="header">
-                            <span class="col-header">Nachname</span>
-                        </f:facet>
+                        <f:facet name="header"><span class="col-header">Nachname</span></f:facet>
                         <h:outputText value="#{staff.lastName}"/>
                     </h:column>
 
                     <h:column>
-                        <f:facet name="header">
-                            <span class="col-header">E-Mail</span>
-                        </f:facet>
+                        <f:facet name="header"><span class="col-header">E-Mail</span></f:facet>
                         <h:outputText value="#{staff.email}"/>
                     </h:column>
 
                     <h:column>
-                        <f:facet name="header">
-                            <span class="col-header">Telefon</span>
-                        </f:facet>
+                        <f:facet name="header"><span class="col-header">Telefon</span></f:facet>
                         <h:outputText value="#{staff.phone}"/>
                     </h:column>
 
                     <h:column>
-                        <f:facet name="header">
-                            <span class="col-header">Filiale</span>
-                        </f:facet>
+                        <f:facet name="header"><span class="col-header">Filiale</span></f:facet>
                         <h:outputText value="#{staff.storeId.storeName}"
                                       rendered="#{staff.storeId != null}"/>
                         <h:outputText value="-"
@@ -371,9 +362,7 @@
                     </h:column>
 
                     <h:column>
-                        <f:facet name="header">
-                            <span class="col-header">Status</span>
-                        </f:facet>
+                        <f:facet name="header"><span class="col-header">Status</span></f:facet>
 
                         <h:panelGroup rendered="#{staff.active == 1}">
                             <span class="status-pill status-completed">Aktiv</span>
@@ -385,9 +374,7 @@
                     </h:column>
 
                     <h:column>
-                        <f:facet name="header">
-                            <span class="col-header">Aktionen</span>
-                        </f:facet>
+                        <f:facet name="header"><span class="col-header">Aktionen</span></f:facet>
 
                         <h:commandLink value="Bearbeiten"
                                        actionListener="#{staffBoundary.prepareEdit(staff)}"
