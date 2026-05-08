@@ -14,7 +14,7 @@
         <div class="page-header">
 			<div>
 				<h1 class="page-title customer-title">Kunden</h1>
-				<p class="customer-subtitle">Insgesamt #{customerBoundary.count()} Kunden</p>
+				<p class="page-subtitle">Insgesamt #{customerBoundary.count()} Kunden</p>
 			</div>
 			<ui:fragment rendered="#{request.isUserInRole('ADMIN') or request.isUserInRole('USER1')}">
 				<a href="#kundenModal" class="add-modal-btn" onclick="document.getElementById('kundenModal').style.display='flex'">
@@ -148,9 +148,9 @@
                             <div class="modal-icon-badge">✏️</div>
 
                             <div>
-                                <h2 class="modal-title">Produkt bearbeiten</h2>
+                                <h2 class="modal-title">Kunden bearbeiten</h2>
                                 <p class="modal-subtitle">
-                                    Produktdaten ändern und speichern
+                                    Kundendaten ändern und speichern
                                 </p>
                             </div>
                         </div>
@@ -166,7 +166,7 @@
                         </h:form>
                     </div>
 
-                    <h:form id="editProductForm" styleClass="form-frontend">
+                    <h:form id="editCustomerForm" styleClass="form-frontend">
 
                         <div class="modal-body">
 
