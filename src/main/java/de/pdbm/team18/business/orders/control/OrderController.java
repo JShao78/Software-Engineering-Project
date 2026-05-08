@@ -5,10 +5,14 @@ import de.pdbm.team18.business.customers.entity.Customer;
 import de.pdbm.team18.business.orders.entity.Order;
 import de.pdbm.team18.business.orders.entity.OrderItem;
 import de.pdbm.team18.business.orders.repository.OrderRepository;
+import de.pdbm.team18.business.stores.control.StaffController;
 import de.pdbm.team18.business.stores.control.StockController;
 import de.pdbm.team18.business.products.control.ProductController;
 import de.pdbm.team18.business.products.entity.Product;
+import de.pdbm.team18.business.stores.control.StoreController;
+import de.pdbm.team18.business.stores.entity.Staff;
 import de.pdbm.team18.business.stores.entity.StockId;
+import de.pdbm.team18.business.stores.entity.Store;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.ejb.Stateless;
 import jakarta.inject.Inject;
@@ -24,6 +28,10 @@ public class OrderController {
     private OrderRepository orderRepository;
     @Inject
     private StockController stockController;
+    @Inject
+    private StaffController staffController;
+    @Inject
+    private StoreController storeController;
 
     @Inject
     private CustomerController customerController;
@@ -60,6 +68,14 @@ public class OrderController {
 
     public List<Product>  findProductsByName(String name) {
         return productController.findByName(name);
+    }
+
+    public List<Staff> findStaff() {
+        return staffController.findAll();
+    }
+
+    public List<Store> findStores() {
+        return storeController.findAll();
     }
 
     @RolesAllowed({"ADMIN", "USER1"})

@@ -6,6 +6,8 @@ import de.pdbm.team18.business.orders.entity.Order;
 import de.pdbm.team18.business.orders.entity.OrderItem;
 import de.pdbm.team18.business.products.entity.Product;
 import de.pdbm.team18.business.shared.repository.RepositoryQueryUtils;
+import de.pdbm.team18.business.stores.entity.Staff;
+import de.pdbm.team18.business.stores.entity.Store;
 import jakarta.annotation.PostConstruct;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
@@ -33,18 +35,32 @@ public class OrderBoundary implements Serializable {
     private String customerSearch;
     private String productSearch;
 
-    private int pageSize = RepositoryQueryUtils.DEFAULT_LIMIT;
-    private int currentPage = 1;
+    private String newCustomerSearch;
+    private String newProductSearch;
+
+    private int pageSize;
+    private int currentPage;
     private Integer expandedOrderId;
-    private Map<Integer, Integer> itemsCountByOrderId = Collections.emptyMap();
-    private Order newOrder = new Order();
-    private Order editOrder = new Order();
-    private List<OrderItem> newOrderItems = new ArrayList<>();
+    private Map<Integer, Integer> itemsCountByOrderId;
+    private Order newOrder;
+    private Order editOrder;
+    private OrderItem newOrderItem; //TODO naming?!
+    private List<OrderItem> newOrderItems;
 
     @PostConstruct
     private void init() {
         customerSearch = "";
         productSearch = "";
+        newCustomerSearch = "";
+        newProductSearch = "";
+        pageSize = RepositoryQueryUtils.DEFAULT_LIMIT;
+        currentPage = 1;
+        expandedOrderId = null;
+        itemsCountByOrderId = Collections.emptyMap();
+        newOrder = new Order();
+        editOrder = new Order();
+        newOrderItems = new ArrayList<>();
+        newOrderItem  = new OrderItem();
     }
 
     public List<Order> findPage() {
@@ -91,11 +107,27 @@ public class OrderBoundary implements Serializable {
     }
 
     public List<Customer> findCustomers() {
-        return orderController.findCustomersByName(customerSearch);
+        return orderController.findCustomersByName(newCustomerSearch);
     }
 
     public List<Product> findProducts() {
-        return orderController.findProductsByName(productSearch);
+        return orderController.findProductsByName(newProductSearch);
+    }
+
+    public List<Staff> findStaff() {
+        return orderController.findStaff();
+    }
+
+    public List<Store> findStores() {
+        return orderController.findStores();
+    }
+
+    public void saveNewOrderItem() {
+        if (newOrderItem.getProduct() == null || newOrderItem.getQuantity() == null) {
+            return; //TODO Fehlermeldung
+        }
+        newOrderItems.add(newOrderItem);
+        newOrderItem = new OrderItem();
     }
 
     public void toggleItems(Integer orderId) {
@@ -300,5 +332,29 @@ public class OrderBoundary implements Serializable {
 
     public void setProductSearch(String productSearch) {
         this.productSearch = productSearch;
+    }
+
+    public String getNewCustomerSearch() {
+        return newCustomerSearch;
+    }
+
+    public void setNewCustomerSearch(String newCustomerSearch) {
+        this.newCustomerSearch = newCustomerSearch;
+    }
+
+    public String getNewProductSearch() {
+        return newProductSearch;
+    }
+
+    public void setNewProductSearch(String newProductSearch) {
+        this.newProductSearch = newProductSearch;
+    }
+
+    public OrderItem getNewOrderItem() {
+        return newOrderItem;
+    }
+
+    public void setNewOrderItem(OrderItem newOrderItem) {
+        this.newOrderItem = newOrderItem;
     }
 }

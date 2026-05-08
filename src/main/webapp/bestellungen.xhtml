@@ -156,7 +156,7 @@
                             <div>
                                 <h2 class="create-modal-title">Neue Bestellung hinzufügen</h2>
                                 <p class="create-modal-subtitle">
-                                    Kunde und Produkt können geschrieben werden. Backend-Anbindung folgt später.
+                                    Kunde und Produkt können geschrieben werden. Backend-Anbindung in Arbeit.
                                 </p>
                             </div>
 
@@ -175,32 +175,48 @@
 
                                 <label class="create-field">
                                     <span>Kunde <strong>*</strong></span>
-                                    <input id="createCustomerInput"
-                                           name="createCustomer"
-                                           type="text"
-                                           class="create-input"
-                                           placeholder="Kunde schreiben"
-                                           autocomplete="off" />
+                                    <h:inputText id="createCustomerInput"
+                                                 name="createCustomer"
+                                                 class="create-input"
+                                                 placeholder="Kunden für Suche eingeben"
+                                                 value="#{orderBoundary.newCustomerSearch}">
+                                        <f:ajax event="keyup" delay="500" execute="createCustomerInput" render="createCustomerResults" />
+                                    </h:inputText>
+                                    <h:panelGroup id="createCustomerResults" layout="block">
+                                        <ui:repeat value="#{orderBoundary.findCustomers()}" var="customer">
+                                            <h:commandLink value="#{customer.firstName} #{customer.lastName}"
+                                                           action="#{orderBoundary.newOrder.setCustomer(customer)}">
+                                                <f:ajax/> <!-- prevent page refresh -->
+                                            </h:commandLink>
+                                            <br/>
+                                        </ui:repeat>
+                                    </h:panelGroup>
                                 </label>
 
                                 <label class="create-field">
                                     <span>Niederlassung <strong>*</strong></span>
-                                    <input id="createStoreInput"
-                                           name="createStore"
-                                           type="text"
-                                           class="create-input"
-                                           placeholder="Niederlassung schreiben"
-                                           autocomplete="off" />
+                                    <h:selectOneMenu value="#{orderBoundary.newOrder.store}"
+                                                     class="create-input"
+                                                     id="createStoreInput"
+                                                     name="createStore">
+                                        <f:selectItems value="#{orderBoundary.findStores()}"
+                                                       var="store"
+                                                       itemValue="store"
+                                                       itemLabel="#{store.storeName}" />
+                                    </h:selectOneMenu>
                                 </label>
 
                                 <label class="create-field">
                                     <span>Mitarbeiter <strong>*</strong></span>
-                                    <input id="createStaffInput"
-                                           name="createStaff"
-                                           type="text"
-                                           class="create-input"
-                                           placeholder="Mitarbeiter schreiben"
-                                           autocomplete="off" />
+                                    <h:selectOneMenu value="#{orderBoundary.newOrder.staff}"
+                                                     class="create-input"
+                                                     id="createStaffInput"
+                                                     name="createStaff">
+                                        <f:selectItems value="#{orderBoundary.findStaff()}"
+                                                       var="staff"
+                                                       itemValue="staff"
+                                                       itemLabel="#{staff.firstName} #{staff.lastName}" />
+                                    </h:selectOneMenu>
                                 </label>
 
                                 <label class="create-field">
@@ -208,7 +224,8 @@
                                     <input id="createRequiredDateInput"
                                            name="createRequiredDate"
                                            type="date"
-                                           class="create-input" />
+                                           class="create-input"
+                                           value="#{orderBoundary.newOrder.requiredDate}" />
                                 </label>
 
                             </div>
@@ -221,12 +238,22 @@
 
                                 <label class="create-field">
                                     <span>Produkt <strong>*</strong></span>
-                                    <input id="createProductInput"
-                                           name="createProduct"
-                                           type="text"
-                                           class="create-input"
-                                           placeholder="Produkt schreiben"
-                                           autocomplete="off" />
+                                    <h:inputText id="createProductInput"
+                                                 name="createProduct"
+                                                 class="create-input"
+                                                 placeholder="Produkt zur suche eingeben"
+                                                 value="#{orderBoundary.newProductSearch}">
+                                        <f:ajax event="keyup" delay="500" execute="createProductInput" render="createProductResults" />
+                                    </h:inputText>
+                                    <h:panelGroup id="createProductResults" layout="block">
+                                        <ui:repeat value="#{orderBoundary.findProducts()}" var="product">
+                                            <h:commandLink value="#{product.productName}"
+                                                           action="#{orderBoundary.newOrderItem.setProduct(product)}">
+                                                <f:ajax/> <!-- prevent page refresh -->
+                                            </h:commandLink>
+                                            <br/>
+                                        </ui:repeat>
+                                    </h:panelGroup>
                                 </label>
 
                                 <label class="create-field">
@@ -235,7 +262,7 @@
                                            name="createQuantity"
                                            type="number"
                                            class="create-input"
-                                           value="1"
+                                           value="#{orderBoundary.newOrderItem.quantity}"
                                            min="1" />
                                 </label>
 
@@ -245,12 +272,19 @@
                                            name="createDiscount"
                                            type="number"
                                            class="create-input"
-                                           value="0"
+                                           value="#{orderBoundary.newOrderItem.discount}"
                                            min="0"
                                            max="1"
                                            step="0.01" />
                                 </label>
 
+                                <label class="create-field">
+                                    <h:commandButton value="Hinzufügen"
+                                                     class="create-save-btn"
+                                                     action="#{orderBoundary.saveNewOrderItem}">
+                                        <f:ajax render="createOrderItems" />
+                                    </h:commandButton>
+                                </label>
                             </div>
 
                         </div>
@@ -262,11 +296,9 @@
                                 Zurücksetzen
                             </button>
 
-                            <button type="button"
-                                    class="create-save-btn"
-                                    onclick="frontendSaveOrderInfo()">
-                                Bestellung speichern
-                            </button>
+                            <h:commandButton class="create-save-btn"
+                                             value="Bestellung speichern"
+                                             action="#{orderBoundary.create}" />
                         </div>
 
                     </div>
