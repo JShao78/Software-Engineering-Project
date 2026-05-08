@@ -15,24 +15,8 @@ public class StaffController {
     @Inject
     private StaffRepository staffRepository;
 
-    /**
-     * Provides a List representing the given page of the given size.
-     * @param pageNumber the number of the page
-     * @param pageSize the size of the page
-     * @return a List representing the page
-     */
-    public List<Staff> findPage(int pageNumber, int pageSize) {
-        int offset = (pageNumber - 1) * pageSize;
-        return staffRepository.findPage(offset, pageSize);
-    }
-
-    /**
-     * Determines the total number of pages for a given page size.
-     * @param pageSize the size of the pages
-     * @return the number of pages
-     */
-    public int totalPages(int pageSize) {
-        return Math.ceilDivExact(staffRepository.count(), pageSize);
+    public List<Staff> findAll() {
+        return staffRepository.findAll();
     }
 
     /**

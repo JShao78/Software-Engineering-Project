@@ -1,6 +1,5 @@
 package de.pdbm.team18.business.stores.repository;
 
-import de.pdbm.team18.business.shared.repository.RepositoryQueryUtils;
 import de.pdbm.team18.business.stores.entity.Staff;
 import jakarta.ejb.Stateless;
 import jakarta.persistence.EntityManager;
@@ -14,16 +13,7 @@ public class StaffRepository {
     @PersistenceContext
     private EntityManager em;
 
-    /**
-     * Provies a List excerpt of the table starting at offset and including limit elements.
-     * @param offset the index of the first entry
-     * @param limit the total number of entries to return
-     * @return the List excerpt
-     */
-    public List<Staff> findPage(int offset, int limit) {
-        offset = RepositoryQueryUtils.sanitizeOffset(offset);
-        limit = RepositoryQueryUtils.sanitizeLimit(limit);
-
+    public List<Staff> findAll() {
         return em.createQuery("""
             SELECT s
             FROM Staff s
@@ -31,8 +21,6 @@ public class StaffRepository {
             LEFT JOIN FETCH s.managerId
             ORDER BY s.staffId
             """, Staff.class)
-                .setFirstResult(offset)
-                .setMaxResults(limit)
                 .getResultList();
     }
 
