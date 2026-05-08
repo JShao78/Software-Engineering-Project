@@ -372,18 +372,18 @@
                     <ui:repeat value="#{orderBoundary.findPage()}" var="order">
 
                         <tr>
-                            <td>
+                            <td class="orderNumber">
                                 <h:outputText value="#{order.orderId}" styleClass="uuid-text" />
                             </td>
 
-                            <td>
+                            <td class="customerName">
                                 <h:outputText value="#{order.customer.firstName} #{order.customer.lastName}"
                                               rendered="#{not empty order.customer}" />
                                 <h:outputText value="—"
                                               rendered="#{empty order.customer}" />
                             </td>
 
-                            <td>
+                            <td class="orderDate">
                                 <h:outputText value="#{order.orderDate}"
                                               rendered="#{not empty order.orderDate}">
                                     <f:convertDateTime type="localDate" pattern="dd.MM.yyyy" />
@@ -392,7 +392,7 @@
                                               rendered="#{empty order.orderDate}" />
                             </td>
 
-                            <td>
+                            <td class="requiredDate">
                                 <h:outputText value="#{order.requiredDate}"
                                               rendered="#{not empty order.requiredDate}">
                                     <f:convertDateTime type="localDate" pattern="dd.MM.yyyy" />
@@ -401,7 +401,7 @@
                                               rendered="#{empty order.requiredDate}" />
                             </td>
 
-                            <td>
+                            <td class="shippedDate">
                                 <h:outputText value="#{order.shippedDate}"
                                               rendered="#{not empty order.shippedDate}">
                                     <f:convertDateTime type="localDate" pattern="dd.MM.yyyy" />
@@ -410,14 +410,14 @@
                                               rendered="#{empty order.shippedDate}" />
                             </td>
 
-                            <td>
+                            <td class="storeName">
                                 <h:outputText value="#{order.store.storeName}"
                                               rendered="#{not empty order.store}" />
                                 <h:outputText value="—"
                                               rendered="#{empty order.store}" />
                             </td>
 
-                            <td>
+                            <td class="status">
                                 <span class="status-pill #{orderBoundary.statusClass(order.orderStatus)}">
                                     <h:outputText value="#{orderBoundary.statusLabel(order.orderStatus)}" />
                                 </span>

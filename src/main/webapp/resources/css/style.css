@@ -12,6 +12,13 @@
 	.search-grid {
 		grid-template-columns: 1fr 1fr auto;
 	}
+
+	.table-container {
+		border: 1px solid #e0e0e0;
+		border-radius: 8px;
+		overflow: hidden;
+		background: #ffffff;
+	}
 }
 
 @media (orientation: portrait) {
@@ -42,20 +49,28 @@
 		margin-inline: 16vw;
 	}
 
-	/*thead {
+	thead {
 		display: none;
 	}
 
-	#customerTableForm tr {
+	tr {	
 		display: grid;
-		grid-template-areas: 
-			'id firstName firstName lastName lastName lastName'
-			'phone phone phone email email email'
-			'state state zip zip street street'
-			'edit edit edit . . delete';
+		outline: 1px solid #e0e0e0;
+		margin-block: 1.2vh;
+		border-radius: 8px;
 	}
 
+	tr:nth-of-type(even) {
+		color: #f8f9fa;
+	}
+
+	/* generics */
 	td.tableId { grid-area: id; }
+	td.edit { grid-area: edit; }
+	td.delete { grid-area: delete; }
+	td.status { grid-area: status; }
+
+	/* person */
 	td.firstName { grid-area: firstName; }
 	td.lastName { grid-area: lastName; }
 	td.phone { grid-area: phone; }
@@ -63,8 +78,66 @@
 	td.state { grid-area: state; }
 	td.zip { grid-area: zip; }
 	td.street { grid-area: street; }
-	td.edit { grid-area: edit; }
-	td.delete { grid-area: delete; }*/
+
+	/*
+	td.firstName:before { content: "Vorname: "; }
+	td.lastName:before { content: "Nachname: "; }
+	td.phone:before { content: "Telefon: "; }
+	td.email:before { content: "E-Mail: "; }
+	td.state:before { content: "Bundesstaat: "; }
+	td.zip:before { content: "PLZ: "; }
+	td.street:before { content: "Straße: "; }
+
+	td.productName:before { content: "Produktname: "; }
+	/* product */
+	td.productName { grid-area: productName; }
+	td.category { grid-area: category; }
+	td.brand { grid-area: brand; }
+	td.modelYear { grid-area: modelYear; }
+	td.itemPrice { grid-area: itemPrice; }
+
+	td.modelYear:before { content: "Modelljahr "; }
+
+	/* order */
+	td.orderNumber { grid-area: orderNumber; }
+	td.customerName { grid-area: customerName; }
+	td.orderDate { grid-area: orderDate; }
+	td.requiredDate { grid-area: requiredDate; }
+	td.shippedDate { grid-area: shippedDate; }
+	td.items-cell { grid-area: items; }
+
+	td.orderNumber:before { content: "Bestellung #"; }
+	td.orderDate:before { content: "Bestellt: "; }
+	td.requiredDate:before { content: "Versand: "; }
+	td.shippedDate:before { content: "Lieferung: "; }
+
+	/* store */
+	td.storeName { grid-area: storeName; }
+
+	/* Table grids */
+	#customerTableForm tr {
+		grid-template-areas: 
+		'id firstName lastName . . edit'
+		'phone phone phone email email email'
+		'street zip state . . .';
+	}
+
+	#productsTableForm tr {
+		grid-template-areas: 
+		'id brand brand brand edit'
+		'productName productName productName productName productName'
+		'category . . . .'
+		'itemPrice . . . modelYear';
+	}
+
+	.orders-card tr {
+		grid-template-areas: 
+		'orderNumber status . items edit'
+		'customerName customerName customerName customerName customerName'
+		'storeName storeName storeName storeName storeName'
+		'orderDate . requiredDate . shippedDate';
+	}
+
 
 	.edit > .btn-table {
 		width: 100%;
@@ -274,13 +347,6 @@ body {
 }
 
 /* Tables */
-.table-container {
-    border: 1px solid #e0e0e0;
-    border-radius: 8px;
-    overflow: hidden;
-    background: #ffffff;
-}
-
 .data-table,
 .items-table {
     width: 100%;

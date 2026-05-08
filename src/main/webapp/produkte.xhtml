@@ -44,32 +44,32 @@
                                  var="product"
                                  styleClass="data-table products-table">
 
-                        <h:column>
+                        <h:column styleClass="tableId">
                             <f:facet name="header">ID</f:facet>
                             <h:outputText value="#{product.productId}" styleClass="uuid-text"/>
                         </h:column>
 
-                        <h:column>
+                        <h:column styleClass="productName">
                             <f:facet name="header">Produktname</f:facet>
                             <h:outputText value="#{product.productName}"/>
                         </h:column>
 
-                        <h:column>
+                        <h:column styleClass="brand">
                             <f:facet name="header">Marke</f:facet>
                             <h:outputText value="#{product.brand.brandName}"/>
                         </h:column>
 
-                        <h:column>
+                        <h:column styleClass="category">
                             <f:facet name="header">Kategorie</f:facet>
                             <h:outputText value="#{product.category.categoryName}"/>
                         </h:column>
 
-                        <h:column>
+                        <h:column styleClass="modelYear">
                             <f:facet name="header">Modelljahr</f:facet>
                             <h:outputText value="#{product.modelYear}"/>
                         </h:column>
 
-                        <h:column>
+                        <h:column styleClass="itemPrice">
                             <f:facet name="header">Stückpreis</f:facet>
                             <h:outputText value="#{product.listPrice}" styleClass="text-accent">
                                 <f:convertNumber minFractionDigits="2"
@@ -78,7 +78,7 @@
                             </h:outputText>
                         </h:column>
 
-                        <h:column rendered="#{request.isUserInRole('ADMIN') or request.isUserInRole('USER1')}">
+                        <h:column styleClass="edit" rendered="#{request.isUserInRole('ADMIN') or request.isUserInRole('USER1')}">
                             <f:facet name="header">Aktionen</f:facet>
 
                             <h:commandButton value="Bearbeiten"
