@@ -1,7 +1,6 @@
 package de.pdbm.team18.business.customers.boundary;
 
 import de.pdbm.team18.business.customers.control.CustomerController;
-import de.pdbm.team18.business.customers.repository.CustomerRepository;
 import de.pdbm.team18.business.customers.entity.Customer;
 import de.pdbm.team18.business.shared.repository.RepositoryQueryUtils;
 import jakarta.faces.view.ViewScoped;
@@ -21,8 +20,6 @@ public class CustomerBoundary implements Serializable {
 
     @Inject
     CustomerController customerController;
-    @Inject
-    CustomerRepository customerRepository;
 
     private Customer customer = new Customer();
     private Customer editCustomer = new Customer();

@@ -19,7 +19,6 @@ public class CustomerRepository {
         return em.createQuery("SELECT c FROM Customer c " +
                         "WHERE LOWER(c.lastName) LIKE CONCAT('%', :name, '%') " +
                         "OR LOWER(c.firstName) LIKE CONCAT('%', :name, '%') " +
-                        "OR :name IS NULL " +
                         "ORDER BY c.lastName ASC, c.firstName ASC",
                 Customer.class)
                 .setParameter("name", name)
