@@ -13,7 +13,7 @@
 		<h:panelGroup id="customerPage" layout="block">
         <div class="page-header">
 			<div>
-				<h1 class="page-title customer-title">Kunden</h1>
+				<h1 class="page-title">Kunden</h1>
 				<p class="page-subtitle">Insgesamt #{customerBoundary.count()} Kunden</p>
 			</div>
 			<ui:fragment rendered="#{request.isUserInRole('ADMIN') or request.isUserInRole('USER1')}">
@@ -294,39 +294,39 @@
             <h:dataTable value="#{customerBoundary.findPage()}"
                          var="kunde"
                          styleClass="data-table">
-                <h:column>
+                <h:column styleClass="tableId">
                     <f:facet name="header"><span class="col-header">ID</span></f:facet>
                     <h:outputText value="#{kunde.customerId}" styleClass="uuid-text"/>
                 </h:column>
-                <h:column>
+                <h:column styleClass="firstName">
                     <f:facet name="header"><span class="col-header">Vorname</span></f:facet>
                     <h:outputText value="#{kunde.firstName}"/>
                 </h:column>
-                <h:column>
+                <h:column styleClass="lastName">
                     <f:facet name="header"><span class="col-header">Nachname</span></f:facet>
                     <h:outputText value="#{kunde.lastName}" />
                 </h:column>
-                <h:column>
+                <h:column styleClass="email">
                     <f:facet name="header"><span class="col-header">E-Mail</span></f:facet>
                     <h:outputText value="#{kunde.email}"/>
                 </h:column>
-                <h:column>
+                <h:column styleClass="phone">
                     <f:facet name="header"><span class="col-header">Telefon</span></f:facet>
                     <h:outputText value="#{kunde.phone}"/>
                 </h:column>
-                <h:column>
+                <h:column styleClass="state">
                     <f:facet name="header"><span class="col-header">Bundesstaat</span></f:facet>
                     <h:outputText value="#{kunde.state}"/>
                 </h:column>
-                <h:column>
+                <h:column styleClass="zip">
                     <f:facet name="header"><span class="col-header">Postleitzahl</span></f:facet>
                     <h:outputText value="#{kunde.zipCode}"/>
                 </h:column>
-                <h:column>
+                <h:column styleClass="street">
                     <f:facet name="header"><span class="col-header">Straße</span></f:facet>
                     <h:outputText value="#{kunde.street}"/>
                 </h:column>
-                <h:column rendered="#{request.isUserInRole('ADMIN') or request.isUserInRole('USER1')}">
+                <h:column styleClass="edit" rendered="#{request.isUserInRole('ADMIN') or request.isUserInRole('USER1')}">
 					<f:facet name="header">Bearbeiten</f:facet>
 					<h:commandButton value="Bearbeiten"
 						actionListener="#{customerBoundary.prepareEdit(kunde)}"
@@ -334,7 +334,7 @@
 						<f:ajax execute="@this" render=":customerPage"/>
 					</h:commandButton>
 				</h:column>
-				<h:column rendered="#{request.isUserInRole('ADMIN') or request.isUserInRole('USER1')}">
+				<h:column styleClass="delete" rendered="#{request.isUserInRole('ADMIN') or request.isUserInRole('USER1')}">
 					<f:facet name="header">Löschen</f:facet>
 					<h:commandButton value="×"
 					actionListener="#{customerBoundary.delete(kunde.customerId)}"

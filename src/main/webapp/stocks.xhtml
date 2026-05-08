@@ -14,11 +14,13 @@
 
         <h:panelGroup id="stocksPage" layout="block">
 
-            <div class="orders-header">
-                <h1 class="page-title orders-title">Lagerbestände</h1>
-                <p class="orders-subtitle">
+            <div class="page-header">
+                <div>
+                <h1 class="page-title">Lagerbestände</h1>
+                <p class="page-subtitle">
                     Insgesamt #{stockBoundary.count()} Lagerbestände
                 </p>
+                </div>
             </div>
 
             <my:pagination boundary="#{stockBoundary}" />

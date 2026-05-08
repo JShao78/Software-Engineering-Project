@@ -12,8 +12,8 @@
     <ui:define name="content">
         <div class="page-header">
 			<div>
-				<h1 class="page-title orders-title">Mitarbeiter</h1>
-				<p class="orders-subtitle">Insgesamt #{staffBoundary.count()} Mitarbeiter</p>
+				<h1 class="page-title">Mitarbeiter</h1>
+				<p class="page-subtitle">Insgesamt #{staffBoundary.count()} Mitarbeiter</p>
 			</div>
 			<ui:fragment rendered="#{request.isUserInRole('ADMIN')}">
 				<a href="#staffModal" class="add-modal-btn" onclick="document.getElementById('staffModal').style.display='flex'">
