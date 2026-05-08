@@ -19,6 +19,14 @@
 		overflow: hidden;
 		background: #ffffff;
 	}
+
+	.btn-page {
+		min-width: 42px;
+	}
+
+	.pg-size:before {
+		content: "Seitenlänge: "
+	}
 }
 
 @media (orientation: portrait) {
@@ -80,16 +88,6 @@
 	td.zip { grid-area: zip; }
 	td.street { grid-area: street; }
 
-	/*
-	td.firstName:before { content: "Vorname: "; }
-	td.lastName:before { content: "Nachname: "; }
-	td.phone:before { content: "Telefon: "; }
-	td.email:before { content: "E-Mail: "; }
-	td.state:before { content: "Bundesstaat: "; }
-	td.zip:before { content: "PLZ: "; }
-	td.street:before { content: "Straße: "; }
-
-	td.productName:before { content: "Produktname: "; }
 	/* product */
 	td.productName { grid-area: productName; }
 	td.category { grid-area: category; }
@@ -421,7 +419,6 @@ body {
     display: flex;
     flex-direction: column;
     gap: 10px;
-    margin: 12px 0 18px;
 }
 
 .pagination-info {
@@ -437,9 +434,9 @@ body {
     align-items: center;
 }
 
-.btn-page {
-    min-width: 42px;
-    height: 38px;
+.btn-page,
+.pg-size > select {
+    height: 4.5vh;
     padding: 0 14px;
     border: 1px solid #d0d7de;
     border-radius: 10px;

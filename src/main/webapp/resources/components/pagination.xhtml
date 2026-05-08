@@ -19,7 +19,7 @@
 
             <div class="pagination">
 
-                <h:commandButton value="‹ Zurück"
+                <h:commandButton value="‹"
                                  styleClass="btn-page btn-page-nav"
                                  disabled="#{cc.attrs.boundary.currentPage == 1}">
                     <f:setPropertyActionListener target="#{cc.attrs.boundary.currentPage}"
@@ -58,7 +58,7 @@
                                                  value="#{cc.attrs.boundary.totalPages()}" />
                 </h:commandButton>
 
-                <h:commandButton value="Weiter ›"
+                <h:commandButton value="›"
                                  styleClass="btn-page btn-page-nav"
                                  disabled="#{cc.attrs.boundary.currentPage == cc.attrs.boundary.totalPages()}">
                     <f:setPropertyActionListener target="#{cc.attrs.boundary.currentPage}"
@@ -66,7 +66,6 @@
                 </h:commandButton>
 
 				<div class="pg-size">
-					<label for="pagesize">Seitenlänge: </label>
 					<h:selectOneMenu value="#{cc.attrs.boundary.pageSize}" name="pagesize">
 						<f:selectItem itemValue="10" itemLabel="10" />
 						<f:selectItem itemValue="25" itemLabel="25" />
