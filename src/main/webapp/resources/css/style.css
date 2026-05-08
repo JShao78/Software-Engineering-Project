@@ -987,11 +987,13 @@ body {
 
 .create-btn,
 .create-save-btn,
-.edit-save-btn {
+.edit-save-btn,
+.form-btn-primary {
     background: linear-gradient(135deg, #2563eb, #4f46e5);
     color: #ffffff;
 }
 
+.form-btn-primary,
 .create-btn {
     padding: 12px 18px;
     border: none;
@@ -1171,7 +1173,8 @@ body {
 .create-reset-btn,
 .create-save-btn,
 .edit-cancel-btn,
-.edit-save-btn {
+.edit-save-btn,
+.form-btn {
     border: none;
     border-radius: 12px;
     padding: 13px 18px;
@@ -1180,13 +1183,14 @@ body {
 }
 
 .create-reset-btn,
-.edit-cancel-btn {
+.edit-cancel-btn,
+.form-btn-secondary {
     background: #f1f5f9;
     color: #334155;
 }
 
-.edit-save-btn:hover,
-.edit-cancel-btn:hover {
+.form-btn:hover,
+.form-btn:hover {
     filter: brightness(1.04);
 }
 
@@ -1392,7 +1396,6 @@ body {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    color: inherit;
     text-decoration: none;
     font-size: 15px;
     font-weight: 600;
@@ -1400,21 +1403,9 @@ body {
     transition: all 0.18s ease;
 }
 
-.form-btn-secondary {
-    border: 1px solid #d7deea;
-    background: #ffffff;
-    color: #475569;
-}
-
 .form-btn-secondary:hover {
     background: #f8fafc;
     border-color: #c7d1df;
-}
-
-.form-btn-primary {
-    background: linear-gradient(135deg, #1a73e8 0%, #4f46e5 100%);
-    color: #ffffff;
-    box-shadow: 0 10px 24px rgba(79, 70, 229, 0.22);
 }
 
 .form-btn-primary:hover {
