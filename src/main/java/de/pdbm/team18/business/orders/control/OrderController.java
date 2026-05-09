@@ -2,20 +2,18 @@ package de.pdbm.team18.business.orders.control;
 
 import de.pdbm.team18.business.customers.control.CustomerController;
 import de.pdbm.team18.business.customers.entity.Customer;
-import de.pdbm.team18.business.orders.boundary.OrderBoundary;
 import de.pdbm.team18.business.orders.entity.Order;
 import de.pdbm.team18.business.orders.entity.OrderItem;
 import de.pdbm.team18.business.orders.repository.OrderRepository;
-import de.pdbm.team18.business.stores.control.StaffController;
-import de.pdbm.team18.business.stores.control.StockController;
 import de.pdbm.team18.business.products.control.ProductController;
 import de.pdbm.team18.business.products.entity.Product;
+import de.pdbm.team18.business.stores.control.StaffController;
+import de.pdbm.team18.business.stores.control.StockController;
 import de.pdbm.team18.business.stores.control.StoreController;
 import de.pdbm.team18.business.stores.entity.Staff;
 import de.pdbm.team18.business.stores.entity.StockId;
 import de.pdbm.team18.business.stores.entity.Store;
 import jakarta.annotation.security.RolesAllowed;
-import jakarta.ejb.Schedule;
 import jakarta.ejb.Stateless;
 import jakarta.inject.Inject;
 
@@ -99,7 +97,7 @@ public class OrderController {
     }
 
     @RolesAllowed({"ADMIN", "USER1"})
-    public void create(Order order, List<OrderItem> orderItems) {
+    public void create(Order order, List<OrderItem> orderItems) throws IllegalStateException {
         for (OrderItem orderItem : orderItems) {
             Integer quantity = stockController.getQuantity(order.getStore(), orderItem.getProduct());
             if (quantity == null || quantity < orderItem.getQuantity()) {

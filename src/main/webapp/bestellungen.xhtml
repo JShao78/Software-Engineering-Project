@@ -183,7 +183,7 @@
 												 pt:list="customerResults">
                                         <f:ajax event="keyup" delay="500" execute="createCustomerInput"
                                                 render="customerDatalist" />
-                                        <f:ajax event="focus" execute="createCustomerInput" render="customerDatalist" />
+<!--                                        <f:ajax event="focus" execute="createCustomerInput" render="customerDatalist" />-->
                                     </h:inputText>
 									<h:panelGroup id="customerDatalist">
 										<datalist id="customerResults">
@@ -235,7 +235,7 @@
                                 PRODUKT
                             </div>
 
-                            <div class="create-product-row">
+                            <div class="create-product-row" id="createProductRow">
 
                                 <label class="create-field">
                                     <span>Produkt <strong>*</strong></span>
@@ -246,7 +246,7 @@
                                                  value="#{orderBoundary.newProductSearch}"
 												 pt:list="productResults">
                                         <f:ajax event="keyup" delay="500" execute="createProductInput" render="productDatalist" />
-                                        <f:ajax event="focus" execute="createProductInput" render="productDatalist" />
+<!--                                        <f:ajax event="focus" execute="createProductInput" render="productDatalist" />-->
                                     </h:inputText>
 									<h:panelGroup id="productDatalist">
 										<datalist id="productResults">
@@ -259,7 +259,7 @@
 
                                 <label class="create-field">
                                     <span>Menge <strong>*</strong></span>
-                                    <input id="createQuantityInput"
+                                    <h:inputText id="createQuantityInput"
                                            name="createQuantity"
                                            type="number"
                                            class="create-input"
@@ -269,7 +269,7 @@
 
                                 <label class="create-field">
                                     <span>Rabatt</span>
-                                    <input id="createDiscountInput"
+                                    <h:inputText id="createDiscountInput"
                                            name="createDiscount"
                                            type="number"
                                            class="create-input"
@@ -279,41 +279,78 @@
                                            step="0.01" />
                                 </label>
 
-                                <h:commandButton value="Hinzufügen" class="create-btn" execute="@form">
-                                    <f:ajax render="createOrderItems" execute="@form" listener="#{orderBoundary.saveNewOrderItem}" />
+                                <h:commandButton value="Hinzufügen" class="create-btn" action="#{orderBoundary.saveNewOrderItem}">
+                                    <f:ajax render="createOrderItems"
+                                            execute="createProductInput createQuantityInput createDiscountInput" />
                                 </h:commandButton>
 
-                                <div class="create-grid">
-                                    <ui:repeat class="create-input" id="createOrderItems"
-                                               value="#{orderBoundary.newOrderItems}" var="item">
-                                        <tr>
-                                            <td>
-                                                <h:outputText value="#{item.product.productName}" />
-                                            </td>
-                                            <td>
-                                                <h:outputText value="#{item.quantity}" />
-                                            </td>
-                                            <td>
-                                                <h:outputText value="#{item.discount}" />
-                                            </td>
-                                        </tr>
-                                    </ui:repeat>
-                                </div>
+                                <ui:fragment if="createOrderItems" rendered="#{!orderBoundary.newOrderItems.isEmpty()}">
+                                    <tr class="order-items-row">
+                                        <td colspan="9">
+                                            <div class="order-items-panel">
+                                                <div class="order-items-label">BESTELLPOSITIONEN</div>
+
+                                                <table class="items-table">
+                                                    <thead>
+                                                    <tr>
+                                                        <th><span class="col-header">Produkt</span></th>
+                                                        <th><span class="col-header">Menge</span></th>
+                                                        <th><span class="col-header">Rabatt</span></th>
+                                                    </tr>
+                                                    </thead>
+
+                                                    <tbody>
+                                                    <ui:repeat value="#{orderBoundary.newOrderItems}" var="item">
+                                                        <tr>
+                                                            <td>
+                                                                <h:outputText value="#{item.product.productName}"
+                                                                              rendered="#{not empty item.product}" />
+
+                                                                <h:outputText value=" - #{item.product.modelYear}"
+                                                                              rendered="#{not empty item.product and not empty item.product.modelYear}" />
+
+                                                                <h:outputText value="—"
+                                                                              rendered="#{empty item.product}" />
+                                                            </td>
+
+                                                            <td>
+                                                                <h:outputText value="#{item.quantity}" />
+                                                            </td>
+
+                                                            <td>
+                                                                <h:panelGroup rendered="#{orderBoundary.hasDiscount(item)}">
+                                                            <span class="discount-pill">
+                                                                <h:outputText value="#{orderBoundary.discountLabel(item)}" />
+                                                            </span>
+                                                                </h:panelGroup>
+
+                                                                <h:outputText value="—"
+                                                                              rendered="#{not orderBoundary.hasDiscount(item)}" />
+                                                            </td>
+                                                        </tr>
+                                                    </ui:repeat>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </ui:fragment>
+
                             </div>
 
                         </div>
 
                         <div class="create-modal-footer">
-                            <button type="button"
-                                    class="create-reset-btn"
-                                    onclick="resetCreateOrderModal()">
-                                Zurücksetzen
-                            </button>
+                            <h:commandButton class="create-reset-btn"
+                                             value="Zurücksetzen"
+                                             action="#{orderBoundary.resetNewOrder}">
+                                <f:ajax render="@form" />
+                            </h:commandButton>
 
                             <h:commandButton class="create-save-btn"
                                              value="Bestellung speichern"
                                              action="#{orderBoundary.create}">
-                                <f:ajax/>
+                                <f:ajax render="@all" />
                             </h:commandButton>
                         </div>
 

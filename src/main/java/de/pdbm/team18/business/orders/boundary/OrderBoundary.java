@@ -49,15 +49,15 @@ public class OrderBoundary implements Serializable {
     private List<OrderItem> newOrderItems;
 
     public void debug() { //TODO remove
-        if (newOrder.getCustomer() == null) newOrder.setCustomer(new Customer());
         System.out.println("Status:");
         System.out.println("newCustomerSearch: " + newCustomerSearch);
         System.out.println("newProductSearch: " + newProductSearch);
-        System.out.println("Produkt: " + newOrderItem.getProduct().getProductName());
-        System.out.println("newOrderItems:");
+        System.out.println("Produkt: " + newOrderItem.getProduct());
+        if (newOrderItem.getProduct() != null) System.out.println("Produktname: " + newOrderItem.getProduct().getProductName());
+        System.out.println("newOrderItems: " +  newOrderItems.size());
         for (OrderItem item : newOrderItems) System.out.println(item.getProduct().getProductName());
         System.out.println(newOrder.getCustomer());
-        System.out.println("Customer: " + newOrder.getCustomer().getFirstName() + " " + newOrder.getCustomer().getLastName());
+        if (newOrder.getCustomer() != null) System.out.println("Customer: " + newOrder.getCustomer().getCustomerId() + " " + newOrder.getCustomer().getFirstName() + " " + newOrder.getCustomer().getLastName());
     }
 
     @PostConstruct
@@ -121,6 +121,14 @@ public class OrderBoundary implements Serializable {
         return null;
     }
 
+    public void resetNewOrder() {
+        newOrder = new Order();
+        newOrderItems = new ArrayList<>();
+        newOrderItem  = new OrderItem();
+        newCustomerSearch = "";
+        newProductSearch = "";
+    }
+
     public List<Customer> findCustomers() {
         return orderController.findCustomersByName(newCustomerSearch);
     }
@@ -142,6 +150,13 @@ public class OrderBoundary implements Serializable {
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_ERROR, "Pflichtfelder nicht erfüllt",
                             "Produkt und Menge müssen angegeben sein."));
+            return;
+        }
+        if (newOrderItems.stream().anyMatch(item ->
+                Objects.equals(item.getProduct().getProductId(), newOrderItem.getProduct().getProductId()))) {
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Produkt bereits vorhanden",
+                            "Das ausgewählte Produkt ist bereits in der Bestellung vorhanden."));
             return;
         }
         newOrderItems.add(newOrderItem);
@@ -241,10 +256,16 @@ public class OrderBoundary implements Serializable {
         if (newOrderItems.isEmpty()) {
             return;
         }
-        orderController.create(newOrder, newOrderItems);
-
-        newOrder = new Order();
-        newOrderItems = new ArrayList<>();
+        try {
+            orderController.create(newOrder, newOrderItems);
+            newOrder = new Order();
+            newOrderItems = new ArrayList<>();
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_INFO, "Erfolg", "Bestellung erfolgreich erstellt"));
+        } catch (IllegalStateException e) {
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_WARN, "Lagerbestand", e.getMessage()));
+        }
     }
 
     public boolean prepareEdit(Order orderToEdit) {
