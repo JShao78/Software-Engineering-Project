@@ -30,6 +30,10 @@ public class ProductRepository {
                 .getResultList();
     }
 
+    public Product findById(int id) {
+        return em.find(Product.class, id);
+    }
+
     public List<Product> findByName(String name) {
         if (name == null || name.length() < 3) return List.of();
         name = name.toLowerCase();

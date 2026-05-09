@@ -9,6 +9,7 @@ import de.pdbm.team18.business.shared.repository.RepositoryQueryUtils;
 import de.pdbm.team18.business.stores.entity.Staff;
 import de.pdbm.team18.business.stores.entity.Store;
 import jakarta.annotation.PostConstruct;
+import jakarta.ejb.Schedule;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.event.AjaxBehaviorEvent;
@@ -47,6 +48,18 @@ public class OrderBoundary implements Serializable {
     private OrderItem newOrderItem; //TODO naming?!
     private List<OrderItem> newOrderItems;
 
+    public void debug() { //TODO remove
+        if (newOrder.getCustomer() == null) newOrder.setCustomer(new Customer());
+        System.out.println("Status:");
+        System.out.println("newCustomerSearch: " + newCustomerSearch);
+        System.out.println("newProductSearch: " + newProductSearch);
+        System.out.println("Produkt: " + newOrderItem.getProduct().getProductName());
+        System.out.println("newOrderItems:");
+        for (OrderItem item : newOrderItems) System.out.println(item.getProduct().getProductName());
+        System.out.println(newOrder.getCustomer());
+        System.out.println("Customer: " + newOrder.getCustomer().getFirstName() + " " + newOrder.getCustomer().getLastName());
+    }
+
     @PostConstruct
     private void init() {
         customerSearch = "";
@@ -61,6 +74,7 @@ public class OrderBoundary implements Serializable {
         editOrder = new Order();
         newOrderItems = new ArrayList<>();
         newOrderItem  = new OrderItem();
+        newOrderItem.setOrder(newOrder);
     }
 
     public List<Order> findPage() {
@@ -81,6 +95,7 @@ public class OrderBoundary implements Serializable {
             itemsCountByOrderId = Collections.emptyMap();
             expandedOrderId = null;
         }
+        debug(); //TODO remove
         return orders;
     }
 
@@ -274,17 +289,13 @@ public class OrderBoundary implements Serializable {
         this.editOrder = new Order();
     }
 
-    private int clamp(int value, int min, int max) {
-        return Math.max(min, Math.min(value, max));
-    }
-
     // Getter and Setter
     public int getCurrentPage() {
         return currentPage;
     }
 
     public void setCurrentPage(int currentPage) {
-        this.currentPage = clamp(currentPage, 1, Math.max(totalPages(), 1));
+        this.currentPage = Math.clamp(currentPage, 1, Math.max(totalPages(), 1));
     }
 
     public int getPageSize() {
@@ -296,7 +307,7 @@ public class OrderBoundary implements Serializable {
     }
 
     public void onPageSizeChange(AjaxBehaviorEvent event) {
-        this.pageSize = clamp(pageSize, 1, RepositoryQueryUtils.MAX_LIMIT);
+        this.pageSize = Math.clamp(pageSize, 1, RepositoryQueryUtils.MAX_LIMIT);
         this.currentPage = 1;
         this.expandedOrderId = null;
     }
@@ -342,6 +353,11 @@ public class OrderBoundary implements Serializable {
     }
 
     public void setNewCustomerSearch(String newCustomerSearch) {
+        try {
+            int id = Integer.parseInt(newCustomerSearch);
+            Customer customer = orderController.findCustomerById(id);
+            if (customer != null) newOrder.setCustomer(customer);
+        } catch (NumberFormatException ignored) {}
         this.newCustomerSearch = newCustomerSearch;
     }
 
@@ -350,6 +366,11 @@ public class OrderBoundary implements Serializable {
     }
 
     public void setNewProductSearch(String newProductSearch) {
+        try {
+            int id = Integer.parseInt(newProductSearch);
+            Product product = orderController.findProductById(id);
+            if (product != null) newOrderItem.setProduct(product);
+        } catch (NumberFormatException ignored) {}
         this.newProductSearch = newProductSearch;
     }
 

@@ -2,6 +2,7 @@ package de.pdbm.team18.business.orders.control;
 
 import de.pdbm.team18.business.customers.control.CustomerController;
 import de.pdbm.team18.business.customers.entity.Customer;
+import de.pdbm.team18.business.orders.boundary.OrderBoundary;
 import de.pdbm.team18.business.orders.entity.Order;
 import de.pdbm.team18.business.orders.entity.OrderItem;
 import de.pdbm.team18.business.orders.repository.OrderRepository;
@@ -14,6 +15,7 @@ import de.pdbm.team18.business.stores.entity.Staff;
 import de.pdbm.team18.business.stores.entity.StockId;
 import de.pdbm.team18.business.stores.entity.Store;
 import jakarta.annotation.security.RolesAllowed;
+import jakarta.ejb.Schedule;
 import jakarta.ejb.Stateless;
 import jakarta.inject.Inject;
 
@@ -66,8 +68,16 @@ public class OrderController {
         return customerController.findByName(name);
     }
 
+    public Customer findCustomerById(int id) {
+        return customerController.findById(id);
+    }
+
     public List<Product>  findProductsByName(String name) {
         return productController.findByName(name);
+    }
+
+    public Product findProductById(int id) {
+        return productController.findById(id);
     }
 
     public List<Staff> findStaff() {
