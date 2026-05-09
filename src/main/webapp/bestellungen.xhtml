@@ -179,18 +179,19 @@
                                                  name="createCustomer"
                                                  class="create-input"
                                                  placeholder="Kunden für Suche eingeben"
-                                                 value="#{orderBoundary.newCustomerSearch}">
+                                                 value="#{orderBoundary.newCustomerSearch}"
+												 pt:list="results">
                                         <f:ajax event="keyup" delay="500" execute="createCustomerInput"
-                                                render="createCustomerResults" />
+                                                render="customerDatalist" />
+                                        <f:ajax event="focus" execute="createCustomerInput" render="customerDatalist" />
                                     </h:inputText>
-                                    <h:selectOneMenu value="#{orderBoundary.newOrder.customer}"
-                                                     class="create-input"
-                                                     id="createCustomerResults">
-                                        <f:selectItems value="#{orderBoundary.findCustomers()}"
-                                                       var="customer" itemValue="customer"
-                                                       class="create-input"
-                                                       itemLabel="#{customer.firstName} #{customer.lastName}" />
-                                    </h:selectOneMenu>
+									<h:panelGroup id="customerDatalist">
+										<datalist id="results">
+											<ui:repeat value="#{orderBoundary.findCustomers()}" var="customer">
+												<option value="#{customer.firstName} #{customer.lastName}" />
+											</ui:repeat>
+										</datalist>
+									</h:panelGroup>
                                 </label>
 
                                 <label class="create-field">
