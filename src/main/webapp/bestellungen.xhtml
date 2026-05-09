@@ -182,15 +182,14 @@
                                                  value="#{orderBoundary.newCustomerSearch}">
                                         <f:ajax event="keyup" delay="500" execute="createCustomerInput" render="createCustomerResults" />
                                     </h:inputText>
-                                    <h:panelGroup id="createCustomerResults" layout="block">
-                                        <ui:repeat value="#{orderBoundary.findCustomers()}" var="customer">
-                                            <h:commandLink value="#{customer.firstName} #{customer.lastName}"
-                                                           action="#{orderBoundary.newOrder.setCustomer(customer)}">
-                                                <f:ajax/> <!-- prevent page refresh -->
-                                            </h:commandLink>
-                                            <br/>
-                                        </ui:repeat>
-                                    </h:panelGroup>
+                                    <h:selectOneMenu value="#{orderBoundary.newOrder.customer}"
+                                                     class="create-Input"
+                                                     id="createCustomerResults">
+                                        <f:selectItems value="#{orderBoundary.findCustomers()}"
+                                                       var="customer"
+                                                       itemValue="customer"
+                                                       itemLabel="#{customer.firstName} #{customer.lastName}" />
+                                    </h:selectOneMenu>
                                 </label>
 
                                 <label class="create-field">
