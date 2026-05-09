@@ -180,13 +180,13 @@
                                                  class="create-input"
                                                  placeholder="Kunden für Suche eingeben"
                                                  value="#{orderBoundary.newCustomerSearch}"
-												 pt:list="results">
+												 pt:list="customerResults">
                                         <f:ajax event="keyup" delay="500" execute="createCustomerInput"
                                                 render="customerDatalist" />
                                         <f:ajax event="focus" execute="createCustomerInput" render="customerDatalist" />
                                     </h:inputText>
 									<h:panelGroup id="customerDatalist">
-										<datalist id="results">
+										<datalist id="customerResults">
 											<ui:repeat value="#{orderBoundary.findCustomers()}" var="customer">
 												<option value="#{customer.firstName} #{customer.lastName}" />
 											</ui:repeat>
@@ -242,16 +242,18 @@
                                                  name="createProduct"
                                                  class="create-input"
                                                  placeholder="Produkt zur suche eingeben"
-                                                 value="#{orderBoundary.newProductSearch}">
-                                        <f:ajax event="keyup" delay="500" execute="createProductInput" render="createProductResults" />
+                                                 value="#{orderBoundary.newProductSearch}"
+												 pt:list="productResults">
+                                        <f:ajax event="keyup" delay="500" execute="createProductInput" render="productDatalist" />
+                                        <f:ajax event="focus" execute="createProductInput" render="productDatalist" />
                                     </h:inputText>
-                                    <h:selectOneMenu value="#{orderBoundary.newOrderItem.product}"
-                                                     class="create-input"
-                                                     id="createProductResults">
-                                        <f:selectItems value="#{orderBoundary.findProducts()}" var="product"
-                                                       class="create-input"
-                                                       itemValue="product" itemLabel="#{product.productName}" />
-                                    </h:selectOneMenu>
+									<h:panelGroup id="productDatalist">
+										<datalist id="productResults">
+											<ui:repeat value="#{orderBoundary.findProducts()}" var="product">
+												<option value="#{product.productName}" />
+											</ui:repeat>
+										</datalist>
+									</h:panelGroup>
                                 </label>
 
                                 <label class="create-field">
