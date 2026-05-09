@@ -123,8 +123,11 @@ public class OrderBoundary implements Serializable {
     }
 
     public void saveNewOrderItem() {
-        if (newOrderItem.getProduct() == null || newOrderItem.getQuantity() == null) {
-            return; //TODO Fehlermeldung
+        if (newOrderItem.getProduct() == null || newOrderItem.getQuantity() == null || newOrderItem.getQuantity() == 0) {
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Pflichtfelder nicht erfüllt",
+                            "Produkt und Menge müssen angegeben sein."));
+            return;
         }
         newOrderItems.add(newOrderItem);
         newOrderItem = new OrderItem();
