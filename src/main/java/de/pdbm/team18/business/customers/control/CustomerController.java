@@ -46,7 +46,7 @@ public class CustomerController {
         return customerRepository.update(customer) != null;
     }
 
-    @RolesAllowed("ADMIN")
+    @RolesAllowed({"ADMIN", "USER1"})
     public void delete(Integer customerId) {
         Customer customer = customerRepository.findById(customerId);
         if(customer == null){
