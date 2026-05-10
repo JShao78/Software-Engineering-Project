@@ -28,53 +28,56 @@
             }
 
             function openCreateOrderModal() {
-                document.getElementById('createOrderModal').style.display = 'flex';
+                const modal = document.getElementById('createOrderModal');
+                if (modal) {
+                    modal.style.display = 'flex';
+                }
             }
 
-            function closeCreateOrderModal() {
-                document.getElementById('createOrderModal').style.display = 'none';
-            }
-
-            function resetCreateOrderModal() {
-                document.getElementById('createCustomerInput').value = '';
-                document.getElementById('createStoreInput').value = '';
-                document.getElementById('createStaffInput').value = '';
-                document.getElementById('createRequiredDateInput').value = '';
-                document.getElementById('createProductInput').value = '';
-                document.getElementById('createQuantityInput').value = '1';
-                document.getElementById('createDiscountInput').value = '0';
-            }
-
-            function frontendSaveOrderInfo() {
-                const customer = document.getElementById('createCustomerInput').value.trim();
-                const store = document.getElementById('createStoreInput').value.trim();
-                const staff = document.getElementById('createStaffInput').value.trim();
-                const requiredDate = document.getElementById('createRequiredDateInput').value.trim();
-                const product = document.getElementById('createProductInput').value.trim();
-                const quantity = document.getElementById('createQuantityInput').value.trim();
-
-                if (!customer || !store || !staff || !requiredDate || !product || !quantity || Number(quantity) <= 0) {
-                    alert('Bitte alle Pflichtfelder korrekt ausfüllen.');
+            function closeCreateOrderModal(data) {
+                if (data && data.status && data.status !== 'success') {
                     return;
                 }
 
-                alert('Frontend ist fertig. Backend-Anbindung muss noch ergänzt werden.');
+                const modal = document.getElementById('createOrderModal');
+                if (modal) {
+                    modal.style.display = 'none';
+                }
+            }
+
+            function keepCreateOrderModalOpen(data) {
+                if (data.status === 'success') {
+                    openCreateOrderModal();
+                }
+            }
+
+            function closeCreateOrderModalAfterSave(data) {
+                if (data.status === 'success') {
+                    const modalMessages = document.querySelector('#ordersForm\\:createOrderMessages');
+                    const hasMessage = modalMessages && modalMessages.innerText.trim().length > 0;
+
+                    if (hasMessage) {
+                        openCreateOrderModal();
+                    } else {
+                        closeCreateOrderModal();
+                    }
+                }
             }
             //]]>
         </h:outputScript>
 
         <div class="page-header">
             <div>
-            <h1 class="page-title">Bestellungen</h1>
-            <p class="page-subtitle">Insgesamt #{orderBoundary.count()} Bestellungen</p>
+                <h1 class="page-title">Bestellungen</h1>
+                <p class="page-subtitle">Insgesamt #{orderBoundary.count()} Bestellungen</p>
             </div>
 
             <ui:fragment rendered="#{orderBoundary.canViewOrderPositions()}">
-                    <a href="#"
-                        class="add-modal-btn"
-                        onclick="openCreateOrderModal()">
-                        + Neue Bestellung hinzufügen
-                    </a>
+                <a href="#"
+                   class="add-modal-btn"
+                   onclick="openCreateOrderModal(); return false;">
+                    + Neue Bestellung hinzufügen
+                </a>
             </ui:fragment>
         </div>
 
@@ -139,225 +142,340 @@
 
         <h:form id="ordersForm">
 
-            <h:messages globalOnly="true"
-                        showDetail="true"
-                        layout="list"
-                        errorClass="product-message-box product-message-error"
-                        infoClass="product-message-box product-message-success"/>
-
+            <!-- CREATE ORDER MODAL -->
             <ui:fragment rendered="#{orderBoundary.canViewOrderPositions()}">
                 <div id="createOrderModal"
                      class="modal-overlay"
                      style="display:none;">
 
-                    <div class="create-modal">
+                    <h:panelGroup id="createOrderModalContent"
+                                  layout="block"
+                                  styleClass="order-create-modal-clean">
 
-                        <div class="create-modal-header">
+                        <div class="order-create-header-clean">
                             <div>
-                                <h2 class="create-modal-title">Neue Bestellung hinzufügen</h2>
-                                <p class="create-modal-subtitle">
-                                    Kunde und Produkt können geschrieben werden. Backend-Anbindung in Arbeit.
+                                <h2 class="order-create-title-clean">Neue Bestellung hinzufügen</h2>
+                                <p class="order-create-subtitle-clean">
+                                    Kunde, Niederlassung, Mitarbeiter und Produkt schreiben und auswählen.
                                 </p>
                             </div>
 
-                            <button type="button"
-                                    class="create-modal-close"
-                                    onclick="closeCreateOrderModal()">
-                                ×
-                            </button>
+                            <h:commandButton value="×"
+                                             action="#{orderBoundary.resetCreateModal}"
+                                             immediate="true"
+                                             styleClass="order-create-close-clean">
+                                <f:ajax execute="@this"
+                                        render="createOrderModalContent"
+                                        onevent="closeCreateOrderModal" />
+                            </h:commandButton>
                         </div>
 
-                        <div class="create-modal-body">
+                        <div class="order-create-body-clean">
 
-                            <div class="create-section-title">BESTELLDATEN</div>
+                            <h:messages id="createOrderMessages"
+                                        globalOnly="true"
+                                        showSummary="true"
+                                        showDetail="true"
+                                        layout="list"
+                                        styleClass="message-box order-create-message-box"
+                                        errorClass="message-error"
+                                        warnClass="message-error"
+                                        infoClass="message-success" />
 
-                            <div class="create-grid">
+                            <div class="order-create-section-title-clean">
+                                BESTELLDATEN
+                            </div>
 
-                                <label class="create-field">
+                            <div class="order-create-grid-clean">
+
+                                <label class="order-create-field-clean">
                                     <span>Kunde <strong>*</strong></span>
                                     <h:inputText id="createCustomerInput"
-                                                 name="createCustomer"
-                                                 class="create-input"
-                                                 placeholder="Kunden für Suche eingeben"
+                                                 styleClass="order-create-input-clean"
                                                  value="#{orderBoundary.newCustomerSearch}"
-												 pt:list="customerResults">
-                                        <f:ajax event="keyup" delay="500" execute="createCustomerInput"
-                                                render="customerDatalist" />
-<!--                                        <f:ajax event="focus" execute="createCustomerInput" render="customerDatalist" />-->
+                                                 pt:autocomplete="off"
+                                                 pt:list="customerResults"
+                                                 pt:placeholder="Kundennamen schreiben...">
+                                        <f:ajax event="keyup"
+                                                delay="300"
+                                                execute="@this"
+                                                render="customerDatalist"
+                                                onevent="keepCreateOrderModalOpen" />
+
+                                        <f:ajax event="change"
+                                                execute="@this"
+                                                render="@this"
+                                                onevent="keepCreateOrderModalOpen" />
                                     </h:inputText>
-									<h:panelGroup id="customerDatalist">
-										<datalist id="customerResults">
-											<ui:repeat value="#{orderBoundary.findCustomers()}" var="customer">
-												<option label="#{customer.firstName} #{customer.lastName}"
-                                                        value="#{customer.customerId}" />
-											</ui:repeat>
-										</datalist>
-									</h:panelGroup>
+
+                                    <h:panelGroup id="customerDatalist">
+                                        <datalist id="customerResults">
+                                            <ui:repeat value="#{orderBoundary.findCustomers()}" var="customer">
+                                                <option value="#{customer.firstName} #{customer.lastName}" />
+                                            </ui:repeat>
+                                        </datalist>
+                                    </h:panelGroup>
                                 </label>
 
-                                <label class="create-field">
+                                <label class="order-create-field-clean">
                                     <span>Niederlassung <strong>*</strong></span>
-                                    <h:selectOneMenu value="#{orderBoundary.newOrder.store}"
-                                                     class="create-input"
-                                                     id="createStoreInput"
-                                                     name="createStore">
-                                        <f:selectItems value="#{orderBoundary.findStores()}"
-                                                       var="store"
-                                                       itemValue="store"
-                                                       itemLabel="#{store.storeName}" />
-                                    </h:selectOneMenu>
-                                </label>
 
-                                <label class="create-field">
-                                    <span>Mitarbeiter <strong>*</strong></span>
-                                    <h:selectOneMenu value="#{orderBoundary.newOrder.staff}"
-                                                     class="create-input"
-                                                     id="createStaffInput"
-                                                     name="createStaff">
-                                        <f:selectItems value="#{orderBoundary.findStaff()}"
-                                                       var="staff"
-                                                       itemValue="staff"
-                                                       itemLabel="#{staff.firstName} #{staff.lastName}" />
-                                    </h:selectOneMenu>
-                                </label>
-
-                                <label class="create-field">
-                                    <span>Lieferdatum <strong>*</strong></span>
-                                    <input id="createRequiredDateInput"
-                                           name="createRequiredDate"
-                                           type="date"
-                                           class="create-input"
-                                           value="#{orderBoundary.newOrder.requiredDate}" />
-                                </label>
-                            </div>
-
-                            <div class="create-section-title create-section-spacing">
-                                PRODUKT
-                            </div>
-
-                            <div class="create-product-row" id="createProductRow">
-
-                                <label class="create-field">
-                                    <span>Produkt <strong>*</strong></span>
-                                    <h:inputText id="createProductInput"
-                                                 name="createProduct"
-                                                 class="create-input"
-                                                 placeholder="Produkt zur suche eingeben"
-                                                 value="#{orderBoundary.newProductSearch}"
-												 pt:list="productResults">
-                                        <f:ajax event="keyup" delay="500" execute="createProductInput" render="productDatalist" />
-<!--                                        <f:ajax event="focus" execute="createProductInput" render="productDatalist" />-->
+                                    <h:inputText id="createStoreInput"
+                                                 styleClass="order-create-input-clean"
+                                                 value="#{orderBoundary.newStoreSearch}"
+                                                 pt:autocomplete="off"
+                                                 pt:list="storeResults"
+                                                 pt:placeholder="Niederlassung auswählen...">
+                                        <f:ajax event="change"
+                                                execute="@this"
+                                                render="@this"
+                                                onevent="keepCreateOrderModalOpen" />
                                     </h:inputText>
-									<h:panelGroup id="productDatalist">
-										<datalist id="productResults">
-											<ui:repeat value="#{orderBoundary.findProducts()}" var="product">
-												<option value="#{product.productId}" label="#{product.productName}" />
-											</ui:repeat>
-										</datalist>
-									</h:panelGroup>
+
+                                    <datalist id="storeResults">
+                                        <ui:repeat value="#{orderBoundary.findStores()}" var="store">
+                                            <option value="#{store.storeName}" />
+                                        </ui:repeat>
+                                    </datalist>
                                 </label>
 
-                                <label class="create-field">
-                                    <span>Menge <strong>*</strong></span>
-                                    <h:inputText id="createQuantityInput"
-                                           name="createQuantity"
-                                           type="number"
-                                           class="create-input"
-                                           value="#{orderBoundary.newOrderItem.quantity}"
-                                           min="1" />
+                                <label class="order-create-field-clean">
+                                    <span>Mitarbeiter <strong>*</strong></span>
+
+                                    <h:inputText id="createStaffInput"
+                                                 styleClass="order-create-input-clean"
+                                                 value="#{orderBoundary.newStaffSearch}"
+                                                 pt:autocomplete="off"
+                                                 pt:list="staffResults"
+                                                 pt:placeholder="Mitarbeiter auswählen...">
+                                        <f:ajax event="change"
+                                                execute="@this"
+                                                render="@this"
+                                                onevent="keepCreateOrderModalOpen" />
+                                    </h:inputText>
+
+                                    <datalist id="staffResults">
+                                        <ui:repeat value="#{orderBoundary.findStaff()}" var="staff">
+                                            <option value="#{staff.firstName} #{staff.lastName}" />
+                                        </ui:repeat>
+                                    </datalist>
                                 </label>
 
-                                <label class="create-field">
-                                    <span>Rabatt</span>
-                                    <h:inputText id="createDiscountInput"
-                                           name="createDiscount"
-                                           type="number"
-                                           class="create-input"
-                                           value="#{orderBoundary.newOrderItem.discount}"
-                                           min="0"
-                                           max="1"
-                                           step="0.01" />
+                                <label class="order-create-field-clean">
+                                    <span>Lieferdatum <strong>*</strong></span>
+
+                                    <h:inputText id="createRequiredDateInput"
+                                                 styleClass="order-create-input-clean"
+                                                 value="#{orderBoundary.newOrder.requiredDate}"
+                                                 pt:type="date">
+                                        <f:convertDateTime type="localDate"
+                                                           pattern="yyyy-MM-dd" />
+                                    </h:inputText>
                                 </label>
-
-                                <h:commandButton value="Hinzufügen" class="create-btn" action="#{orderBoundary.saveNewOrderItem}">
-                                    <f:ajax render="createOrderItems"
-                                            execute="createProductInput createQuantityInput createDiscountInput" />
-                                </h:commandButton>
-
-                                <ui:fragment if="createOrderItems" rendered="#{!orderBoundary.newOrderItems.isEmpty()}">
-                                    <tr class="order-items-row">
-                                        <td colspan="9">
-                                            <div class="order-items-panel">
-                                                <div class="order-items-label">BESTELLPOSITIONEN</div>
-
-                                                <table class="items-table">
-                                                    <thead>
-                                                    <tr>
-                                                        <th><span class="col-header">Produkt</span></th>
-                                                        <th><span class="col-header">Menge</span></th>
-                                                        <th><span class="col-header">Rabatt</span></th>
-                                                    </tr>
-                                                    </thead>
-
-                                                    <tbody>
-                                                    <ui:repeat value="#{orderBoundary.newOrderItems}" var="item">
-                                                        <tr>
-                                                            <td>
-                                                                <h:outputText value="#{item.product.productName}"
-                                                                              rendered="#{not empty item.product}" />
-
-                                                                <h:outputText value=" - #{item.product.modelYear}"
-                                                                              rendered="#{not empty item.product and not empty item.product.modelYear}" />
-
-                                                                <h:outputText value="—"
-                                                                              rendered="#{empty item.product}" />
-                                                            </td>
-
-                                                            <td>
-                                                                <h:outputText value="#{item.quantity}" />
-                                                            </td>
-
-                                                            <td>
-                                                                <h:panelGroup rendered="#{orderBoundary.hasDiscount(item)}">
-                                                            <span class="discount-pill">
-                                                                <h:outputText value="#{orderBoundary.discountLabel(item)}" />
-                                                            </span>
-                                                                </h:panelGroup>
-
-                                                                <h:outputText value="—"
-                                                                              rendered="#{not orderBoundary.hasDiscount(item)}" />
-                                                            </td>
-                                                        </tr>
-                                                    </ui:repeat>
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                </ui:fragment>
 
                             </div>
 
+                            <div class="order-create-section-title-clean order-create-section-space-clean">
+                                PRODUKTE HINZUFÜGEN
+                            </div>
+
+                            <div class="order-create-product-grid-clean">
+
+                                <label class="order-create-field-clean">
+                                    <span>Produkt <strong>*</strong></span>
+
+                                    <h:inputText id="createProductInput"
+                                                 styleClass="order-create-input-clean"
+                                                 value="#{orderBoundary.newProductSearch}"
+                                                 pt:autocomplete="off"
+                                                 pt:list="productResults"
+                                                 pt:placeholder="Produktname schreiben...">
+                                        <f:ajax event="keyup"
+                                                delay="300"
+                                                execute="@this"
+                                                render="productDatalist"
+                                                onevent="keepCreateOrderModalOpen" />
+
+                                        <f:ajax event="change"
+                                                execute="@this"
+                                                render="createPriceInput"
+                                                onevent="keepCreateOrderModalOpen" />
+                                    </h:inputText>
+
+                                    <h:panelGroup id="productDatalist">
+                                        <datalist id="productResults">
+                                            <ui:repeat value="#{orderBoundary.findProducts()}" var="product">
+                                                <option value="#{product.productName}" />
+                                            </ui:repeat>
+                                        </datalist>
+                                    </h:panelGroup>
+                                </label>
+
+                                <label class="order-create-field-clean">
+                                    <span>Menge <strong>*</strong></span>
+
+                                    <h:inputText id="createQuantityInput"
+                                                 styleClass="order-create-input-clean"
+                                                 value="#{orderBoundary.newOrderItem.quantity}"
+                                                 pt:type="number"
+                                                 pt:min="1"
+                                                 pt:placeholder="1" />
+                                </label>
+
+                                <label class="order-create-field-clean">
+                                    <span>Rabatt</span>
+
+                                    <h:inputText id="createDiscountInput"
+                                                 styleClass="order-create-input-clean"
+                                                 value="#{orderBoundary.newOrderItem.discount}"
+                                                 pt:type="number"
+                                                 pt:min="0"
+                                                 pt:max="1"
+                                                 pt:step="0.01"
+                                                 pt:placeholder="0.00">
+                                        <f:convertNumber locale="en"
+                                                         minFractionDigits="0"
+                                                         maxFractionDigits="2" />
+                                    </h:inputText>
+                                </label>
+
+                                <label class="order-create-field-clean">
+                                    <span>Preis</span>
+
+                                    <h:inputText id="createPriceInput"
+                                                 styleClass="order-create-input-clean order-create-price-clean"
+                                                 value="#{orderBoundary.newOrderItem.listPrice}"
+                                                 readonly="true"
+                                                 pt:placeholder="—">
+                                        <f:convertNumber locale="de"
+                                                         minFractionDigits="2"
+                                                         maxFractionDigits="2" />
+                                    </h:inputText>
+                                </label>
+
+                                <div class="order-create-add-product-wrap-clean">
+                                    <h:commandButton id="addProductBtn"
+                                                     value="+ Produkt hinzufügen"
+                                                     action="#{orderBoundary.saveNewOrderItem}"
+                                                     styleClass="order-create-add-product-btn-clean"
+                                                     pt:formnovalidate="formnovalidate">
+                                        <f:ajax execute="createProductInput createQuantityInput createDiscountInput"
+                                                render="createOrderModalContent"
+                                                onevent="keepCreateOrderModalOpen" />
+                                    </h:commandButton>
+                                </div>
+
+                            </div>
+
+                            <div class="order-create-section-title-clean order-create-section-space-clean">
+                                HINZUGEFÜGTE PRODUKTE
+                            </div>
+
+                            <h:panelGroup id="createOrderItemsPanel" layout="block">
+
+                                <h:panelGroup rendered="#{empty orderBoundary.newOrderItems}">
+                                    <div class="order-create-empty-clean">
+                                        Noch keine Produkte hinzugefügt.
+                                    </div>
+                                </h:panelGroup>
+
+                                <h:panelGroup rendered="#{not empty orderBoundary.newOrderItems}">
+                                    <div class="order-create-table-wrap-clean">
+
+                                        <h:dataTable value="#{orderBoundary.newOrderItems}"
+                                                     var="item"
+                                                     styleClass="order-create-table-clean">
+
+                                            <h:column>
+                                                <f:facet name="header">Produkt</f:facet>
+
+                                                <h:outputText value="#{item.product.productName}" />
+                                                <h:outputText value=" - #{item.product.modelYear}"
+                                                              rendered="#{not empty item.product.modelYear}" />
+                                            </h:column>
+
+                                            <h:column>
+                                                <f:facet name="header">Menge</f:facet>
+
+                                                <h:outputText value="#{item.quantity}" />
+                                            </h:column>
+
+                                            <h:column>
+                                                <f:facet name="header">Preis</f:facet>
+
+                                                <h:outputText value="#{item.listPrice}">
+                                                    <f:convertNumber locale="de"
+                                                                     minFractionDigits="2"
+                                                                     maxFractionDigits="2" />
+                                                </h:outputText>
+                                                <h:outputText value=" €" />
+                                            </h:column>
+
+                                            <h:column>
+                                                <f:facet name="header">Rabatt</f:facet>
+
+                                                <h:outputText value="#{orderBoundary.discountLabel(item)}" />
+                                            </h:column>
+
+                                            <h:column>
+                                                <f:facet name="header">Gesamt</f:facet>
+
+                                                <h:outputText value="#{orderBoundary.itemTotal(item)}">
+                                                    <f:convertNumber locale="de"
+                                                                     minFractionDigits="2"
+                                                                     maxFractionDigits="2" />
+                                                </h:outputText>
+                                                <h:outputText value=" €" />
+                                            </h:column>
+
+                                            <h:column>
+                                                <f:facet name="header">Aktion</f:facet>
+
+                                                <h:commandButton value="Entfernen"
+                                                                 action="#{orderBoundary.removeNewOrderItemByProductId(item.product.productId)}"
+                                                                 styleClass="order-create-remove-btn-clean"
+                                                                 type="submit">
+                                                    <f:ajax execute="@this"
+                                                            render=":ordersForm:createOrderModalContent"
+                                                            onevent="keepCreateOrderModalOpen" />
+                                                </h:commandButton>
+                                            </h:column>
+
+                                        </h:dataTable>
+
+                                    </div>
+                                </h:panelGroup>
+
+                            </h:panelGroup>
+
                         </div>
 
-                        <div class="create-modal-footer">
-                            <h:commandButton class="create-reset-btn"
-                                             value="Zurücksetzen"
-                                             action="#{orderBoundary.resetNewOrder}">
-                                <f:ajax render="@form" />
+                        <div class="order-create-footer-clean">
+
+                            <h:commandButton value="Abbrechen"
+                                             action="#{orderBoundary.resetCreateModal}"
+                                             immediate="true"
+                                             styleClass="order-create-cancel-btn-clean">
+                                <f:ajax execute="@this"
+                                        render="createOrderModalContent"
+                                        onevent="closeCreateOrderModal" />
                             </h:commandButton>
 
-                            <h:commandButton class="create-save-btn"
-                                             value="Bestellung speichern"
-                                             action="#{orderBoundary.create}">
-                                <f:ajax render="@all" />
+                            <h:commandButton value="Bestellung speichern"
+                                             action="#{orderBoundary.create}"
+                                             styleClass="order-create-save-btn-clean">
+                                <f:ajax execute="@form"
+                                        render="@form createOrderModalContent"
+                                        onevent="closeCreateOrderModalAfterSave" />
                             </h:commandButton>
+
                         </div>
 
-                    </div>
+                    </h:panelGroup>
                 </div>
             </ui:fragment>
 
+            <!-- EDIT ORDER MODAL -->
             <h:panelGroup id="editOrderPanel"
                           layout="block"
                           rendered="#{not empty orderBoundary.editOrder.orderId}">
@@ -435,6 +553,7 @@
 
             </h:panelGroup>
 
+            <!-- ORDERS TABLE -->
             <div class="orders-card">
                 <table class="data-table orders-table">
                     <thead>
