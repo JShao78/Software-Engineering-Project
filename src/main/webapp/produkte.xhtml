@@ -3,52 +3,420 @@
       xmlns:h="jakarta.faces.html"
       xmlns:ui="jakarta.faces.facelets"
       xmlns:f="jakarta.faces.core"
+      xmlns:a="jakarta.faces.passthrough"
       xmlns:my="jakarta.faces.composite/components">
 <ui:composition template="templates/navbar.xhtml">
 
     <ui:define name="title">Produkte – Vertriebsunterstützung</ui:define>
 
     <ui:define name="content">
-        <div class="orders-header">
-            <h1 class="page-title orders-title">Produkte</h1>
-            <p class="orders-subtitle">Insgesamt #{productBoundary.count()} Produkte</p>
-        </div>
 
-        <my:pagination boundary="#{productBoundary}" />
+        <h:panelGroup id="productPage" layout="block">
 
-			<!--  Product Table  -->
-			<div class="table-container" style="margin-top: 20px;">
-            <h:dataTable value="#{productBoundary.findPage()}"
-                         var="product"
-                         styleClass="data-table">
-                <h:column>
-                    <f:facet name="header"><span class="col-header">ID</span></f:facet>
-                    <h:outputText value="#{product.productId}" styleClass="uuid-text"/>
-                </h:column>
-                <h:column>
-                    <f:facet name="header"><span class="col-header">Produktname</span></f:facet>
-                    <h:outputText value="#{product.productName}"/>
-                </h:column>
-                <h:column>
-                    <f:facet name="header"><span class="col-header">Brand</span></f:facet>
-                    <h:outputText value="#{product.brand.brandName}" />
-                </h:column>
-                <h:column>
-                    <f:facet name="header"><span class="col-header">Kategorien</span></f:facet>
-                    <h:outputText value="#{product.category.categoryName}" />
-                </h:column>
-                <h:column>
-                    <f:facet name="header"><span class="col-header">Modelljahr</span></f:facet>
-                    <h:outputText value="#{product.modelYear}" />
-                </h:column>
-                <h:column>
-                    <f:facet name="header"><span class="col-header">Stückpreis</span></f:facet>
-                    <h:outputText value="#{product.listPrice}" styleClass="text-accent">
-                        <f:convertNumber minFractionDigits="2" maxFractionDigits="2" locale="de"/>
-                    </h:outputText>
-                </h:column>
-            </h:dataTable>
-		</div>
+            <div class="page-header">
+                <div>
+                    <h1 class="page-title">Produkte</h1>
+                    <p class="page-subtitle">
+                        Insgesamt #{productBoundary.count()} Produkte
+                    </p>
+                </div>
+
+                <ui:fragment rendered="#{request.isUserInRole('ADMIN') or request.isUserInRole('USER1')}">
+                    <a href="#add-product-modal" class="add-modal-btn">
+                        + Produkt hinzufügen
+                    </a>
+                </ui:fragment>
+            </div>
+
+            <h:messages globalOnly="true"
+                        layout="list"
+                        styleClass="message-box"
+                        errorClass="message-error"
+                        infoClass="message-success"/>
+
+            <my:pagination boundary="#{productBoundary}" />
+
+            <!-- PRODUCT TABLE -->
+            <h:form id="productsTableForm">
+                <div class="table-container products-table-container">
+
+                    <h:dataTable value="#{productBoundary.findPage()}"
+                                 var="product"
+                                 styleClass="data-table products-table">
+
+                        <h:column styleClass="tableId">
+                            <f:facet name="header">ID</f:facet>
+                            <h:outputText value="#{product.productId}" styleClass="uuid-text"/>
+                        </h:column>
+
+                        <h:column styleClass="productName">
+                            <f:facet name="header">Produktname</f:facet>
+                            <h:outputText value="#{product.productName}"/>
+                        </h:column>
+
+                        <h:column styleClass="brand">
+                            <f:facet name="header">Marke</f:facet>
+                            <h:outputText value="#{product.brand.brandName}"/>
+                        </h:column>
+
+                        <h:column styleClass="category">
+                            <f:facet name="header">Kategorie</f:facet>
+                            <h:outputText value="#{product.category.categoryName}"/>
+                        </h:column>
+
+                        <h:column styleClass="modelYear">
+                            <f:facet name="header">Modelljahr</f:facet>
+                            <h:outputText value="#{product.modelYear}"/>
+                        </h:column>
+
+                        <h:column styleClass="itemPrice">
+                            <f:facet name="header">Stückpreis</f:facet>
+                            <h:outputText value="#{product.listPrice}" styleClass="text-accent">
+                                <f:convertNumber minFractionDigits="2"
+                                                 maxFractionDigits="2"
+                                                 locale="de"/>
+                            </h:outputText>
+                        </h:column>
+
+                        <h:column styleClass="edit" rendered="#{request.isUserInRole('ADMIN') or request.isUserInRole('USER1')}">
+                            <f:facet name="header">Aktionen</f:facet>
+
+                            <h:commandButton value="Bearbeiten"
+                                             actionListener="#{productBoundary.prepareEdit(product)}"
+                                             styleClass="btn-table btn-table-edit">
+                                <f:ajax execute="@this" render=":productPage"/>
+                            </h:commandButton>
+                        </h:column>
+
+                    </h:dataTable>
+
+                </div>
+            </h:form>
+
+            <!-- ADD PRODUCT MODAL -->
+            <ui:fragment rendered="#{request.isUserInRole('ADMIN') or request.isUserInRole('USER1')}">
+                <div id="add-product-modal" class="modal-overlay">
+                    <div class="modal">
+
+                    <div class="modal-header">
+                        <div class="modal-title-wrap">
+                            <div class="modal-icon-badge">🚲</div>
+
+                            <div>
+                                <h2 class="modal-title">Produkt hinzufügen</h2>
+                                <p class="modal-subtitle">
+                                    Neues Produkt für das Verkaufssystem anlegen
+                                </p>
+                            </div>
+                        </div>
+
+                        <a href="#" class="modal-close" aria-label="Schließen">×</a>
+                    </div>
+
+                        <h:form id="addProductForm" styleClass="form-frontend">
+
+                        <div class="modal-body">
+
+                            <div class="form-section">
+                                <div class="section-title">Produktdaten</div>
+
+                                <div class="form-group">
+                                    <label class="form-label form-label-required">Produktname</label>
+
+                                    <h:inputText id="productName"
+                                                 value="#{productBoundary.product.productName}"
+                                                 required="true"
+                                                 requiredMessage="Bitte geben Sie einen Produktnamen ein."
+                                                 validatorMessage="Der Produktname muss zwischen 3 und 100 Zeichen haben."
+                                                 styleClass="form-input"
+                                                 a:placeholder="z. B. Trek Marlin 7">
+                                        <f:validateLength minimum="3" maximum="100"/>
+                                    </h:inputText>
+
+                                    <h:message for="productName" styleClass="form-validation-hint"/>
+                                </div>
+
+                                <div class="form-grid">
+
+                                    <div class="form-group">
+                                        <label class="form-label form-label-required">Modelljahr</label>
+
+                                        <h:inputText id="modelYear"
+                                                     value="#{productBoundary.product.modelYear}"
+                                                     required="true"
+                                                     requiredMessage="Bitte geben Sie ein Modelljahr ein."
+                                                     validatorMessage="Das Modelljahr muss zwischen 1900 und 2100 liegen."
+                                                     styleClass="form-input"
+                                                     a:type="number"
+                                                     a:placeholder="z. B. 2024">
+                                            <f:validateLongRange minimum="1900" maximum="2100"/>
+                                        </h:inputText>
+
+                                        <h:message for="modelYear" styleClass="form-validation-hint"/>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="form-label form-label-required">Stückpreis</label>
+
+                                        <h:inputText id="listPrice"
+                                                     value="#{productBoundary.product.listPrice}"
+                                                     required="true"
+                                                     requiredMessage="Bitte geben Sie einen Stückpreis ein."
+                                                     validatorMessage="Der Stückpreis muss größer als 0 sein."
+                                                     styleClass="form-input"
+                                                     a:type="number"
+                                                     a:step="0.01"
+                                                     a:placeholder="z. B. 1299.99">
+                                            <f:validateDoubleRange minimum="0.01"/>
+                                        </h:inputText>
+
+                                        <h:message for="listPrice" styleClass="form-validation-hint"/>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <div class="form-section">
+                                <div class="form-section-title">Zuordnung</div>
+
+                                <div class="form-grid">
+
+                                    <div class="form-group">
+                                        <label class="form-label form-label-required">Marke</label>
+
+                                        <h:selectOneMenu id="brandId"
+                                                         value="#{productBoundary.brandId}"
+                                                         required="true"
+                                                         requiredMessage="Bitte wählen Sie eine Marke aus."
+                                                         styleClass="form-input form-select">
+
+                                            <f:selectItem itemValue="#{null}"
+                                                          itemLabel="Marke auswählen"
+                                                          noSelectionOption="true"/>
+
+                                            <f:selectItems value="#{productBoundary.findBrands()}"
+                                                           var="brand"
+                                                           itemValue="#{brand.brandId}"
+                                                           itemLabel="#{brand.brandName}"/>
+                                        </h:selectOneMenu>
+
+                                        <h:message for="brandId" styleClass="form-validation-hint"/>
+                                    </div>
+
+                                    <div class="form-form-group">
+                                        <label class="form-label form-label-required">Kategorie</label>
+
+                                        <h:selectOneMenu id="categoryId"
+                                                         value="#{productBoundary.categoryId}"
+                                                         required="true"
+                                                         requiredMessage="Bitte wählen Sie eine Kategorie aus."
+                                                         styleClass="form-input form-select">
+
+                                            <f:selectItem itemValue="#{null}"
+                                                          itemLabel="Kategorie auswählen"
+                                                          noSelectionOption="true"/>
+
+                                            <f:selectItems value="#{productBoundary.findCategories()}"
+                                                           var="category"
+                                                           itemValue="#{category.categoryId}"
+                                                           itemLabel="#{category.categoryName}"/>
+                                        </h:selectOneMenu>
+
+                                        <h:message for="categoryId" styleClass="form-validation-hint"/>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="modal-footer">
+                            <a href="#" class="form-btn form-btn-secondary">
+                                Abbrechen
+                            </a>
+
+                            <h:commandButton value="Speichern"
+                                             action="#{productBoundary.create}"
+                                             styleClass="form-btn form-btn-primary">
+                                <f:ajax execute="@form" render=":productPage"/>
+                            </h:commandButton>
+                        </div>
+
+                        </h:form>
+
+                    </div>
+                </div>
+            </ui:fragment>
+
+            <!-- EDIT PRODUCT MODAL -->
+            <h:panelGroup id="editProductModalPanel"
+                          layout="block"
+                          styleClass="#{not empty productBoundary.editProduct.productId ? 'modal-overlay modal-overlay-open' : 'modal-overlay'}">
+
+                <div class="modal">
+
+                    <div class="modal-header">
+                        <div class="modal-title-wrap">
+                            <div class="modal-icon-badge">✏️</div>
+
+                            <div>
+                                <h2 class="modal-title">Produkt bearbeiten</h2>
+                                <p class="modal-subtitle">
+                                    Produktdaten ändern und speichern
+                                </p>
+                            </div>
+                        </div>
+
+                        <h:form>
+                            <h:commandLink action="#{productBoundary.cancelEdit}"
+                                           immediate="true"
+                                           styleClass="modal-close"
+                                           title="Schließen">
+                                ×
+                                <f:ajax execute="@this" render=":productPage"/>
+                            </h:commandLink>
+                        </h:form>
+                    </div>
+
+                    <h:form id="editProductForm" styleClass="form-frontend">
+
+                        <div class="modal-body">
+
+                            <div class="form-section">
+                                <div class="form-section-title">Produktdaten</div>
+
+                                <div class="form-group">
+                                    <label class="form-label form-label-required">Produktname</label>
+
+                                    <h:inputText id="editProductName"
+                                                 value="#{productBoundary.editProduct.productName}"
+                                                 required="true"
+                                                 requiredMessage="Bitte geben Sie einen Produktnamen ein."
+                                                 validatorMessage="Der Produktname muss zwischen 3 und 100 Zeichen haben."
+                                                 styleClass="form-input"
+                                                 a:placeholder="z. B. Trek Marlin 7">
+                                        <f:validateLength minimum="3" maximum="100"/>
+                                    </h:inputText>
+
+                                    <h:message for="editProductName" styleClass="form-validation-hint"/>
+                                </div>
+
+                                <div class="form-grid">
+
+                                    <div class="form-group">
+                                        <label class="form-label form-label-required">Modelljahr</label>
+
+                                        <h:inputText id="editModelYear"
+                                                     value="#{productBoundary.editProduct.modelYear}"
+                                                     required="true"
+                                                     requiredMessage="Bitte geben Sie ein Modelljahr ein."
+                                                     validatorMessage="Das Modelljahr muss zwischen 1900 und 2100 liegen."
+                                                     styleClass="form-input"
+                                                     a:type="number"
+                                                     a:placeholder="z. B. 2024">
+                                            <f:validateLongRange minimum="1900" maximum="2100"/>
+                                        </h:inputText>
+
+                                        <h:message for="editModelYear" styleClass="form-validation-hint"/>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="form-label form-label-required">Stückpreis</label>
+
+                                        <h:inputText id="editListPrice"
+                                                     value="#{productBoundary.editProduct.listPrice}"
+                                                     required="true"
+                                                     requiredMessage="Bitte geben Sie einen Stückpreis ein."
+                                                     validatorMessage="Der Stückpreis muss größer als 0 sein."
+                                                     styleClass="form-input"
+                                                     a:type="number"
+                                                     a:step="0.01"
+                                                     a:placeholder="z. B. 1299.99">
+                                            <f:validateDoubleRange minimum="0.01"/>
+                                        </h:inputText>
+
+                                        <h:message for="editListPrice" styleClass="form-validation-hint"/>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <div class="form-section">
+                                <div class="form-section-title">Zuordnung</div>
+
+                                <div class="form-grid">
+
+                                    <div class="form-group">
+                                        <label class="form-label form-label-required">Marke</label>
+
+                                        <h:selectOneMenu id="editBrandId"
+                                                         value="#{productBoundary.editBrandId}"
+                                                         required="true"
+                                                         requiredMessage="Bitte wählen Sie eine Marke aus."
+                                                         styleClass="form-input form-select">
+
+                                            <f:selectItem itemValue="#{null}"
+                                                          itemLabel="Marke auswählen"
+                                                          noSelectionOption="true"/>
+
+                                            <f:selectItems value="#{productBoundary.findBrands()}"
+                                                           var="brand"
+                                                           itemValue="#{brand.brandId}"
+                                                           itemLabel="#{brand.brandName}"/>
+                                        </h:selectOneMenu>
+
+                                        <h:message for="editBrandId" styleClass="form-validation-hint"/>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="form-label form-label-required">Kategorie</label>
+
+                                        <h:selectOneMenu id="editCategoryId"
+                                                         value="#{productBoundary.editCategoryId}"
+                                                         required="true"
+                                                         requiredMessage="Bitte wählen Sie eine Kategorie aus."
+                                                         styleClass="form-input form-select">
+
+                                            <f:selectItem itemValue="#{null}"
+                                                          itemLabel="Kategorie auswählen"
+                                                          noSelectionOption="true"/>
+
+                                            <f:selectItems value="#{productBoundary.findCategories()}"
+                                                           var="category"
+                                                           itemValue="#{category.categoryId}"
+                                                           itemLabel="#{category.categoryName}"/>
+                                        </h:selectOneMenu>
+
+                                        <h:message for="editCategoryId" styleClass="form-validation-hint"/>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="modal-footer">
+                            <h:commandButton value="Abbrechen"
+                                             action="#{productBoundary.cancelEdit}"
+                                             immediate="true"
+                                             styleClass="form-btn form-btn-secondary">
+                                <f:ajax execute="@this" render=":productPage"/>
+                            </h:commandButton>
+
+                            <h:commandButton value="Änderungen speichern"
+                                             actionListener="#{productBoundary.saveEdit}"
+                                             styleClass="form-btn form-btn-primary">
+                                <f:ajax execute="@form" render=":productPage"/>
+                            </h:commandButton>
+                        </div>
+
+                    </h:form>
+
+                </div>
+
+            </h:panelGroup>
+
+        </h:panelGroup>
 
     </ui:define>
 

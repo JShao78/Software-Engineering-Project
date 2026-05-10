@@ -21,6 +21,9 @@ public class CustomerBoundary implements Serializable {
     @Inject
     CustomerController customerController;
 
+    private Customer customer = new Customer();
+    private Customer editCustomer = new Customer();
+
     public List<Customer> findPage() {
         return customerController.findPage(currentPage,pageSize);
     }
@@ -31,6 +34,42 @@ public class CustomerBoundary implements Serializable {
 
     public int count() {
         return customerController.count();
+    }
+
+    public void create() {
+        customerController.create(customer);
+        this.customer = new Customer();
+    }
+
+    public boolean prepareEdit(Customer customerToEdit) {
+        if (customerToEdit == null || customerToEdit.getCustomerId() == null) {
+            cancelEdit();
+            return false;
+        }
+
+        this.editCustomer = customerToEdit;
+        return true;
+    }
+
+    public boolean saveEdit() {
+        if (editCustomer.getCustomerId() == null) {
+            return false;
+        }
+
+        boolean success = customerController.edit(editCustomer);
+        if (success) {
+            cancelEdit();
+        }
+
+        return success;
+    }
+
+    public void cancelEdit() {
+        this.editCustomer = new Customer();
+    }
+
+    public void delete(Integer customerId) {
+        customerController.delete(customerId);
     }
 
     //Getter and Setter
@@ -54,5 +93,17 @@ public class CustomerBoundary implements Serializable {
     public void onPageSizeChange(AjaxBehaviorEvent event) {
         this.pageSize = Math.clamp(pageSize, 1, RepositoryQueryUtils.MAX_LIMIT);
         this.currentPage = 1;
+    }
+
+    public Customer getCustomer() {
+        return customer;
+    }
+
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
+    }
+
+    public Customer getEditCustomer() {
+        return editCustomer;
     }
 }

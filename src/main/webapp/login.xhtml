@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html">
+<h:head>
+    <meta charset="UTF-8" />
+    <title>Login</title>
+    <style>
+        @media (orientation: landscape) {
+            .login-box {
+                width: min(340px, 90vw);
+            }
+
+            .credentials {
+                max-width: 380px;
+                top: 10px;
+                right: 10px;
+                font-size: 12px;
+                line-height: 1.4;
+            }
+        }
+
+        @media (orientation: portrait) {
+            body {
+                font-size: 34px;
+            }
+
+            .login-box {
+                width: 80%;
+                height: 30%;
+            }
+
+            .credentials {
+                max-width: 75%;
+                align-self: center;
+                top: 10px;
+            }
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            width: 100vw;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
+        }
+
+        .login-box {
+            padding: 24px;
+            background: #ffffff;
+            border: 1px solid #d5d5d5;
+            border-radius: 6px;
+        }
+
+        .field {
+            margin-bottom: 14px;
+        }
+
+        .field label {
+            display: block;
+            margin-bottom: 6px;
+        }
+
+        .field input {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 8px;
+            border: 1px solid #b9b9b9;
+            border-radius: 4px;
+        }
+
+        .login-button {
+            width: 100%;
+            padding: 9px;
+            border: 0;
+            border-radius: 4px;
+            background: #1f6feb;
+            color: #ffffff;
+            cursor: pointer;
+        }
+
+        .login-error {
+            margin: 0 0 14px;
+            color: #b30000;
+            font-size: 14px;
+        }
+
+        .credentials {
+            position: fixed;
+            margin: 0;
+            padding: 10px;
+            white-space: pre-line;
+            background: #ffffff;
+            border: 1px solid #d5d5d5;
+            border-radius: 6px;
+        }
+    </style>
+</h:head>
+<h:body>
+<p class="credentials">Admin: fabiola.jackson@bikes.shop Passwort: 555-5554
+User 1: mireya.copeland@bikes.shop Passwort: 555-5555
+User 2: genna.serrano@bikes.shop Passwort: 555-5556</p>
+
+<h:form styleClass="login-box">
+    <h:messages styleClass="login-error" globalOnly="true" />
+    <div class="field">
+        <label for="username">Nutzername (email)</label>
+        <h:inputText id="username" value="#{loginController.username}" required="true" />
+    </div>
+    <div class="field">
+        <label for="password">Passwort</label>
+        <h:inputSecret id="password" value="#{loginController.password}" required="true" />
+    </div>
+    <h:commandButton styleClass="login-button" value="Login" action="#{loginController.login}" />
+</h:form>
+</h:body>
+</html>

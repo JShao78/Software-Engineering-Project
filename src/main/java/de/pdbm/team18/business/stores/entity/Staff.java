@@ -1,6 +1,8 @@
 package de.pdbm.team18.business.stores.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.Pattern;
 
 @Entity
 @Table(name = "staffs")
@@ -17,13 +19,10 @@ public class Staff {
     @Column(name = "last_name")
     private String lastName;
 
-    @Column
+    @Email
     private String email;
-
-    @Column
     private int active;
-
-    @Column
+    @Pattern(regexp = "^\\(\\d{3}\\) \\d{3}-\\d{4}$")
     private String phone;
 
 
@@ -35,4 +34,67 @@ public class Staff {
     @JoinColumn(name = "store_id")
     private Store storeId;
 
+    public int getStaffId() {
+        return staffId;
+    }
+
+    public void setStaffId(int staffId) {
+        this.staffId = staffId;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public int getActive() {
+        return active;
+    }
+
+    public void setActive(int active) {
+        this.active = active;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public Staff getManagerId() {
+        return managerId;
+    }
+
+    public void setManagerId(Staff managerId) {
+        this.managerId = managerId;
+    }
+
+    public Store getStoreId() {
+        return storeId;
+    }
+
+    public void setStoreId(Store storeId) {
+        this.storeId = storeId;
+    }
 }

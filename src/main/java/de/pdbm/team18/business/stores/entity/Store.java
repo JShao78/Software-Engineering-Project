@@ -11,23 +11,14 @@ public class Store {
     @Column(name = "store_id")
     private Integer storeId;
 
-    @Column(name = "city")
     private String city;
-
-    @Column
     private String email;
-
-    @Column
     private String phone;
-
-    @Column
     private String state;
+    private String street;
 
     @Column(name = "store_name")
     private String storeName;
-
-    @Column
-    private String street;
 
     @Column(name = "zip_code")
     private String zipCode;

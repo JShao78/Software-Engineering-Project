@@ -1,0 +1,23 @@
+Reflexion Iteration 3 - Team 18
+================================
+
+1) Geplante Features
+- CRUD Funktionalitäten für alles implementiert nach sinnvoller art für die Aktionen die erlaubt sein sollen
+- Anmeldung implementieren mit den nötigen User-leveln und den zugehörigen freigaben nach Sep-3
+- Bestellungen Prüfen lagerbestand der Produkte vor erstellung
+- Bestellungen die auf Completed gesetzt werden aktualisieren Lagerbestände
+- Mobile friendly UI
+
+2) Tatsaechlich umgesetzt
+- Alles
+
+3) Abweichungen von der Planung
+- Keine Relevanten (Leichte Abweichungen von Mockups hin zur tatsächlichen UI)
+
+4) Prozentuale individuelle Anteile
+- Anton Metzner 70487463: 20 %
+- Finn Schäfgen 70489487: 20%
+- Dominik Schwarz 70476741: 20%
+- Aminah Mohammaad 70489506: 20%
+- Jiawei Shao 70499593: 20%
+

@@ -20,7 +20,6 @@ public class Stock {
     @JoinColumn(name = "store_id")
     private Store store;
 
-    @Column
     private int quantity;
 
     public StockId getStockId() {
@@ -35,8 +34,16 @@ public class Stock {
         return product;
     }
 
+    public void setProduct(Product product) {
+        this.product = product;
+    }
+
     public Store getStore() {
         return store;
+    }
+
+    public void setStore(Store store) {
+        this.store = store;
     }
 
     public int getQuantity() {

@@ -2,12 +2,14 @@ package de.pdbm.team18.business.stores.control;
 
 import de.pdbm.team18.business.stores.entity.Store;
 import de.pdbm.team18.business.stores.repository.StoreRepository;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.ejb.Stateless;
 import jakarta.inject.Inject;
 
 import java.util.List;
 
 @Stateless
+@RolesAllowed({"ADMIN", "USER1", "USER2"})
 public class StoreController {
 
     @Inject

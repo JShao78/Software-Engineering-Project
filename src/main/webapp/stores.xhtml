@@ -9,66 +9,68 @@
     <ui:define name="title">Niederlassungen – Vertriebsunterstützung</ui:define>
 
     <ui:define name="content">
-        <div class="orders-header">
-            <h1 class="page-title orders-title">Niederlassungen</h1>
-            <p class="orders-subtitle">Insgesamt #{storeBoundary.count()} Niederlassungen</p>
+        <div class="page-header">
+            <div>
+            <h1 class="page-title">Niederlassungen</h1>
+            <p class="page-subtitle">Insgesamt #{storeBoundary.count()} Niederlassungen</p>
+            </div>
         </div>
 
-        <div class="table-container" style="margin-top: 20px;">
+        <div id="storeTable" class="table-container" style="margin-top: 20px;">
             <h:dataTable value="#{storeBoundary.findAll()}"
                          var="store"
                          styleClass="data-table">
 
-                <h:column>
+                <h:column styleClass="tableId">
                     <f:facet name="header">
                         <span class="col-header">ID</span>
                     </f:facet>
-                    <h:outputText value="#{store.storeId}" />
+                    <h:outputText value="#{store.storeId}" styleClass="uuid-text" />
                 </h:column>
 
-                <h:column>
+                <h:column styleClass="city">
                     <f:facet name="header">
                         <span class="col-header">Stadt</span>
                     </f:facet>
                     <h:outputText value="#{store.city}" />
                 </h:column>
 
-                <h:column>
+                <h:column styleClass="email">
                     <f:facet name="header">
                         <span class="col-header">E-Mail</span>
                     </f:facet>
                     <h:outputText value="#{store.email}" />
                 </h:column>
 
-                <h:column>
+                <h:column styleClass="phone">
                     <f:facet name="header">
                         <span class="col-header">Telefonnummer</span>
                     </f:facet>
                     <h:outputText value="#{store.phone}" />
                 </h:column>
 
-                <h:column>
+                <h:column styleClass="state">
                     <f:facet name="header">
                         <span class="col-header">Bundesstaat</span>
                     </f:facet>
                     <h:outputText value="#{store.state}" />
                 </h:column>
 
-                <h:column>
+                <h:column styleClass="storeName">
                     <f:facet name="header">
                         <span class="col-header">Niederlassung</span>
                     </f:facet>
                     <h:outputText value="#{store.storeName}" />
                 </h:column>
 
-                <h:column>
+                <h:column styleClass="street">
                     <f:facet name="header">
                         <span class="col-header">Straße</span>
                     </f:facet>
                     <h:outputText value="#{store.street}" />
                 </h:column>
 
-                <h:column>
+                <h:column styleClass="zip">
                     <f:facet name="header">
                         <span class="col-header">Postleitzahl</span>
                     </f:facet>
