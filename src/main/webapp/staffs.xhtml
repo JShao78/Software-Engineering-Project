@@ -4,7 +4,7 @@
       xmlns:ui="jakarta.faces.facelets"
       xmlns:f="jakarta.faces.core">
 
-<ui:composition template="templates/navbar.xhtml">
+<ui:composition template="templates/navbar.xhtml" rendered="#{request.isUserInRole('ADMIN')}">
 
     <ui:define name="title">Mitarbeiter – Vertriebsunterstützung</ui:define>
 
