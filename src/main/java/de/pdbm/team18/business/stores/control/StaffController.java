@@ -9,12 +9,13 @@ import jakarta.inject.Inject;
 import java.util.List;
 
 @Stateless
-@RolesAllowed({"ADMIN"})
+@RolesAllowed({"ADMIN", "USER1"})
 public class StaffController {
 
     @Inject
     private StaffRepository staffRepository;
 
+    @RolesAllowed("ADMIN")
     public List<Staff> findAll() {
         return staffRepository.findAll();
     }
@@ -23,17 +24,25 @@ public class StaffController {
      * Provides the total number of entities.
      * @return the total number of entities
      */
+    @RolesAllowed("ADMIN")
     public int count() {
         return staffRepository.count();
     }
 
 
+    @RolesAllowed("ADMIN")
     public Staff create(Staff staff) {
         staff.setActive(1);
         return staffRepository.create(staff);
     }
 
+    @RolesAllowed("ADMIN")
     public boolean edit(Staff staff) {
         return staffRepository.update(staff) != null;
+    }
+
+    @RolesAllowed({"ADMIN", "USER1"})
+    public List<Staff> findForOrderSelection() {
+        return staffRepository.findIdFirstAndLastName();
     }
 }

@@ -256,7 +256,7 @@
 
                                     <datalist id="staffResults">
                                         <ui:repeat value="#{orderBoundary.findStaff()}" var="staff">
-                                            <option value="#{staff.firstName} #{staff.lastName}" />
+                                            <option value="#{staff.staffId} #{staff.firstName} #{staff.lastName}" />
                                         </ui:repeat>
                                     </datalist>
                                 </label>

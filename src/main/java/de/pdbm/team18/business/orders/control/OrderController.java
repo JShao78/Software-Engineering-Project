@@ -79,7 +79,7 @@ public class OrderController {
     }
 
     public List<Staff> findStaff() {
-        return staffController.findAll();
+        return staffController.findForOrderSelection();
     }
 
     public List<Store> findStores() {

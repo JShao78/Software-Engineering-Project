@@ -571,16 +571,26 @@ public class OrderBoundary implements Serializable {
     }
 
     private Staff resolveStaff(String value) {
+        List<Staff> staffs = findStaff();
+        Integer id = parseLeadingInteger(value);
+
+        if (id != null) {
+            return staffs.stream()
+                    .filter(staff -> staff.getStaffId() == id)
+                    .findFirst()
+                    .orElse(null);
+        }
+
         String search = normalize(value);
 
         if (search.isEmpty()) {
             return null;
         }
 
-        return findStaff().stream()
+        return staffs.stream()
                 .filter(staff -> normalize(staff.getFirstName() + " " + staff.getLastName()).equals(search))
                 .findFirst()
-                .orElseGet(() -> findStaff().stream()
+                .orElseGet(() -> staffs.stream()
                         .filter(staff -> normalize(staff.getFirstName() + " " + staff.getLastName()).contains(search))
                         .findFirst()
                         .orElse(null));

@@ -24,6 +24,25 @@ public class StaffRepository {
                 .getResultList();
     }
 
+    public List<Staff> findIdFirstAndLastName() {
+        List<Object[]> rows = em.createQuery("""
+                SELECT s.staffId, s.firstName, s.lastName
+                FROM Staff s
+                ORDER BY s.staffId
+                """, Object[].class)
+                .getResultList();
+
+        return rows.stream()
+                .map(row -> {
+                    Staff staff = new Staff();
+                    staff.setStaffId((Integer) row[0]);
+                    staff.setFirstName((String) row[1]);
+                    staff.setLastName((String) row[2]);
+                    return staff;
+                })
+                .toList();
+    }
+
     /**
      * @return the total number of entries in the table
      */
