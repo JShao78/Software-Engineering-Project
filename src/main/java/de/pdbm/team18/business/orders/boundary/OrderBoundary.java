@@ -49,6 +49,7 @@ public class OrderBoundary implements Serializable {
 
     private Order newOrder;
     private Order editOrder;
+    private Integer originalEditStatus;
     private OrderItem newOrderItem;
     private List<OrderItem> newOrderItems;
 
@@ -408,6 +409,7 @@ public class OrderBoundary implements Serializable {
         }
 
         this.editOrder = orderToEdit;
+        this.originalEditStatus = orderToEdit.getOrderStatus();
         return true;
     }
 
@@ -417,6 +419,8 @@ public class OrderBoundary implements Serializable {
         }
         try {
             orderController.edit(editOrder);
+            originalEditStatus = editOrder.getOrderStatus();
+
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(
                             FacesMessage.SEVERITY_INFO,
@@ -424,10 +428,11 @@ public class OrderBoundary implements Serializable {
                             "Bestellung erfolgreich aktualisiert."
                     ));
 
-            cancelEdit();
             return true;
 
         } catch (Exception e) {
+            editOrder.setOrderStatus(originalEditStatus);
+
             Throwable rootCause = e;
             while (rootCause.getCause() != null) {
                 rootCause = rootCause.getCause();
@@ -613,6 +618,10 @@ public class OrderBoundary implements Serializable {
 
     public Order getEditOrder() {
         return editOrder;
+    }
+
+    public Integer getOriginalEditStatus() {
+        return originalEditStatus;
     }
 
     public String getCustomerSearch() {

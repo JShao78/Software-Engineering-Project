@@ -501,6 +501,17 @@
                         </div>
 
                         <div class="edit-body">
+
+                            <h:messages id="editOrderMessages"
+                                        globalOnly="true"
+                                        showSummary="true"
+                                        showDetail="true"
+                                        layout="list"
+                                        styleClass="message-box order-create-message-box"
+                                        errorClass="message-error"
+                                        warnClass="message-error"
+                                        infoClass="message-success" />
+
                             <div class="edit-info">
                                 <div class="edit-info-card">
                                     <div class="edit-info-label">Bestell-ID</div>
@@ -512,7 +523,7 @@
                                 <div class="edit-info-card">
                                     <div class="edit-info-label">Aktueller Status</div>
                                     <div class="edit-info-value">
-                                        #{orderBoundary.statusLabel(orderBoundary.editOrder.orderStatus)}
+                                        #{orderBoundary.statusLabel(orderBoundary.originalEditStatus)}
                                     </div>
                                 </div>
                             </div>
@@ -650,10 +661,16 @@
                                 <td>
                                     <h:commandLink value="Bearbeiten"
                                                    actionListener="#{orderBoundary.prepareEdit(order)}"
-                                                   styleClass="btn-table btn-table-edit">
+                                                   styleClass="btn-table btn-table-edit"
+                                                   rendered="#{order.orderStatus != 4}">
                                         <f:ajax execute="@this" render="@form" />
                                     </h:commandLink>
+
+                                    <h:outputText value="Bearbeiten"
+                                                  styleClass="btn-table btn-table-edit btn-table-disabled "
+                                                  rendered="#{order.orderStatus == 4}" />
                                 </td>
+
                             </ui:fragment>
                         </tr>
 

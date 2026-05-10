@@ -378,7 +378,13 @@ body {
     background: #ffe8c2;
     color: #c26a00;
 }
-
+.btn-table.btn-table-disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+    background: #f0f0f0;
+    color: #888888;
+}
 /* Tables */
 .data-table,
 .items-table {
