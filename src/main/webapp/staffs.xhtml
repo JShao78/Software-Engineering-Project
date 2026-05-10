@@ -136,6 +136,21 @@
                                     <h:message for="phone" styleClass="field-error"/>
                                 </label>
 
+                                <label class="create-field">
+                                    <span>Filiale <strong>*</strong></span>
+                                    <h:selectOneMenu id="createStore"
+                                                     value="#{staffBoundary.staff.storeId}"
+                                                     styleClass="create-input"
+                                                     required="true"
+                                                     requiredMessage="Filiale ist erforderlich">
+                                        <f:selectItems value="#{storeBoundary.findAll()}"
+                                                       var="store"
+                                                       itemValue="#{store.storeId}"
+                                                       itemLabel="#{store.storeName}"/>
+                                    </h:selectOneMenu>
+                                    <h:message for="createStore" styleClass="field-error"/>
+                                </label>
+
                             </div>
 
                         </div>
