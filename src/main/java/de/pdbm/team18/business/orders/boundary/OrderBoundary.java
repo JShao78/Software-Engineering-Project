@@ -515,11 +515,19 @@ public class OrderBoundary implements Serializable {
         }
 
         List<Customer> customers = orderController.findCustomersByName(value);
-
-        return customers.stream()
+        List<Customer> exactMatches = customers.stream()
                 .filter(customer -> normalize(customer.getFirstName() + " " + customer.getLastName()).equals(search))
-                .findFirst()
-                .orElseGet(() -> customers.stream().findFirst().orElse(null));
+                .toList();
+
+        if (exactMatches.size() == 1) {
+            return exactMatches.getFirst();
+        }
+
+        if (exactMatches.size() > 1) {
+            return null;
+        }
+
+        return customers.size() == 1 ? customers.getFirst() : null;
     }
 
     private Product resolveProduct(String value) {

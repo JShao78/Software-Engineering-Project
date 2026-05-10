@@ -211,7 +211,7 @@
                                     <h:panelGroup id="customerDatalist">
                                         <datalist id="customerResults">
                                             <ui:repeat value="#{orderBoundary.findCustomers()}" var="customer">
-                                                <option value="#{customer.firstName} #{customer.lastName}" />
+                                                <option value="#{customer.customerId} | #{customer.firstName} #{customer.lastName}" />
                                             </ui:repeat>
                                         </datalist>
                                     </h:panelGroup>
