@@ -1,0 +1,6 @@
+Team 18:
+- Praktisch leeres Readme ("Team 18 - SE Projekt (Iteration 2)")
+- loginPage = errorPage
+- Logout wäre noch schön
+- sonst gefällt mir alles gut
+Bewertung: 95% (1,0)
