@@ -10,7 +10,8 @@ import jakarta.security.enterprise.identitystore.PasswordHash;
 @CustomFormAuthenticationMechanismDefinition(
         loginToContinue = @LoginToContinue(
                 loginPage = "/login.xhtml",
-                errorPage = "/login.xhtml"
+                errorPage = "/login-error.xhtml",
+                useForwardToLogin = false
         )
 )
 
