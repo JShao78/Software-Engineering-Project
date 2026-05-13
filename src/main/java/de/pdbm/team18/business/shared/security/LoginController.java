@@ -61,6 +61,20 @@ public class LoginController {
         }
     }
 
+    public void logout() throws IOException {
+        try {
+            if (((HttpServletRequest)facesContext.getExternalContext().getRequest()).getUserPrincipal() != null) {
+                ((HttpServletRequest)facesContext.getExternalContext().getRequest()).logout();
+                facesContext.getExternalContext().invalidateSession();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        facesContext.getExternalContext().redirect(facesContext.getExternalContext().getRequestContextPath() + "/login.xhtml");
+        facesContext.responseComplete();
+    }
+
     public String getUsername() {
         return username;
     }
