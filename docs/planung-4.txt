@@ -2,3 +2,7 @@ Wir wollen nochmal über unsere Datenbank abfragen gucken und schauen ob es noch
 Falls ja, werden wir diese Überarbeiten.
 Das UI ist generell fertig. Solange uns nichts im verlauf der Iteration auffällt wird die UI größtenteils unverändert bleiben.
 Zudem werden wir Integrationstests mit HTMLUnit und Selenium für unsere Applikation schreiben und tests für alle aktionen Integrieren.
+
+Hinzugekommen:
+- Logout Funktionalität
+- ReadMe anfertigen
