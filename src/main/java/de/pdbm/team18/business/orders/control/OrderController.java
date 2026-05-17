@@ -48,16 +48,6 @@ public class OrderController {
         return orderRepository.findPage(offset, pageSize, customerSearch, productSearch);
     }
 
-    public int totalPages(int pageSize, String customerSearch, String productSearch) {
-        int count = orderRepository.count(customerSearch, productSearch);
-
-        if (count == 0) {
-            return 1;
-        }
-
-        return (int) Math.ceil((double) count / pageSize);
-    }
-
     public int count(String customerSearch, String productSearch) {
         return orderRepository.count(customerSearch, productSearch);
     }

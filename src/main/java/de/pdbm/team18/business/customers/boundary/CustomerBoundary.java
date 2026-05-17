@@ -17,6 +17,7 @@ public class CustomerBoundary implements Serializable {
 
     private int currentPage = 1;
     private int pageSize = RepositoryQueryUtils.DEFAULT_LIMIT;
+    private int totalPages;
 
     @Inject
     CustomerController customerController;
@@ -29,11 +30,13 @@ public class CustomerBoundary implements Serializable {
     }
 
     public int totalPages() {
-        return customerController.totalPages(pageSize);
+        return totalPages;
     }
 
     public int count() {
-        return customerController.count();
+        int c = customerController.count();
+        totalPages = Math.ceilDivExact(c, pageSize);
+        return c;
     }
 
     public void create() {

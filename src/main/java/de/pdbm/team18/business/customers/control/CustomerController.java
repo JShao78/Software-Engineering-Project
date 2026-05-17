@@ -29,10 +29,6 @@ public class CustomerController {
         return customerRepository.findById(id);
     }
 
-    public int totalPages(int pageSize) {
-        return Math.ceilDivExact(customerRepository.count(), pageSize);
-    }
-
     public int count() {
         return customerRepository.count();
     }

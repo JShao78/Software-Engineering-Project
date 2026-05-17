@@ -19,6 +19,7 @@ public class ProductBoundary implements Serializable {
 
     private int currentPage = 1;
     private int pageSize = RepositoryQueryUtils.DEFAULT_LIMIT;
+    private int totalPages;
 
     private Product product = new Product();
     private Integer brandId;
@@ -36,11 +37,13 @@ public class ProductBoundary implements Serializable {
     }
 
     public int totalPages() {
-        return productController.totalPages(pageSize);
+        return totalPages;
     }
 
     public int count() {
-        return productController.count();
+        int c = productController.count();
+        totalPages = Math.ceilDivExact(c, pageSize);
+        return c;
     }
 
     public void create() {

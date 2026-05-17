@@ -23,10 +23,6 @@ public class StockController {
         return stockRepository.findPage(offset, pageSize);
     }
 
-    public int totalPages(int pageSize) {
-        return Math.ceilDivExact(stockRepository.count(), pageSize);
-    }
-
     public int count() {
         return stockRepository.count();
     }

@@ -41,12 +41,6 @@ public class ProductController {
         return productRepository.findById(id);
     }
 
-    public int totalPages(int pageSize) {
-        int count = productRepository.count();
-        if (count == 0) return 1;
-        return (int) Math.ceil((double) count / pageSize);
-    }
-
     public int count() {
         return productRepository.count();
     }
