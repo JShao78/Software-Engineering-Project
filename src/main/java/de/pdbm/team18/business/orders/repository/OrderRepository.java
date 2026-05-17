@@ -29,7 +29,6 @@ public class OrderRepository {
                 FROM Order o
                 LEFT JOIN FETCH o.customer
                 LEFT JOIN FETCH o.store
-                WHERE 1 = 1
                 """
                 + searchQuery.whereClause()
                 + """
@@ -50,7 +49,6 @@ public class OrderRepository {
         String jpql = """
                 SELECT COUNT(o)
                 FROM Order o
-                WHERE 1 = 1
                 """
                 + searchQuery.whereClause();
 
@@ -154,7 +152,7 @@ public class OrderRepository {
         }
     }
 
-    private SearchQuery buildSearchQuery(String customerSearch, String productSearch) {
+    private SearchQuery buildSearchQuery(String customerSearch, String productSearch) { //TODO Debugging needed
         String normalizedCustomerSearch = normalizeSearch(customerSearch);
         String normalizedProductSearch = normalizeSearch(productSearch);
         StringBuilder whereClause = new StringBuilder();
