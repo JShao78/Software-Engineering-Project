@@ -29,6 +29,7 @@ public class OrderRepository {
                 FROM Order o
                 LEFT JOIN FETCH o.customer
                 LEFT JOIN FETCH o.store
+                WHERE 1 = 1
                 """
                 + searchQuery.whereClause()
                 + """
@@ -49,6 +50,7 @@ public class OrderRepository {
         String jpql = """
                 SELECT COUNT(o)
                 FROM Order o
+                WHERE 1 = 1
                 """
                 + searchQuery.whereClause();
 
@@ -78,14 +80,11 @@ public class OrderRepository {
         if (order == null) {
             throw new IllegalArgumentException("Order must not be null");
         }
-        Order managedOrder = em.find(Order.class, order.getOrderId());
-        if (managedOrder == null) {
+        if (!em.contains(order)) {
             throw new IllegalArgumentException("Order not found");
         }
-        managedOrder.setOrderStatus(order.getOrderStatus());
-        managedOrder.setShippedDate(order.getShippedDate());
         em.flush();
-        return managedOrder;
+        return order;
     }
 
     public Map<Integer, Integer> countItemsByOrderIds(List<Integer> orderIds) {

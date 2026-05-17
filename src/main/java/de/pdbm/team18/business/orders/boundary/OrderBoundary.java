@@ -29,7 +29,6 @@ import java.util.Objects;
 @Named
 @ViewScoped
 public class OrderBoundary implements Serializable {
-
     @Inject
     OrderController orderController;
 
