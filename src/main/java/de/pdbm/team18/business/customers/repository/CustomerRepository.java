@@ -71,9 +71,10 @@ public class CustomerRepository {
     }
 
     public boolean hasOrders(Integer customerId) {
-        long count = em.createQuery("SELECT COUNT(o) FROM Order o WHERE o.customer.customerId = :customerId", Long.class)
+        return !em.createQuery("SELECT 1 FROM Order o WHERE o.customer.customerId = :customerId")
                 .setParameter("customerId", customerId)
-                .getSingleResult();
-        return count > 0;
+                .setMaxResults(1)
+                .getResultList()
+                .isEmpty();
     }
 }
