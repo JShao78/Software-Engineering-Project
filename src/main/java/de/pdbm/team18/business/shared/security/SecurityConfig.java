@@ -17,7 +17,7 @@ import jakarta.security.enterprise.identitystore.PasswordHash;
 
 @DatabaseIdentityStoreDefinition(
         dataSourceLookup = "java:jboss/datasources/bikes18",
-        callerQuery = "SELECT TRIM(SPLIT_PART(phone, ')',2)) FROM staffs WHERE email = ?",
+        callerQuery = "SELECT TRIM(SUBSTRING(phone FROM POSITION(')' IN phone) + 1)) FROM staffs WHERE email = ?",
         hashAlgorithm = SecurityConfig.PlainTextPasswordHash.class,
         groupsQuery = "SELECT CASE WHEN manager_id IS NULL THEN 'ADMIN' " +
                 "WHEN manager_id = 1 THEN 'USER1' " +
