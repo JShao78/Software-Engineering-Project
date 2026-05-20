@@ -1,4 +1,4 @@
-package de.pdbm.team18.selenium;
+package de.pdbm.team18.selenium.customers;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
@@ -38,7 +38,7 @@ class KundenSeleniumIT {
         driver.findElement(By.id("kundenForm:vorname")).sendKeys("Max");
         driver.findElement(By.id("kundenForm:nachname")).sendKeys("Mustermann");
         driver.findElement(By.id("kundenForm:email")).sendKeys("max@example.com");
-        driver.findElement(By.id("kundenForm:phone")).sendKeys("0123456789");
+        driver.findElement(By.id("kundenForm:phone")).sendKeys("(123) 456-789");
         driver.findElement(By.id("kundenForm:street")).sendKeys("Musterstraße 1");
         driver.findElement(By.id("kundenForm:state")).sendKeys("Niedersachsen");
         driver.findElement(By.id("kundenForm:zipCode")).sendKeys("38100");
