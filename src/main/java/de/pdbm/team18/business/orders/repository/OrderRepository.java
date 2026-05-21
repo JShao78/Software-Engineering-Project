@@ -151,7 +151,7 @@ public class OrderRepository {
         }
     }
 
-    private SearchQuery buildSearchQuery(String customerSearch, String productSearch) { //TODO Debugging needed
+    private SearchQuery buildSearchQuery(String customerSearch, String productSearch) {
         String normalizedCustomerSearch = normalizeSearch(customerSearch);
         String normalizedProductSearch = normalizeSearch(productSearch);
         StringBuilder whereClause = new StringBuilder();
