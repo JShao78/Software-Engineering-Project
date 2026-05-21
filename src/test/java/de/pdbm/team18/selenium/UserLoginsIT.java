@@ -32,10 +32,10 @@ class UserLoginsIT {
         driver.findElement(By.cssSelector("input[type='password']")).sendKeys(password);
         driver.findElement(By.cssSelector("input[type='submit']")).click();
 
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(100));
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+    	wait.until(ExpectedConditions.titleIs(expectedTitle));
 
-		String actualTitle = driver.getTitle();
-		assertEquals(expectedTitle, actualTitle);
+		assertEquals(expectedTitle, driver.getTitle());
 	}
 
 	@Test
