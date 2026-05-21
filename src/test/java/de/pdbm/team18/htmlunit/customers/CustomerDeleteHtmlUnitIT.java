@@ -3,16 +3,19 @@ package de.pdbm.team18.htmlunit.customers;
 import org.htmlunit.BrowserVersion;
 import org.htmlunit.WebClient;
 import org.htmlunit.html.HtmlElement;
+import org.htmlunit.html.HtmlInput;
 import org.htmlunit.html.HtmlPage;
 import org.htmlunit.html.HtmlSubmitInput;
 import org.htmlunit.html.HtmlTextInput;
-import org.htmlunit.html.HtmlPasswordInput;
 import org.htmlunit.html.HtmlTableRow;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import java.io.IOException;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class CustomerDeleteHtmlUnitIT {
 
@@ -36,9 +39,9 @@ public class CustomerDeleteHtmlUnitIT {
     @Test
     public void testDeleteCustomerSuccessfully() throws Exception {
         HtmlPage loginPage = webClient.getPage(baseUrl + "login.xhtml");
-        loginPage.<HtmlTextInput>getHtmlElementById("loginForm:username").setValueAttribute("fabiola.jackson@bikes.shop");
-        loginPage.<HtmlPasswordInput>getHtmlElementById("loginForm:password").setValueAttribute("555-5554");
-        HtmlPage page = loginPage.<HtmlSubmitInput>getHtmlElementById("loginForm:loginButton").click();
+        findInputByIdSuffix(loginPage, "username").setValueAttribute("fabiola.jackson@bikes.shop");
+        findInputByIdSuffix(loginPage, "password").setValueAttribute("555-5554");
+        HtmlPage page = clickLoginButton(loginPage);
         webClient.waitForBackgroundJavaScript(2000);
 
         page = webClient.getPage(baseUrl + "kunden.xhtml");
@@ -95,5 +98,30 @@ public class CustomerDeleteHtmlUnitIT {
         page = webClient.getPage(baseUrl + "kunden.xhtml");
         assertFalse(page.asNormalizedText().contains(testEmail),
                 "Der Kunde mit der E-Mail " + testEmail + " sollte nach dem Löschen nicht mehr sichtbar sein.");
+    }
+
+    private HtmlInput findInputByIdSuffix(HtmlPage page, String idSuffix) {
+        List<HtmlInput> inputs = page.getByXPath("//input");
+        for (HtmlInput input : inputs) {
+            String id = input.getId();
+            String name = input.getNameAttribute();
+            if (idSuffix.equals(id) || id.endsWith(":" + idSuffix)
+                    || idSuffix.equals(name) || name.endsWith(":" + idSuffix)) {
+                return input;
+            }
+        }
+        fail("Could not find input field ending with '" + idSuffix + "' on " + page.getUrl());
+        return null;
+    }
+
+    private HtmlPage clickLoginButton(HtmlPage page) throws IOException {
+        List<HtmlElement> submitButtons = page.getByXPath("//input[@type='submit']");
+        for (HtmlElement submitButton : submitButtons) {
+            if ("login".equalsIgnoreCase(submitButton.getAttribute("value"))) {
+                return submitButton.click();
+            }
+        }
+        fail("Could not find Login submit button on " + page.getUrl());
+        return null;
     }
 }
