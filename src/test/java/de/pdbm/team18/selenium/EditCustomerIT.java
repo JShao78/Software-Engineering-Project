@@ -38,7 +38,7 @@ public class EditCustomerIT {
     }
 
     private static final String url = "http://localhost:8080/team-18/";
-    private static final String idPrefix = "j_idt6:";
+    private static final String idPrefix = "loginForm:";
     private static final boolean headless = false;
 
     private ChromeDriver driver;
