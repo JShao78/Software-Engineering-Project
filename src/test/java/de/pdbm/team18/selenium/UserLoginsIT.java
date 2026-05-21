@@ -27,39 +27,29 @@ class UserLoginsIT {
 	@AfterEach
 	void tearDown() { driver.quit(); }
 
+	private void performLogin(String username, String password) {
+        driver.findElement(By.cssSelector("input[type='text']")).sendKeys(username);
+        driver.findElement(By.cssSelector("input[type='password']")).sendKeys(password);
+        driver.findElement(By.cssSelector("input[type='submit']")).click();
+
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(100));
+
+		String actualTitle = driver.getTitle();
+		assertEquals(expectedTitle, actualTitle);
+	}
+
 	@Test
     void loginADMINshouldWork() {
-        driver.findElement(By.cssSelector("input[type='text']")).sendKeys("fabiola.jackson@bikes.shop");
-        driver.findElement(By.cssSelector("input[type='password']")).sendKeys("555-5554");
-        driver.findElement(By.cssSelector("input[type='submit']")).click();
+		performLogin("fabiola.jackson@bikes.shop", "555-5554");
+	}
 
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(200));
-
-		String actualTitle = driver.getTitle();
-		assertEquals(expectedTitle, actualTitle);
-    }
-
-    @Test
+	@Test
     void loginUSER1shouldWork() {
-        driver.findElement(By.cssSelector("input[type='text']")).sendKeys("mireya.copeland@bikes.shop");
-        driver.findElement(By.cssSelector("input[type='password']")).sendKeys("555-5555");
-        driver.findElement(By.cssSelector("input[type='submit']")).click();
-
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(200));
-
-		String actualTitle = driver.getTitle();
-		assertEquals(expectedTitle, actualTitle);
+		performLogin("mireya.copeland@bikes.shop", "555-5555");
     }
 
     @Test
     void loginUSER2shouldWork() {
-        driver.findElement(By.cssSelector("input[type='text']")).sendKeys("genna.serrano@bikes.shop");
-        driver.findElement(By.cssSelector("input[type='password']")).sendKeys("555-5556");
-        driver.findElement(By.cssSelector("input[type='submit']")).click();
-
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(200));
-
-		String actualTitle = driver.getTitle();
-		assertEquals(expectedTitle, actualTitle);
+		performLogin("genna.serrano@bikes.shop", "555-5556");
     }
 }
