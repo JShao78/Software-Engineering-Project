@@ -14,7 +14,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import java.time.Duration;
 import java.util.Objects;
 
-public class EditCustomerTest {
+public class EditCustomerIT {
 
     private enum UserGroup {
         ADMIN("fabiola.jackson@bikes.shop", "555-5554"),
