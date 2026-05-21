@@ -100,7 +100,7 @@ public class EditCustomerIT {
 
     private void editCustomer(Customer oldCustomer, Customer newCustomer, boolean saveChanges) {
         WebElement tableRow = getTableRow(oldCustomer.getCustomerId());
-        WebElement editButton = tableRow.findElement(By.className("btn-table-edit"));
+        WebElement editButton = tableRow.findElement(By.cssSelector("[value=Bearbeiten]"));
         new WebDriverWait(driver, Duration.ofSeconds(1)).until(ExpectedConditions.elementToBeClickable(editButton));
         editButton.click();
 
