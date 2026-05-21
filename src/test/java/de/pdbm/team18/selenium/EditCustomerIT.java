@@ -158,6 +158,10 @@ public class EditCustomerIT {
 
     private void checkTableValues(Customer customer) {
         waitForAjax();
+        new WebDriverWait(driver, Duration.ofSeconds(10)).until(ExpectedConditions.textToBePresentInElementLocated(
+                By.xpath("//table[@class='data-table']//tr[td[span[text()='" + customer.getCustomerId() + "']]]//td[contains(@class,'firstName')]"),
+                customer.getFirstName()
+        ));
         //Workaround for StaleElementReferenceException
         boolean done = false;
         while (!done) {
