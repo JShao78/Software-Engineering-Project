@@ -134,11 +134,11 @@ public class EditCustomerIT {
         streetInput.sendKeys(newCustomer.getStreet());
 
         if (saveChanges) {
-            WebElement saveButton = modalForm.findElement(By.className("btn-primary"));
+            WebElement saveButton = modalForm.findElement(By.cssSelector("[value='Änderungen speichern']"));
             new WebDriverWait(driver, Duration.ofSeconds(1)).until(ExpectedConditions.elementToBeClickable(saveButton));
             saveButton.click();
         } else {
-            WebElement cancelButton = modalForm.findElement(By.className("btn-secondary"));
+            WebElement cancelButton = modalForm.findElement(By.cssSelector("[value='Abbrechen']"));
             new  WebDriverWait(driver, Duration.ofSeconds(10)).until(ExpectedConditions.elementToBeClickable(cancelButton));
             cancelButton.click();
         }
