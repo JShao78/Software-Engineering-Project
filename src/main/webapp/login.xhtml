@@ -104,7 +104,7 @@
 User 1: mireya.copeland@bikes.shop Passwort: 555-5555
 User 2: genna.serrano@bikes.shop Passwort: 555-5556</p>
 
-<h:form styleClass="login-box">
+<h:form id="loginForm" styleClass="login-box">
     <h:messages styleClass="login-error" globalOnly="true" />
     <div class="field">
         <label for="username">Nutzername (email)</label>
@@ -114,7 +114,7 @@ User 2: genna.serrano@bikes.shop Passwort: 555-5556</p>
         <label for="password">Passwort</label>
         <h:inputSecret id="password" value="#{loginController.password}" required="true" />
     </div>
-    <h:commandButton styleClass="login-button" value="Login" action="#{loginController.login}" />
+    <h:commandButton id="loginButton" styleClass="login-button" value="Login" action="#{loginController.login}" />
 </h:form>
 </h:body>
 </html>
