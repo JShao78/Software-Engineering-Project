@@ -20,14 +20,16 @@ class UserLoginsIT {
 	@BeforeEach
 	void setup() {
 		ChromeOptions options = new ChromeOptions();
+		options.addArguments("--headless=new");
 		driver = new ChromeDriver(options);
-		driver.get(BASE_URL);
 	}
 
 	@AfterEach
 	void tearDown() { driver.quit(); }
 
 	private void performLogin(String username, String password) {
+		driver.get(BASE_URL);
+
         driver.findElement(By.cssSelector("input[type='text']")).sendKeys(username);
         driver.findElement(By.cssSelector("input[type='password']")).sendKeys(password);
         driver.findElement(By.cssSelector("input[type='submit']")).click();
