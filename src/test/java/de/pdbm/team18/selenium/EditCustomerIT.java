@@ -39,13 +39,16 @@ public class EditCustomerIT {
 
     private static final String url = "http://localhost:8080/team-18/";
     private static final String idPrefix = "j_idt6:";
+    private static final boolean headless = false;
 
     private ChromeDriver driver;
 
     @BeforeEach
     void setup() {
         //init driver
-        driver =  new ChromeDriver(new ChromeOptions());
+        ChromeOptions options = new ChromeOptions();
+        if (headless) options.addArguments("--headless=new");
+        driver =  new ChromeDriver(options);
         driver.manage().window().maximize();
         //Navigate to page
         driver.get(url + "kunden.xhtml");
@@ -82,6 +85,7 @@ public class EditCustomerIT {
     private Customer readCustomer(int customerId) {
         Customer customer = new Customer();
         customer.setCustomerId(customerId);
+        //Workaround for StaleElementReferenceException
         boolean done = false;
         while (!done) {
             try {
@@ -154,6 +158,7 @@ public class EditCustomerIT {
 
     private void checkTableValues(Customer customer) {
         waitForAjax();
+        //Workaround for StaleElementReferenceException
         boolean done = false;
         while (!done) {
             try {
