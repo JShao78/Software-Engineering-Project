@@ -1,7 +1,6 @@
 package de.pdbm.team18.htmlunit.orders;
 
 import de.pdbm.team18.shared.HtmlUnitTestUtils;
-import org.apache.commons.lang3.NotImplementedException;
 import org.htmlunit.BrowserVersion;
 import org.htmlunit.ElementNotFoundException;
 import org.htmlunit.WebClient;
