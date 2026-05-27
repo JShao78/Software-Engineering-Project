@@ -1,4 +1,4 @@
-package de.pdbm.team18.selenium;
+package de.pdbm.team18.selenium.customers;
 
 import de.pdbm.team18.business.customers.entity.Customer;
 import org.junit.jupiter.api.AfterEach;
