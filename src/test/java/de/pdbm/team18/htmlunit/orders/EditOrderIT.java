@@ -1,7 +1,6 @@
 package de.pdbm.team18.htmlunit.orders;
 
 import de.pdbm.team18.shared.HtmlUnitTestUtils;
-import org.apache.commons.lang3.NotImplementedException;
 import org.htmlunit.BrowserVersion;
 import org.htmlunit.ElementNotFoundException;
 import org.htmlunit.WebClient;
@@ -12,6 +11,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
+import java.util.*;
 
 public class EditOrderIT {
 
@@ -21,12 +21,7 @@ public class EditOrderIT {
 
     @BeforeEach
     public void setUp() throws IOException {
-        webClient = new WebClient(BrowserVersion.BEST_SUPPORTED);
-        webClient.getOptions().setJavaScriptEnabled(true);
-        webClient.getOptions().setCssEnabled(true);
-        webClient.getOptions().setThrowExceptionOnScriptError(false);
-        webClient.getOptions().setThrowExceptionOnFailingStatusCode(false);
-        webClient.setIncorrectnessListener((message, origin) -> {});
+        webClient = HtmlUnitTestUtils.getWebClient();
 
         HtmlUnitTestUtils.login(webClient, HtmlUnitTestUtils.UserGroup.ADMIN);
         page = webClient.getPage(baseUrl + "bestellungen.xhtml");
@@ -43,10 +38,6 @@ public class EditOrderIT {
         return row.<HtmlElement>getFirstByXPath(
                 ".//span[contains(@class, 'status-pill')]"
         ).getVisibleText().strip();
-    }
-
-    private HtmlElement findRow(int id) {
-        return page.getFirstByXPath("//tr[td[span[text()='" + id + "']]]");
     }
 
     private HtmlElement openEditModal() throws IOException {
@@ -90,12 +81,73 @@ public class EditOrderIT {
         return id;
     }
 
+    private Map<String, Integer> getStockAmount(String storeName, Collection<String> productNames) throws IOException {
+        Map<String, Integer> stocks = new HashMap<>();
+        HtmlPage stocksPage = HtmlUnitTestUtils.login(HtmlUnitTestUtils.getWebClient(), HtmlUnitTestUtils.UserGroup.ADMIN)
+                .getPage(baseUrl + "stocks.xhtml");
+        for (String productName : productNames) {
+            HtmlElement stocksRow = HtmlUnitTestUtils.findRowByContent(stocksPage, ".//tbody", productName, storeName);
+            int stockAmount = Integer.parseInt(
+                    stocksRow.<HtmlElement>getFirstByXPath(
+                            ".//td[@class='stock']"
+                    ).getVisibleText().strip()
+            );
+            stocks.put(productName, stockAmount);
+        }
+        return stocks;
+    }
+
+    @Test
+    public void testStockUpdateOnOrderComplete() throws IOException {
+        int orderID = editOrder(false);
+        HtmlElement row = HtmlUnitTestUtils.findRow(page, orderID);
+        String storeName = row.<HtmlElement>getFirstByXPath(
+                ".//td[@class='storeName']"
+        ).getVisibleText().strip();
+        page = row.<HtmlElement>getFirstByXPath(".//a[span[@class='items-toggle-icon']]").click();
+        webClient.waitForBackgroundJavaScriptStartingBefore(2000);
+        webClient.waitForBackgroundJavaScript(10000);
+        HtmlElement itemsTable = page.getFirstByXPath("//table[@class='items-table']");
+        HtmlElement itemsTableBody = itemsTable.getFirstByXPath(".//tbody");
+
+        Map<String, Integer> items = new HashMap<>();
+
+        List<HtmlElement> orderItems = itemsTableBody.getByXPath(".//tr");
+        for (HtmlElement orderItem : orderItems) {
+            List<HtmlElement> cells = orderItem.getByXPath(".//td");
+            List<String> cellValues = cells.stream().map(DomNode::getVisibleText).toList();
+
+            String productName = cellValues.get(1).strip();
+            int splitIndex = productName.lastIndexOf('-');
+            if (splitIndex != -1) productName = productName.substring(0, splitIndex-1);
+            int quantity = Integer.parseInt(cellValues.get(2).strip());
+
+            items.put(productName, quantity);
+        }
+
+        Map<String, Integer> preEditStocks = getStockAmount(storeName, items.keySet());
+
+        editOrder(true);
+        webClient.waitForBackgroundJavaScriptStartingBefore(2000);
+        webClient.waitForBackgroundJavaScript(10000);
+        Map<String, Integer> postEditStocks = getStockAmount(storeName, items.keySet());
+
+        for (String productName : items.keySet()) {
+            Assertions.assertEquals(
+                    preEditStocks.get(productName) - items.get(productName),
+                    postEditStocks.get(productName),
+                    "Failed to update " + productName +
+                            " from " + preEditStocks.get(productName) +  " to " + postEditStocks.get(productName)
+            );
+        }
+    }
+
     @Test
     public void testEditOrderSuccess() throws IOException {
         int id = editOrder(true);
         webClient.waitForBackgroundJavaScriptStartingBefore(2000);
         webClient.waitForBackgroundJavaScript(10000);
-        HtmlElement row = findRow(id);
+        HtmlElement row = HtmlUnitTestUtils.findRow(page, id);
         String status = getStatus(row);
         Assertions.assertEquals("Completed", status);
     }
@@ -103,7 +155,7 @@ public class EditOrderIT {
     @Test
     public void testEditOrderCancel() throws IOException {
         int id = editOrder(false);
-        HtmlElement row = findRow(id);
+        HtmlElement row = HtmlUnitTestUtils.findRow(page, id);
         String status = getStatus(row);
         Assertions.assertNotEquals("Completed", status);
     }

@@ -1,5 +1,6 @@
 package de.pdbm.team18.shared;
 
+import org.htmlunit.BrowserVersion;
 import org.htmlunit.ElementNotFoundException;
 import org.htmlunit.WebClient;
 import org.htmlunit.html.HtmlElement;
@@ -8,6 +9,7 @@ import org.htmlunit.html.HtmlPage;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.StringJoiner;
 
 import static org.junit.jupiter.api.Assertions.fail;
 
@@ -36,12 +38,49 @@ public class HtmlUnitTestUtils {
         }
     }
 
+    public static HtmlElement findRowByContent(HtmlPage page, String tableXpath, String... content) throws IOException {
+        String xpath = ".//tr[";
+        StringJoiner joiner = new StringJoiner(" and ");
+        for (String element : content) {
+            joiner.add("td[contains(., \"" + element + "\")]");
+        }
+        xpath += joiner + "]";
+
+        HtmlElement table = null;
+        int pageNumber = 1;
+        HtmlElement row = null;
+        while (row == null) {
+            try {
+                table = page.getFirstByXPath(tableXpath);
+                row = table.getFirstByXPath(xpath);
+            } catch (RuntimeException ignored) {}
+            page = changePage(page, ++pageNumber);
+        }
+        return row;
+    }
+
+    public static WebClient getWebClient() {
+        WebClient webClient = new WebClient(BrowserVersion.BEST_SUPPORTED);
+        webClient.getOptions().setJavaScriptEnabled(true);
+        webClient.getOptions().setCssEnabled(true);
+        webClient.getOptions().setThrowExceptionOnScriptError(false);
+        webClient.getOptions().setThrowExceptionOnFailingStatusCode(false);
+        webClient.setIncorrectnessListener((message, origin) -> {});
+        return webClient;
+    }
+
     public static HtmlPage changePage(HtmlPage page, int pageNumber) throws IOException {
         page.getWebClient().waitForBackgroundJavaScript(10000);
-        int currentPage = Integer.parseInt(
-                page.<HtmlElement>getFirstByXPath(
-                        "//div[@class='pagination-info']").
-                        getVisibleText().split(" ")[1]);
+        if (page.<HtmlElement>getFirstByXPath("//div[@class='pagination-info']") == null)
+            return changePage(page.getWebClient().getPage(page.getUrl()), pageNumber); //Reload page
+        String[] pageData = page.<HtmlElement>getFirstByXPath(
+                        "//div[@class='pagination-info']")
+                .getVisibleText().split(" ");
+        int currentPage = Integer.parseInt(pageData[1].strip());
+        int maxPage = Integer.parseInt(pageData[3].strip());
+
+        if (pageNumber < 1 || pageNumber > maxPage)
+            return page;
 
         HtmlElement pagination = page.getFirstByXPath("//div[@class='pagination']");
 
@@ -76,6 +115,10 @@ public class HtmlUnitTestUtils {
             return changePage(page, pageNumber);
         }
         return page;
+    }
+
+    public static HtmlElement findRow(HtmlPage page, int id) {
+        return page.getFirstByXPath("//tr[td[span[text()='" + id + "']]]");
     }
 
     public static WebClient login(WebClient webClient, UserGroup userGroup) throws IOException {
