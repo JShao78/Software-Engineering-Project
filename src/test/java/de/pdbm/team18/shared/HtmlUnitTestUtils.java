@@ -1,5 +1,6 @@
 package de.pdbm.team18.shared;
 
+import org.htmlunit.BrowserVersion;
 import org.htmlunit.ElementNotFoundException;
 import org.htmlunit.WebClient;
 import org.htmlunit.html.HtmlElement;
@@ -13,7 +14,9 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 public class HtmlUnitTestUtils {
 
-    public static final String baseUrl = System.getProperty("baseUrl", "http://localhost:8080/team-18/");
+    public static final String baseUrl = normalizeBaseUrl(
+            System.getProperty("app.baseUrl", System.getProperty("baseUrl", "http://localhost:8080/team-18/"))
+    );
 
     public enum UserGroup {
         ADMIN("fabiola.jackson@bikes.shop", "555-5554"),
@@ -36,8 +39,36 @@ public class HtmlUnitTestUtils {
         }
     }
 
+    public static WebClient createWebClient() {
+        return createWebClient(false);
+    }
+
+    public static WebClient createWebClient(boolean cssEnabled) {
+        WebClient webClient = new WebClient(BrowserVersion.BEST_SUPPORTED);
+        webClient.getOptions().setJavaScriptEnabled(true);
+        webClient.getOptions().setCssEnabled(cssEnabled);
+        webClient.getOptions().setThrowExceptionOnScriptError(false);
+        webClient.getOptions().setThrowExceptionOnFailingStatusCode(false);
+        webClient.setIncorrectnessListener((message, origin) -> { });
+        return webClient;
+    }
+
+    public static String resolveUrl(String relativePath) {
+        String path = relativePath.startsWith("/") ? relativePath.substring(1) : relativePath;
+        return baseUrl + path;
+    }
+
+    public static void waitForJs(WebClient webClient) {
+        webClient.waitForBackgroundJavaScriptStartingBefore(2000);
+        webClient.waitForBackgroundJavaScript(10000);
+    }
+
+    public static void waitForJs(HtmlPage page) {
+        waitForJs(page.getWebClient());
+    }
+
     public static HtmlPage changePage(HtmlPage page, int pageNumber) throws IOException {
-        page.getWebClient().waitForBackgroundJavaScript(10000);
+        waitForJs(page);
         int currentPage = Integer.parseInt(
                 page.<HtmlElement>getFirstByXPath(
                         "//div[@class='pagination-info']").
@@ -70,8 +101,7 @@ public class HtmlUnitTestUtils {
             } else {
                 page = nextButton.click();
             }
-            page.getWebClient().waitForBackgroundJavaScriptStartingBefore(2000);
-            page.getWebClient().waitForBackgroundJavaScript(10000);
+            waitForJs(page);
             //move one page and try again
             return changePage(page, pageNumber);
         }
@@ -83,11 +113,11 @@ public class HtmlUnitTestUtils {
     }
 
     public static WebClient login(WebClient webClient, String username, String password) throws IOException {
-        HtmlPage loginPage = webClient.getPage(baseUrl + "login.xhtml");
+        HtmlPage loginPage = webClient.getPage(resolveUrl("login.xhtml"));
         findInputByIdSuffix(loginPage, "username").setValueAttribute(username);
         findInputByIdSuffix(loginPage, "password").setValueAttribute(password);
         getButton(loginPage, "login").click();
-        webClient.waitForBackgroundJavaScript(10000);
+        waitForJs(webClient);
         return webClient;
     }
 
@@ -114,6 +144,13 @@ public class HtmlUnitTestUtils {
         }
         fail("Could not find input field ending with '" + idSuffix + "' on " + page.getUrl());
         return null;
+    }
+
+    private static String normalizeBaseUrl(String rawBaseUrl) {
+        if (rawBaseUrl.endsWith("/")) {
+            return rawBaseUrl;
+        }
+        return rawBaseUrl + "/";
     }
 
 }

@@ -1,7 +1,6 @@
 package de.pdbm.team18.htmlunit.orders;
 
 import de.pdbm.team18.shared.HtmlUnitTestUtils;
-import org.htmlunit.BrowserVersion;
 import org.htmlunit.ElementNotFoundException;
 import org.htmlunit.WebClient;
 import org.htmlunit.html.*;
@@ -14,23 +13,17 @@ import java.io.IOException;
 
 public class EditOrderIT {
 
-    private static final String baseUrl = System.getProperty("baseUrl", "http://localhost:8080/team-18/");
     private WebClient webClient;
     private HtmlPage page;
 
     @BeforeEach
     public void setUp() throws IOException {
-        webClient = new WebClient(BrowserVersion.BEST_SUPPORTED);
-        webClient.getOptions().setJavaScriptEnabled(true);
-        webClient.getOptions().setCssEnabled(true);
-        webClient.getOptions().setThrowExceptionOnScriptError(false);
-        webClient.getOptions().setThrowExceptionOnFailingStatusCode(false);
-        webClient.setIncorrectnessListener((message, origin) -> {});
+        webClient = HtmlUnitTestUtils.createWebClient(true);
 
         HtmlUnitTestUtils.login(webClient, HtmlUnitTestUtils.UserGroup.ADMIN);
-        page = webClient.getPage(baseUrl + "bestellungen.xhtml");
+        page = webClient.getPage(HtmlUnitTestUtils.resolveUrl("bestellungen.xhtml"));
         page = HtmlUnitTestUtils.changePage(page, 1);
-        webClient.waitForBackgroundJavaScript(10000);
+        HtmlUnitTestUtils.waitForJs(webClient);
     }
 
     @AfterEach
@@ -55,7 +48,7 @@ public class EditOrderIT {
         );
         while (row == null) {
             page = HtmlUnitTestUtils.changePage(page, ++pageNumber);
-            webClient.waitForBackgroundJavaScript(10000);
+            HtmlUnitTestUtils.waitForJs(webClient);
             row = page.getFirstByXPath(
                     "//tr[td[@class='status']//span[@class='status-pill status-processing']]"
             );
@@ -63,7 +56,7 @@ public class EditOrderIT {
 
         HtmlElement editButton = row.getFirstByXPath(".//*[text()='Bearbeiten']");
         page = editButton.click();
-        webClient.waitForBackgroundJavaScript(10000);
+        HtmlUnitTestUtils.waitForJs(webClient);
 
         HtmlElement editModal = page.getHtmlElementById("ordersForm:editOrderPanel");
         Assertions.assertNotNull(editModal, "Order Edit Modal Nicht geöffnet");
@@ -92,8 +85,7 @@ public class EditOrderIT {
     @Test
     public void testEditOrderSuccess() throws IOException {
         int id = editOrder(true);
-        webClient.waitForBackgroundJavaScriptStartingBefore(2000);
-        webClient.waitForBackgroundJavaScript(10000);
+        HtmlUnitTestUtils.waitForJs(webClient);
         HtmlElement row = findRow(id);
         String status = getStatus(row);
         Assertions.assertEquals("Completed", status);
@@ -117,12 +109,12 @@ public class EditOrderIT {
             row = page.getFirstByXPath(
                     "//tr[td[@class='status']//span[contains(@class, 'status-completed')]]"
             );
-            HtmlUnitTestUtils.changePage(page, ++pageNumber);
+            page = HtmlUnitTestUtils.changePage(page, ++pageNumber);
         }
 
         HtmlElement button = row.getFirstByXPath(".//*[text()='Bearbeiten']");
         if (button != null) page = button.click();
-        webClient.waitForBackgroundJavaScript(10000);
+        HtmlUnitTestUtils.waitForJs(webClient);
         Assertions.assertThrowsExactly(ElementNotFoundException.class,
                 () -> page.getHtmlElementById("ordersForm:editOrderPanel"),
                 "Order Edit Modal für Bestellstatus 'Completed' geöffnet"
