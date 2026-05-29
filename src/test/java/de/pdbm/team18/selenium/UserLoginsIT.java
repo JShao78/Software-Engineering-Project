@@ -9,17 +9,12 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import java.time.Duration;
-import java.util.List;
-import java.util.ArrayList;
 
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.firefox.FirefoxOptions;
 
 class UserLoginsIT {
     private WebDriver driver;
-    private List<WebDriver> WebDrivers = new ArrayList<>();
     private static final String BASE_URL = System.getProperty("app.baseUrl", "http://localhost:8080/team-18/login.xhtml");
 	private String expectedTitle = "Home – Vertriebsunterstützung";
 
@@ -27,33 +22,27 @@ class UserLoginsIT {
 	void setup() {
 		ChromeOptions chromeOpts = new ChromeOptions();
 		chromeOpts.addArguments("--headless=new");
-
-		FirefoxOptions firefoxOpts = new FirefoxOptions();
-		firefoxOpts.addArguments("-headless");
-
-		WebDriver[] drivers = {
-			new ChromeDriver(chromeOpts),
-			new FirefoxDriver(firefoxOpts)
-		};
+		driver = new ChromeDriver(chromeOpts);
 	}
 
 	@AfterEach
-	void tearDown() { }
+	void tearDown() {
+		if (driver != null) {
+			driver.quit();
+		}
+	}
 
 	private void performLogin(String username, String password) {
-		for (WebDriver browser : WebDrivers) {
-			driver = browser;
-			driver.get(BASE_URL);
+		driver.get(BASE_URL);
 
-			driver.findElement(By.cssSelector("input[type='text']")).sendKeys(username);
-			driver.findElement(By.cssSelector("input[type='password']")).sendKeys(password);
-			driver.findElement(By.cssSelector("input[type='submit']")).click();
+		driver.findElement(By.cssSelector("input[type='text']")).sendKeys(username);
+		driver.findElement(By.cssSelector("input[type='password']")).sendKeys(password);
+		driver.findElement(By.cssSelector("input[type='submit']")).click();
 
-			WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
-			wait.until(ExpectedConditions.titleIs(expectedTitle));
+		WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+		wait.until(ExpectedConditions.titleIs(expectedTitle));
 
-			assertEquals(expectedTitle, driver.getTitle());
-		}
+		assertEquals(expectedTitle, driver.getTitle());
 	}
 
 	@Test

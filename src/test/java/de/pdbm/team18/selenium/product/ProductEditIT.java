@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.Keys;
+
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.TimeoutException;
@@ -191,9 +191,7 @@ class ProductEditIT {
     }
 
     private void clearAndType(WebElement element, String text) {
-        element.click();
-        element.sendKeys(Keys.CONTROL, "a");
-        element.sendKeys(Keys.DELETE);
+        element.clear();
         element.sendKeys(text);
     }
 
