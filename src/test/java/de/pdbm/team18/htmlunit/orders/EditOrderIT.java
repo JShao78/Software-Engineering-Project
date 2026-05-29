@@ -82,8 +82,8 @@ public class EditOrderIT {
 
     private Map<String, Integer> getStockAmount(String storeName, Collection<String> productNames) throws IOException {
         Map<String, Integer> stocks = new HashMap<>();
-        HtmlPage stocksPage = HtmlUnitTestUtils.login(HtmlUnitTestUtils.getWebClient(), HtmlUnitTestUtils.UserGroup.ADMIN)
-                .getPage(baseUrl + "stocks.xhtml");
+        HtmlPage stocksPage = HtmlUnitTestUtils.login(HtmlUnitTestUtils.createWebClient(true), HtmlUnitTestUtils.UserGroup.ADMIN)
+                .getPage(HtmlUnitTestUtils.baseUrl + "stocks.xhtml");
         for (String productName : productNames) {
             HtmlElement stocksRow = HtmlUnitTestUtils.findRowByContent(stocksPage, ".//tbody", productName, storeName);
             int stockAmount = Integer.parseInt(

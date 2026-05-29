@@ -61,16 +61,6 @@ public class HtmlUnitTestUtils {
         return row;
     }
 
-    public static WebClient getWebClient() {
-        WebClient webClient = new WebClient(BrowserVersion.BEST_SUPPORTED);
-        webClient.getOptions().setJavaScriptEnabled(true);
-        webClient.getOptions().setCssEnabled(true);
-        webClient.getOptions().setThrowExceptionOnScriptError(false);
-        webClient.getOptions().setThrowExceptionOnFailingStatusCode(false);
-        webClient.setIncorrectnessListener((message, origin) -> {});
-        return webClient;
-    }
-
     public static WebClient createWebClient() {
         return createWebClient(false);
     }
