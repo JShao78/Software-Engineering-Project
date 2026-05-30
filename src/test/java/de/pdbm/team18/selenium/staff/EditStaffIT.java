@@ -112,7 +112,7 @@ class EditStaffIT {
 		email.sendKeys(mail);
 		phone.sendKeys(phonenumber);
 
-		String isActive = is_active == "Aktiv" ? "1" : "0";
+        String isActive = "Aktiv".equals(is_active) ? "1" : "0";
 		String storeName = "";
 		switch(storename) {
 			case "Santa Cruz Bikes":
