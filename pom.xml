@@ -136,10 +136,24 @@
                 </configuration>
                 <executions>
                     <execution>
+                        <id>start-wildfly</id>
+                        <phase>pre-integration-test</phase>
+                        <goals>
+                            <goal>start</goal>
+                        </goals>
+                    </execution>
+                    <execution>
                         <id>deploy-h2-test-war</id>
                         <phase>pre-integration-test</phase>
                         <goals>
                             <goal>deploy-only</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>stop-wildfly</id>
+                        <phase>post-integration-test</phase>
+                        <goals>
+                            <goal>shutdown</goal>
                         </goals>
                     </execution>
                 </executions>
