@@ -44,7 +44,9 @@ public class TestDataInitializer {
             if (inputStream == null) {
                 return;
             }
-            executeScript(inputStream);
+            int statements = executeScript(inputStream);
+            System.out.printf("Loaded H2 test data from %s (%d statements, %d staffs)%n",
+                    TEST_DATA_SCRIPT, statements, countStaffs().intValue());
         } catch (IOException | SQLException e) {
             throw new IllegalStateException("Could not load H2 test data from " + TEST_DATA_SCRIPT, e);
         }
@@ -54,11 +56,12 @@ public class TestDataInitializer {
         return (Number) em.createNativeQuery("SELECT COUNT(*) FROM staffs").getSingleResult();
     }
 
-    private void executeScript(InputStream inputStream) throws IOException, SQLException {
+    private int executeScript(InputStream inputStream) throws IOException, SQLException {
         try (Connection connection = dataSource.getConnection();
              Statement statement = connection.createStatement();
              BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8))) {
 
+            int statementCount = 0;
             StringBuilder sql = new StringBuilder();
             String line;
             while ((line = reader.readLine()) != null) {
@@ -70,13 +73,17 @@ public class TestDataInitializer {
                 sql.append(line).append('\n');
                 if (trimmed.endsWith(";")) {
                     statement.execute(sql.toString());
+                    statementCount++;
                     sql.setLength(0);
                 }
             }
 
             if (!sql.isEmpty()) {
                 statement.execute(sql.toString());
+                statementCount++;
             }
+
+            return statementCount;
         }
     }
 }

@@ -7,10 +7,7 @@
         <jta-data-source>java:jboss/datasources/bikes18</jta-data-source>
         <properties>
             <property name="jakarta.persistence.schema-generation.database.action" value="drop-and-create"/>
-            <property name="jakarta.persistence.sql-load-script-source" value="META-INF/test-data.sql"/>
             <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect"/>
-            <property name="hibernate.show_sql" value="true"/>
-            <property name="hibernate.format_sql" value="true"/>
         </properties>
     </persistence-unit>
 </persistence>

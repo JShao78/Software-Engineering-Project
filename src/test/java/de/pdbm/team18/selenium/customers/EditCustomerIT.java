@@ -151,6 +151,9 @@ public class EditCustomerIT {
                     JavascriptExecutor js = (JavascriptExecutor) driver;
                     return Objects.equals(js.executeScript("return document.readyState"), "complete");
                 });
+        waitForAjax();
+        waitForEditModalClosed();
+        waitForCustomerValues(saveChanges ? newCustomer : oldCustomer);
     }
 
     private WebElement getTableRow(int customerId) {
@@ -222,6 +225,31 @@ public class EditCustomerIT {
 
         wait.until(jQueryLoad);
         wait.until(jsLoad);
+    }
+
+    private void waitForEditModalClosed() {
+        new WebDriverWait(driver, Duration.ofSeconds(10)).until(driver -> {
+            WebElement modalPanel = driver.findElement(By.id("editCustomerModalPanel"));
+            String classes = modalPanel.getAttribute("class");
+            return classes == null || !classes.contains("modal-overlay-open");
+        });
+    }
+
+    private void waitForCustomerValues(Customer customer) {
+        new WebDriverWait(driver, Duration.ofSeconds(10)).until(driver -> {
+            try {
+                WebElement row = getTableRow(customer.getCustomerId());
+                return row.findElement(By.className("firstName")).getText().strip().equals(customer.getFirstName())
+                        && row.findElement(By.className("lastName")).getText().strip().equals(customer.getLastName())
+                        && row.findElement(By.className("email")).getText().strip().equals(customer.getEmail())
+                        && row.findElement(By.className("phone")).getText().strip().equals(customer.getPhone())
+                        && row.findElement(By.className("state")).getText().strip().equals(customer.getState())
+                        && row.findElement(By.className("zip")).getText().strip().equals(customer.getZipCode())
+                        && row.findElement(By.className("street")).getText().strip().equals(customer.getStreet());
+            } catch (StaleElementReferenceException ignored) {
+                return false;
+            }
+        });
     }
 
     @Test

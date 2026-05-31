@@ -5,6 +5,7 @@ import jakarta.enterprise.context.Dependent;
 import jakarta.security.enterprise.authentication.mechanism.http.CustomFormAuthenticationMechanismDefinition;
 import jakarta.security.enterprise.authentication.mechanism.http.LoginToContinue;
 import jakarta.security.enterprise.identitystore.DatabaseIdentityStoreDefinition;
+import jakarta.security.enterprise.identitystore.IdentityStore;
 import jakarta.security.enterprise.identitystore.PasswordHash;
 
 @CustomFormAuthenticationMechanismDefinition(
@@ -19,6 +20,10 @@ import jakarta.security.enterprise.identitystore.PasswordHash;
         dataSourceLookup = "java:jboss/datasources/bikes18",
         callerQuery = "SELECT TRIM(SUBSTRING(phone FROM POSITION(')' IN phone) + 1)) FROM staffs WHERE email = ?",
         hashAlgorithm = SecurityConfig.PlainTextPasswordHash.class,
+        useFor = {
+                IdentityStore.ValidationType.VALIDATE,
+                IdentityStore.ValidationType.PROVIDE_GROUPS
+        },
         groupsQuery = "SELECT CASE WHEN manager_id IS NULL THEN 'ADMIN' " +
                 "WHEN manager_id = 1 THEN 'USER1' " +
                 "ELSE 'USER2' " +
