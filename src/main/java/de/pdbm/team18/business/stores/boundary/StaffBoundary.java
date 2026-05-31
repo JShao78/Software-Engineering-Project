@@ -1,7 +1,9 @@
 package de.pdbm.team18.business.stores.boundary;
 
 import de.pdbm.team18.business.stores.control.StaffController;
+import de.pdbm.team18.business.stores.control.StoreController;
 import de.pdbm.team18.business.stores.entity.Staff;
+import de.pdbm.team18.business.stores.entity.Store;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
@@ -13,10 +15,16 @@ import java.util.List;
 @ViewScoped
 public class StaffBoundary implements Serializable {
     @Inject
-    StaffController staffController;
+    private StaffController staffController;
+
+    @Inject
+    private StoreController storeController;
 
     private Staff staff = new Staff();
+    private Integer storeId;
+
     private Staff editStaff = new Staff();
+    private Integer editStoreId;
 
     public List<Staff> findAll() {
         return staffController.findAll();
@@ -30,8 +38,10 @@ public class StaffBoundary implements Serializable {
     }
 
     public void create() {
+        staff.setStoreId(findStoreById(storeId));
         staffController.create(staff);
         staff = new Staff();
+        storeId = null;
     }
 
     public boolean prepareEdit(Staff staffToEdit) {
@@ -41,6 +51,10 @@ public class StaffBoundary implements Serializable {
         }
 
         this.editStaff = staffToEdit;
+        this.editStoreId = staffToEdit.getStoreId() != null
+                ? staffToEdit.getStoreId().getStoreId()
+                : null;
+
         return true;
     }
 
@@ -48,6 +62,8 @@ public class StaffBoundary implements Serializable {
         if (editStaff.getStaffId() <= 0) {
             return false;
         }
+
+        editStaff.setStoreId(findStoreById(editStoreId));
 
         boolean success = staffController.edit(editStaff);
         if (success) {
@@ -57,7 +73,20 @@ public class StaffBoundary implements Serializable {
     }
 
     public void cancelEdit() {
-        this.editStaff = new Staff();
+        editStaff = new Staff();
+        editStoreId = null;
+    }
+
+    private Store findStoreById(Integer id) {
+        if (id == null) {
+            return null;
+        }
+
+        return storeController.findAll()
+                .stream()
+                .filter(store -> store.getStoreId().equals(id))
+                .findFirst()
+                .orElse(null);
     }
 
     public Staff getStaff() {
@@ -66,5 +95,21 @@ public class StaffBoundary implements Serializable {
 
     public Staff getEditStaff() {
         return editStaff;
+    }
+
+    public Integer getStoreId() {
+        return storeId;
+    }
+
+    public void setStoreId(Integer storeId) {
+        this.storeId = storeId;
+    }
+
+    public Integer getEditStoreId() {
+        return editStoreId;
+    }
+
+    public void setEditStoreId(Integer editStoreId) {
+        this.editStoreId = editStoreId;
     }
 }

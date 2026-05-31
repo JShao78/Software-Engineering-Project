@@ -29,7 +29,6 @@ import java.util.Objects;
 @Named
 @ViewScoped
 public class OrderBoundary implements Serializable {
-
     @Inject
     OrderController orderController;
 
@@ -43,6 +42,7 @@ public class OrderBoundary implements Serializable {
 
     private int pageSize;
     private int currentPage;
+    private int totalPages;
 
     private Integer expandedOrderId;
     private Map<Integer, Integer> itemsCountByOrderId;
@@ -91,11 +91,13 @@ public class OrderBoundary implements Serializable {
     }
 
     public int count() {
-        return orderController.count(customerSearch, productSearch);
+        int c = orderController.count(customerSearch, productSearch);
+        totalPages = Math.max(Math.ceilDivExact(c, pageSize), 1);
+        return c;
     }
 
     public int totalPages() {
-        return orderController.totalPages(pageSize, customerSearch, productSearch);
+        return totalPages;
     }
 
     public String applySearch() {

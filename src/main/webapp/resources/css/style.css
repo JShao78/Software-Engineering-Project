@@ -17,7 +17,7 @@
 	.orders-card {
 		border: 1px solid #e0e0e0;
 		border-radius: 8px;
-		overflow: hidden;
+		overflow: scroll;
 		background: #ffffff;
 	}
 
@@ -234,6 +234,20 @@ body {
     color: #1a73e8;
 }
 
+.nav-link-logout {
+    color: #dc2626;
+}
+
+.nav-link-logout:hover {
+    background: #fef2f2;
+    color: #b91c1c;
+}
+
+.logout {
+    display: flex;
+    margin-left: auto;
+    align-items: center;
+}
 .divider {
     height: 1px;
     background: #e5e7eb;

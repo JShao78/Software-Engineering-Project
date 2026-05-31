@@ -48,16 +48,6 @@ public class OrderController {
         return orderRepository.findPage(offset, pageSize, customerSearch, productSearch);
     }
 
-    public int totalPages(int pageSize, String customerSearch, String productSearch) {
-        int count = orderRepository.count(customerSearch, productSearch);
-
-        if (count == 0) {
-            return 1;
-        }
-
-        return (int) Math.ceil((double) count / pageSize);
-    }
-
     public int count(String customerSearch, String productSearch) {
         return orderRepository.count(customerSearch, productSearch);
     }
@@ -130,17 +120,15 @@ public class OrderController {
                 if (quantity == null || quantity < orderItem.getQuantity()) {
                     throw new IllegalStateException("Nicht genügend Lagerbestand für diese Bestellung");
                 }
-            }
-            for (OrderItem orderItem : orderItems){
-                Integer quantity = stockController.getQuantity(managedOrder.getStore(), orderItem.getProduct());
                 StockId stockId = new StockId(managedOrder.getStore().getStoreId(), orderItem.getProduct().getProductId());
                 stockController.edit(stockId, quantity - orderItem.getQuantity());
             }
-            order.setShippedDate(LocalDate.now());
+            managedOrder.setShippedDate(LocalDate.now());
         }
         if (oldStatus == 4 && newStatus != 4) {
             throw new IllegalStateException("Versendete Bestellungen dürfen nicht verändert werden");
         }
-        orderRepository.update(order);
+        managedOrder.setOrderStatus(newStatus);
+        orderRepository.update(managedOrder);
     }
 }

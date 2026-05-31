@@ -14,6 +14,8 @@ import java.util.List;
 public class StockBoundary implements Serializable {
     private int currentPage = 1;
     private int pageSize = RepositoryQueryUtils.DEFAULT_LIMIT;
+    private int totalPages;
+
     private Stock editStock = new Stock();
     @Inject
     StockController stockController;
@@ -23,14 +25,14 @@ public class StockBoundary implements Serializable {
     }
 
     public int totalPages() {
-        return stockController.totalPages(pageSize);
+        return totalPages;
     }
 
     public int count() {
-        return stockController.count();
+        int c = stockController.count();
+        totalPages = Math.ceilDivExact(c, pageSize);
+        return c;
     }
-
-
 
     public int getCurrentPage() {
         return currentPage;

@@ -80,14 +80,11 @@ public class OrderRepository {
         if (order == null) {
             throw new IllegalArgumentException("Order must not be null");
         }
-        Order managedOrder = em.find(Order.class, order.getOrderId());
-        if (managedOrder == null) {
+        if (!em.contains(order)) {
             throw new IllegalArgumentException("Order not found");
         }
-        managedOrder.setOrderStatus(order.getOrderStatus());
-        managedOrder.setShippedDate(order.getShippedDate());
         em.flush();
-        return managedOrder;
+        return order;
     }
 
     public Map<Integer, Integer> countItemsByOrderIds(List<Integer> orderIds) {
