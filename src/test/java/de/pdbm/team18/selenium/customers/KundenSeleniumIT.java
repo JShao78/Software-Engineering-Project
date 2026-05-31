@@ -95,9 +95,16 @@ class KundenSeleniumIT {
     }
 
     private void loginAsAdmin() {
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("input[type='text']"))).sendKeys(ADMIN_USER);
-        driver.findElement(By.cssSelector("input[type='password']")).sendKeys(ADMIN_PASSWORD);
-        driver.findElement(By.cssSelector("button[type='submit'], input[type='submit']")).click();
+        WebElement usernameInput = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("loginForm:username")));
+        WebElement passwordInput = driver.findElement(By.id("loginForm:password"));
+
+        usernameInput.clear();
+        usernameInput.sendKeys(ADMIN_USER);
+        passwordInput.clear();
+        passwordInput.sendKeys(ADMIN_PASSWORD);
+
+        wait.until(ExpectedConditions.elementToBeClickable(By.id("loginForm:loginButton"))).click();
+        wait.until(driver -> !driver.getCurrentUrl().contains("login.xhtml"));
     }
 
     private boolean isCustomerPageVisible() {
