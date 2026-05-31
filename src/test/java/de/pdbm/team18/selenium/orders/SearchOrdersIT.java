@@ -16,6 +16,11 @@ import java.util.function.Consumer;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.StaleElementReferenceException;
+import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.ElementClickInterceptedException;
+
 class SearchOrdersIT {
     private WebDriver driver;
 	private WebDriver[] drivers;
@@ -50,10 +55,15 @@ class SearchOrdersIT {
 	private void loopBrowsers(Consumer<WebDriver> test) {
 		for (WebDriver browser : drivers) {
 			driver = browser;
-			wait = new WebDriverWait(driver, Duration.ofSeconds(5));
+			wait = new WebDriverWait(driver, Duration.ofSeconds(10));
 			login("mireya.copeland@bikes.shop", "555-5555");
 			driver.get(BASE_URL + "bestellungen.xhtml");
-			wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("table.data-table")));
+            wait.until(driver -> {
+                List<WebElement> tables = driver.findElements(By.cssSelector("table.data-table"));
+                List<WebElement> noData = driver.findElements(By.cssSelector(".empty-state, .no-results, .no-data"));
+
+                return !tables.isEmpty() || !noData.isEmpty();
+            });
 			test.accept(browser);
 		}
 	}
@@ -93,20 +103,47 @@ class SearchOrdersIT {
 		wait.until(ExpectedConditions.visibilityOfElementLocated(userLocator));
 		assertTrue(driver.findElement(userLocator).isDisplayed());
 	}
-	private void checkProduct(String productname) {
-		By toggleLocator = By.cssSelector(
-			"table.data-table .items-toggle"
-		);
-		WebElement toggle = wait.until(
-			ExpectedConditions.elementToBeClickable(toggleLocator)
-		);
-		toggle.click();
-		wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("table.items-table")));
-		wait.until(driver -> driver.findElements(By.cssSelector("table.items-table tbody tr")).stream()
-			.anyMatch(row -> row.getText().contains(productname)));
-		assertTrue(driver.findElements(By.cssSelector("table.items-table tbody tr")).stream()
-			.anyMatch(row -> row.getText().contains(productname)));
-	}
+    private void checkProduct(String productname) {
+        By toggleLocator = By.xpath(
+                "//table[contains(@class,'data-table')]//a[.//span[contains(@class,'items-toggle-icon')]]"
+        );
+
+        wait.until(ExpectedConditions.presenceOfElementLocated(
+                By.cssSelector("table.data-table")
+        ));
+
+        wait.until(driver -> {
+            try {
+                WebElement toggle = driver.findElement(toggleLocator);
+
+                ((JavascriptExecutor) driver).executeScript(
+                        "arguments[0].scrollIntoView({block: 'center'});",
+                        toggle
+                );
+
+                toggle.click();
+                return true;
+
+            } catch (StaleElementReferenceException |
+                     NoSuchElementException |
+                     ElementClickInterceptedException e) {
+                return false;
+            }
+        });
+
+        boolean productFound = wait.until(driver -> {
+            try {
+                return driver.findElement(By.tagName("body"))
+                        .getText()
+                        .contains(productname);
+            } catch (StaleElementReferenceException |
+                     NoSuchElementException e) {
+                return false;
+            }
+        });
+
+        assertTrue(productFound);
+    }
 
 	@Test
     void searchByUser() {

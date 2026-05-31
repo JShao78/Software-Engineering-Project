@@ -130,11 +130,24 @@
                 <groupId>org.wildfly.plugins</groupId>
                 <artifactId>wildfly-maven-plugin</artifactId>
                 <version>5.1.5.Final</version>
+
                 <configuration>
+                    <jboss-home>C:\Users\Expert\Downloads\wildfly-39.0.1.Final\wildfly-39.0.1.Final</jboss-home>
                     <hostname>localhost</hostname>
                     <port>9990</port>
                 </configuration>
+
                 <executions>
+                    <!-- Start WildFly automatically before integration tests -->
+                    <execution>
+                        <id>start-wildfly</id>
+                        <phase>pre-integration-test</phase>
+                        <goals>
+                            <goal>start</goal>
+                        </goals>
+                    </execution>
+
+                    <!-- Deploy the test WAR after WildFly has started -->
                     <execution>
                         <id>start-wildfly</id>
                         <phase>pre-integration-test</phase>
@@ -151,6 +164,15 @@
                     </execution>
                     <execution>
                         <id>stop-wildfly</id>
+                        <phase>post-integration-test</phase>
+                        <goals>
+                            <goal>shutdown</goal>
+                        </goals>
+                    </execution>
+
+                    <!-- Stop WildFly after integration tests -->
+                    <execution>
+                        <id>shutdown-wildfly</id>
                         <phase>post-integration-test</phase>
                         <goals>
                             <goal>shutdown</goal>

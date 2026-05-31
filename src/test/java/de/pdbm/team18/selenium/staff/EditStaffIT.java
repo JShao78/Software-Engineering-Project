@@ -52,16 +52,28 @@ class EditStaffIT {
 		}
 	}
 
-	private void login(String username, String password) {
-		driver.get(BASE_URL);
+    private void login(String username, String password) {
+        driver.manage().deleteAllCookies();
 
-		driver.findElement(By.cssSelector("input[type='text']")).sendKeys(username);
-		driver.findElement(By.cssSelector("input[type='password']")).sendKeys(password);
-		driver.findElement(By.cssSelector("input[type='submit']")).click();
+        driver.get(BASE_URL + "logout.xhtml");
+        driver.get(BASE_URL + "login.xhtml");
 
-		driver.get(BASE_URL + "staffs.xhtml");
-		assertEquals("http://localhost:8080/team-18/staffs.xhtml", driver.getCurrentUrl());
-	}
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("input[type='text']")))
+                .sendKeys(username);
+
+        driver.findElement(By.cssSelector("input[type='password']")).sendKeys(password);
+        driver.findElement(By.cssSelector("input[type='submit']")).click();
+
+        // Wait until login is really finished
+        wait.until(ExpectedConditions.not(
+                ExpectedConditions.urlContains("login.xhtml")
+        ));
+
+        driver.get(BASE_URL + "staffs.xhtml");
+
+        wait.until(ExpectedConditions.urlToBe(BASE_URL + "staffs.xhtml"));
+        assertEquals(BASE_URL + "staffs.xhtml", driver.getCurrentUrl());
+    }
 
     private WebElement getTableRow(int staffId) {
 		return driver.findElement(By.xpath("//table[@class='data-table']//tr[td[span[text()='" + staffId + "']]]"));
