@@ -74,14 +74,6 @@ class UnauthorizedAccessIT {
 		}
 	}
 
-	private void elemNotVisible(String selector) {
-		for (String view : WebViews) {
-			loadView(view);
-			wait.until(ExpectedConditions.urlToBe("http://localhost:8080/team-18/" + view + ".xhtml"));
-			assertTrue(wait.until(ExpectedConditions.invisibilityOfElementLocated(By.cssSelector(selector))));
-		}
-	}
-
 	private void staffAccessible() {
 		loadView("staffs");
 		wait.until(ExpectedConditions.urlToBe("http://localhost:8080/team-18/staffs.xhtml"));
