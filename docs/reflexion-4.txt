@@ -1,0 +1,22 @@
+Reflexion Iteration 3 - Team 18
+================================
+1) Geplante Features
+- Optimierung mit Fokus auf vermeidbare Datenbankabfragen
+- Integrationstests mit HtmlUnit und Selenium für sämtliche verfügbaren CRUD-Funktionen
+
+2) Tatsaechlich umgesetzt
+- Alles
+
+3) Abweichungen von der Planung
+- ReadMe ausarbeitung hinzugekommen
+- Logout Funktionalität hinzugefügt
+- Konfiguration zur Nutzung der Wildfly-internen H2 Datenbank bei Integrationstests
+- Konfiguration des Wildfly-Maven-Plugins zum automatischen Hoch- und Herunterfahrens des Test-Wildfly bei Integrationstests
+
+4) Prozentuale individuelle Anteile
+- Anton Metzner 70487463: 20 %
+- Finn Schäfgen 70489487: 20%
+- Dominik Schwarz 70476741: 20%
+- Aminah Mohammaad 70489506: 20%
+- Jiawei Shao 70499593: 20%
+
