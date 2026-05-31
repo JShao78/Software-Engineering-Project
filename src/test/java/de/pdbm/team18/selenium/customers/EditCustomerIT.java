@@ -229,9 +229,13 @@ public class EditCustomerIT {
 
     private void waitForEditModalClosed() {
         new WebDriverWait(driver, Duration.ofSeconds(10)).until(driver -> {
-            WebElement modalPanel = driver.findElement(By.id("editCustomerModalPanel"));
-            String classes = modalPanel.getAttribute("class");
-            return classes == null || !classes.contains("modal-overlay-open");
+			try {
+				WebElement modalPanel = driver.findElement(By.id("editCustomerModalPanel"));
+				String classes = modalPanel.getAttribute("class");
+				return classes == null || !classes.contains("modal-overlay-open");
+			} catch (StaleElementReferenceException | NoSuchElementException e) {
+				return true;
+			}
         });
     }
 
