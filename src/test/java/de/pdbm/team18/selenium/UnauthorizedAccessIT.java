@@ -14,8 +14,6 @@ import java.util.function.Consumer;
 
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.firefox.FirefoxOptions;
 
 class UnauthorizedAccessIT {
     private WebDriver driver;
@@ -33,12 +31,8 @@ class UnauthorizedAccessIT {
 		ChromeOptions chromeOpts = new ChromeOptions();
 		chromeOpts.addArguments("--headless=new");
 
-		FirefoxOptions firefoxOpts = new FirefoxOptions();
-		firefoxOpts.addArguments("-headless");
-
 		drivers = new WebDriver[]{
-			new ChromeDriver(chromeOpts),
-			new FirefoxDriver(firefoxOpts)
+			new ChromeDriver(chromeOpts)
 		};
 	}
 

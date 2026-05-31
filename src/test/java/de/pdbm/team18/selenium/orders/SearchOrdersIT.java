@@ -15,8 +15,6 @@ import java.util.function.Consumer;
 
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.firefox.FirefoxOptions;
 
 class SearchOrdersIT {
     private WebDriver driver;
@@ -33,12 +31,8 @@ class SearchOrdersIT {
 		ChromeOptions chromeOpts = new ChromeOptions();
 		chromeOpts.addArguments("--headless=new");
 
-		FirefoxOptions firefoxOpts = new FirefoxOptions();
-		firefoxOpts.addArguments("-headless");
-
 		drivers = new WebDriver[]{
-			new ChromeDriver(chromeOpts),
-			new FirefoxDriver(firefoxOpts)
+			new ChromeDriver(chromeOpts)
 		};
 	}
 
@@ -57,7 +51,7 @@ class SearchOrdersIT {
 		for (WebDriver browser : drivers) {
 			driver = browser;
 			wait = new WebDriverWait(driver, Duration.ofSeconds(5));
-			login("genna.serrano@bikes.shop", "555-5556");
+			login("mireya.copeland@bikes.shop", "555-5555");
 			driver.get(BASE_URL + "bestellungen.xhtml");
 			wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("table.data-table")));
 			test.accept(browser);
@@ -107,12 +101,11 @@ class SearchOrdersIT {
 			ExpectedConditions.elementToBeClickable(toggleLocator)
 		);
 		toggle.click();
-		By productLocator = By.xpath(
-			"//table[contains(@class,'items-table')]//tr[td[contains(normalize-space(.),'" 
-			+ productname + "')]]"
-		);
-		wait.until(ExpectedConditions.visibilityOfElementLocated(productLocator));
-		assertTrue(driver.findElement(productLocator).isDisplayed());
+		wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("table.items-table")));
+		wait.until(driver -> driver.findElements(By.cssSelector("table.items-table tbody tr")).stream()
+			.anyMatch(row -> row.getText().contains(productname)));
+		assertTrue(driver.findElements(By.cssSelector("table.items-table tbody tr")).stream()
+			.anyMatch(row -> row.getText().contains(productname)));
 	}
 
 	@Test

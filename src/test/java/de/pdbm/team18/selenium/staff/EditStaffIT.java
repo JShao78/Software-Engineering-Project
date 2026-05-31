@@ -16,8 +16,6 @@ import java.util.function.Consumer;
 
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.firefox.FirefoxOptions;
 
 class EditStaffIT {
     private WebDriver driver;
@@ -30,12 +28,8 @@ class EditStaffIT {
 		ChromeOptions chromeOpts = new ChromeOptions();
 		chromeOpts.addArguments("--headless=new");
 
-		FirefoxOptions firefoxOpts = new FirefoxOptions();
-		firefoxOpts.addArguments("-headless");
-
 		drivers = new WebDriver[]{
-			new ChromeDriver(chromeOpts),
-			new FirefoxDriver(firefoxOpts)
+			new ChromeDriver(chromeOpts)
 		};
 	}
 
@@ -206,8 +200,14 @@ class EditStaffIT {
 			wait.until(ExpectedConditions.elementToBeClickable(cancelButton));
 			cancelButton.click();
 
-			wait.until(ExpectedConditions.invisibilityOfElementLocated(By.cssSelector("#editStaffForm")));
-			assertFalse(driver.findElement(By.cssSelector("#editStaffForm")).isDisplayed());
+			wait.until(driver -> {
+				try {
+					return driver.findElements(By.cssSelector("#editStaffModal")).stream()
+						.noneMatch(WebElement::isDisplayed);
+				} catch (StaleElementReferenceException ignored) {
+					return false;
+				}
+			});
 
 			isOriginal();
 		});

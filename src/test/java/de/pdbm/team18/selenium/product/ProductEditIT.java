@@ -114,38 +114,22 @@ class ProductEditIT {
             return;
         }
 
-        WebElement usernameField = findFirstVisibleElement(
-                By.cssSelector("input[name='j_username']"),
-                By.cssSelector("input[name='username']"),
-                By.cssSelector("input[name='email']"),
-                By.cssSelector("input[id*='username']"),
-                By.cssSelector("input[id*='user']"),
-                By.cssSelector("input[id*='email']"),
-                By.cssSelector("input[type='email']"),
-                By.cssSelector("input[type='text']")
-        );
+        driver.get(pageUrl("login.xhtml"));
 
-        WebElement passwordField = findFirstVisibleElement(
-                By.cssSelector("input[name='j_password']"),
-                By.cssSelector("input[name='password']"),
-                By.cssSelector("input[id*='password']"),
-                By.cssSelector("input[id*='passwort']"),
-                By.cssSelector("input[type='password']")
-        );
-
+        WebElement usernameField = wait.until(ExpectedConditions.visibilityOfElementLocated(
+                By.id("loginForm:username")
+        ));
+        WebElement passwordField = wait.until(ExpectedConditions.visibilityOfElementLocated(
+                By.id("loginForm:password")
+        ));
         clearAndType(usernameField, ADMIN_USER);
         clearAndType(passwordField, ADMIN_PASSWORD);
 
-        WebElement submitButton = findFirstVisibleElement(
-                By.cssSelector("input[type='submit']"),
-                By.cssSelector("button[type='submit']"),
-                By.xpath("//button[contains(., 'Login')]"),
-                By.xpath("//button[contains(., 'Einloggen')]"),
-                By.xpath("//input[contains(@value, 'Login')]"),
-                By.xpath("//input[contains(@value, 'Einloggen')]")
-        );
+        WebElement submitButton = wait.until(ExpectedConditions.elementToBeClickable(
+                By.id("loginForm:loginButton")
+        ));
 
-        click(submitButton);
+        submitButton.click();
 
         driver.get(pageUrl("produkte.xhtml"));
         waitForProductPage();
@@ -169,25 +153,6 @@ class ProductEditIT {
         return !titles.isEmpty()
                 && titles.get(0).isDisplayed()
                 && titles.get(0).getText().trim().equals("Produkte");
-    }
-
-    private WebElement findFirstVisibleElement(By... locators) {
-        for (By locator : locators) {
-            List<WebElement> elements = driver.findElements(locator);
-
-            for (WebElement element : elements) {
-                if (element.isDisplayed()) {
-                    return element;
-                }
-            }
-        }
-
-        fail("Element wurde nicht gefunden.\nAktuelle URL: "
-                + driver.getCurrentUrl()
-                + "\nSeitentext:\n"
-                + driver.findElement(By.tagName("body")).getText());
-
-        return null;
     }
 
     private void clearAndType(WebElement element, String text) {

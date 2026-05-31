@@ -176,41 +176,23 @@ class ProductPaginationIT {
     private void loginAsAdmin() {
         driver.get(pageUrl("login.xhtml"));
 
-        WebElement usernameField = findFirstVisibleElement(
-                By.cssSelector("input[name='j_username']"),
-                By.cssSelector("input[name='username']"),
-                By.cssSelector("input[name='email']"),
-                By.cssSelector("input[id*='username']"),
-                By.cssSelector("input[id*='user']"),
-                By.cssSelector("input[id*='email']"),
-                By.cssSelector("input[type='email']"),
-                By.cssSelector("input[type='text']")
-        );
-
-        WebElement passwordField = findFirstVisibleElement(
-                By.cssSelector("input[name='j_password']"),
-                By.cssSelector("input[name='password']"),
-                By.cssSelector("input[id*='password']"),
-                By.cssSelector("input[id*='passwort']"),
-                By.cssSelector("input[type='password']")
-        );
-
+        WebElement usernameField = wait.until(ExpectedConditions.visibilityOfElementLocated(
+                By.id("loginForm:username")
+        ));
+        WebElement passwordField = wait.until(ExpectedConditions.visibilityOfElementLocated(
+                By.id("loginForm:password")
+        ));
         usernameField.clear();
         usernameField.sendKeys(ADMIN_USER);
 
         passwordField.clear();
         passwordField.sendKeys(ADMIN_PASSWORD);
 
-        WebElement submitButton = findFirstVisibleElement(
-                By.cssSelector("input[type='submit']"),
-                By.cssSelector("button[type='submit']"),
-                By.xpath("//button[contains(., 'Login')]"),
-                By.xpath("//button[contains(., 'Einloggen')]"),
-                By.xpath("//input[contains(@value, 'Login')]"),
-                By.xpath("//input[contains(@value, 'Einloggen')]")
-        );
+        WebElement submitButton = wait.until(ExpectedConditions.elementToBeClickable(
+                By.id("loginForm:loginButton")
+        ));
 
-        click(submitButton);
+        submitButton.click();
 
         try {
             wait.until(driver -> !driver.getCurrentUrl().contains("login.xhtml"));
@@ -226,20 +208,6 @@ class ProductPaginationIT {
         } catch (TimeoutException ex) {
             fail("Produktseite wurde nicht geöffnet. Aktuelle URL: " + driver.getCurrentUrl());
         }
-    }
-
-    private WebElement findFirstVisibleElement(By... locators) {
-        for (By locator : locators) {
-            List<WebElement> elements = driver.findElements(locator);
-            for (WebElement element : elements) {
-                if (element.isDisplayed()) {
-                    return element;
-                }
-            }
-        }
-
-        fail("Element wurde nicht gefunden. Aktuelle URL: " + driver.getCurrentUrl());
-        return null;
     }
 
     private void click(WebElement element) {

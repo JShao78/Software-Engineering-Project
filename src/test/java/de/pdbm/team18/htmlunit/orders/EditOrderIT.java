@@ -1,7 +1,6 @@
 package de.pdbm.team18.htmlunit.orders;
 
 import de.pdbm.team18.shared.HtmlUnitTestUtils;
-import org.htmlunit.BrowserVersion;
 import org.htmlunit.ElementNotFoundException;
 import org.htmlunit.WebClient;
 import org.htmlunit.html.*;
@@ -85,15 +84,39 @@ public class EditOrderIT {
         HtmlPage stocksPage = HtmlUnitTestUtils.login(HtmlUnitTestUtils.createWebClient(true), HtmlUnitTestUtils.UserGroup.ADMIN)
                 .getPage(HtmlUnitTestUtils.baseUrl + "stocks.xhtml");
         for (String productName : productNames) {
-            HtmlElement stocksRow = HtmlUnitTestUtils.findRowByContent(stocksPage, ".//tbody", productName, storeName);
-            int stockAmount = Integer.parseInt(
-                    stocksRow.<HtmlElement>getFirstByXPath(
-                            ".//td[@class='stock']"
-                    ).getVisibleText().strip()
-            );
-            stocks.put(productName, stockAmount);
+            stocks.put(productName, sumStockAmount(stocksPage, storeName, productName));
         }
         return stocks;
+    }
+
+    private int sumStockAmount(HtmlPage stocksPage, String storeName, String productName) throws IOException {
+        int pageNumber = 1;
+        int stockAmount = 0;
+        boolean found = false;
+        HtmlPage currentPage = stocksPage;
+
+        while (true) {
+            List<HtmlElement> rows = currentPage.getByXPath(
+                    ".//tbody/tr[td[@class='storeName' and normalize-space(.)=\"" + storeName + "\"]"
+                            + " and td[@class='productName' and normalize-space(.)=\"" + productName + "\"]]"
+            );
+
+            for (HtmlElement row : rows) {
+                stockAmount += Integer.parseInt(
+                        row.<HtmlElement>getFirstByXPath(".//td[@class='stock']").getVisibleText().strip()
+                );
+                found = true;
+            }
+
+            HtmlPage nextPage = HtmlUnitTestUtils.changePage(currentPage, ++pageNumber);
+            if (nextPage == currentPage) {
+                break;
+            }
+            currentPage = nextPage;
+        }
+
+        Assertions.assertTrue(found, "No stock row found for " + productName + " in " + storeName);
+        return stockAmount;
     }
 
     @Test

@@ -80,6 +80,9 @@ public class EditCustomerIT {
         usernameInput.sendKeys(userGroup.getUserName());
         passwordInput.sendKeys(userGroup.getPassword());
         submitButton.click();
+
+        new WebDriverWait(driver, Duration.ofSeconds(10))
+                .until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("table.data-table")));
     }
 
     private Customer readCustomer(int customerId) {
@@ -151,15 +154,17 @@ public class EditCustomerIT {
     }
 
     private WebElement getTableRow(int customerId) {
-        return driver.findElement(
-                By.xpath("//table[@class='data-table']//tr[td[span[text()='" + customerId + "']]]")
+        return new WebDriverWait(driver, Duration.ofSeconds(10)).until(
+                ExpectedConditions.visibilityOfElementLocated(By.xpath(
+                        "//table[contains(@class,'data-table')]//tr[td[span[normalize-space(.)='" + customerId + "']]]"
+                ))
         );
     }
 
     private void checkTableValues(Customer customer) {
         waitForAjax();
         new WebDriverWait(driver, Duration.ofSeconds(10)).until(ExpectedConditions.textToBePresentInElementLocated(
-                By.xpath("//table[@class='data-table']//tr[td[span[text()='" + customer.getCustomerId() + "']]]//td[contains(@class,'firstName')]"),
+                By.xpath("//table[contains(@class,'data-table')]//tr[td[span[normalize-space(.)='" + customer.getCustomerId() + "']]]//td[contains(@class,'firstName')]"),
                 customer.getFirstName()
         ));
         //Workaround for StaleElementReferenceException
