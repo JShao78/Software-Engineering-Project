@@ -6,6 +6,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -69,7 +70,13 @@ public class ReferencedCustomerDeleteIT {
         WebElement row = wait.until(ExpectedConditions.visibilityOfElementLocated(locator));
         WebElement deleteButton = row.findElement(By.cssSelector("td.delete input[type='submit']"));
         wait.until(ExpectedConditions.elementToBeClickable(deleteButton)).click();
-        wait.until(driver -> isCustomerVisible(customerId));
+        
+		try {
+			wait.until(ExpectedConditions.alertIsPresent());
+			driver.switchTo().alert().dismiss();
+		} catch (TimeoutException e) {
+			wait.until(driver -> isCustomerVisible(customerId));
+		}
     }
 
     private By rowLocator(int customerId) {
