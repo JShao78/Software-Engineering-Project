@@ -138,7 +138,6 @@
                 </configuration>
 
                 <executions>
-                    <!-- Start WildFly automatically before integration tests -->
                     <execution>
                         <id>start-wildfly</id>
                         <phase>pre-integration-test</phase>
@@ -147,14 +146,6 @@
                         </goals>
                     </execution>
 
-                    <!-- Deploy the test WAR after WildFly has started -->
-                    <execution>
-                        <id>start-wildfly</id>
-                        <phase>pre-integration-test</phase>
-                        <goals>
-                            <goal>start</goal>
-                        </goals>
-                    </execution>
                     <execution>
                         <id>deploy-h2-test-war</id>
                         <phase>pre-integration-test</phase>
@@ -162,15 +153,7 @@
                             <goal>deploy-only</goal>
                         </goals>
                     </execution>
-                    <execution>
-                        <id>stop-wildfly</id>
-                        <phase>post-integration-test</phase>
-                        <goals>
-                            <goal>shutdown</goal>
-                        </goals>
-                    </execution>
 
-                    <!-- Stop WildFly after integration tests -->
                     <execution>
                         <id>shutdown-wildfly</id>
                         <phase>post-integration-test</phase>
