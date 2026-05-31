@@ -83,6 +83,9 @@ Das Failsafe-Plugin führt alle Klassen nach dem Muster `**/*IT.java` aus und te
 http://localhost:8080/team-18/
 ```
 
+Es darf währenddessen **kein anderer** WildFly mit der Applikation auf derselben Maschine laufen.
+
+
 ### Einzelne Integrationstestklasse ausführen
 
 ```bash
